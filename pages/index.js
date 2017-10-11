@@ -1,13 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Logotype from '../components/Logotype';
 
-export default class Index extends Component {
-  state = { name: 'World' };
-
-  render() {
-    return (
-      <div>
-        <h1>Hello {this.state.name}</h1>
+export default () => (
+  <div className="wrapper">
+    <header className="header">
+      <div className="logotype">
+        <Logotype />
       </div>
-    );
-  }
-}
+
+      <nav className="navigation">
+        <ul>
+          <li>Dashboard</li>
+          <li>Tidningen</li>
+          <li>Nyhetsbrev</li>
+        </ul>
+      </nav>
+
+      <div className="profile">Adam Bergman</div>
+    </header>
+  </div>
+);
