@@ -11,12 +11,10 @@ const server = express();
 const app = next({ dev });
 const handler = app.getRequestHandler();
 
-const registerRoute = routeGenerator(app, server);
-
 app
   .prepare()
   .then(() => {
-    // registerRoute('/page', '/page/:username');
+    // server.get('page/:username', routeGenerator(app, '/page'));
     server.get('*', (req, res) => handler(req, res));
 
     server.listen(port, err => {

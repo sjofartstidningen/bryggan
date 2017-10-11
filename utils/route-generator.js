@@ -1,13 +1,11 @@
 /**
  * routeGenerator
  * 
- * routeGenerator returns a function which in turn can be used to register 
- * custom routes on the server to be used in a Next-app.
+ * routeGenerator generates a route handler for express-routes. It's a
+ * conviniet way to setup custom routing for a Next.js app
  * 
  * Example:
- * 
- * const registerRoute = routeGenerator(app, server);
- * registerRoute('/page', '/page/:username');
+ * server.get('/page/:username', routeGenerator(app, '/page'));
  * 
  * These pages can then, on client-side, be requested like this:
  * <Link as={`/page/${username}`} href={`/page?username=${username}`}>
@@ -16,18 +14,7 @@
  * 
  * @function routeGenerator
  * @param {Object} app A next app instance
- * @param {Object} server An express server instance
- * @return {Function}
+ * @param {string} page Actual page to render with leading /, e.g. "/page"
  */
-module.exports = function routeGenerator(app, server) {
-  /**
-   * @function
-   * @param {string} page A string with a leading slash (/) to indicate which 
-   * page to actually render
-   * @param {string} urlGlob A express-styled url to match against route
-   * request, e.g. "/page/:username"
-   */
-  return (page, urlGlob) => {
-    server.get(urlGlob, (req, res) => app.render(req, res, page, req.params));
-  };
-};
+module.exports = (app, page) => (req, res) =>
+  app.render(req, res, page, req.params);
