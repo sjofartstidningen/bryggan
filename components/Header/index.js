@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import Link from 'next/link';
 import Logotype from '../Logotype';
 import {
   HeaderContainer,
@@ -8,6 +9,7 @@ import {
   NavContainer,
   Nav,
   NavItem,
+  NavLink,
   ProfileContainer,
   ProfileName,
   ProfileImage,
@@ -21,7 +23,7 @@ type Props = {
 const links = [
   { href: '/', title: 'Dashboard' },
   { href: '/tidningen', title: 'Tidningen' },
-  { href: '/nyhetsbrev', title: 'Nyhetsbrevet' },
+  { href: '/nyhetsbrevet', title: 'Nyhetsbrevet' },
 ];
 
 const Header = ({ activeLink, user }: Props) => (
@@ -33,8 +35,10 @@ const Header = ({ activeLink, user }: Props) => (
     <NavContainer>
       <Nav>
         {links.map(link => (
-          <NavItem key={link.href} active={link.href === activeLink}>
-            {link.title}
+          <NavItem key={link.href}>
+            <NavLink href={link.href} active={link.href === activeLink}>
+              {link.title}
+            </NavLink>
           </NavItem>
         ))}
       </Nav>
