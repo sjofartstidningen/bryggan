@@ -12,7 +12,7 @@ import {
   ProfileImage,
 } from './components';
 
-const Header = ({ links }) => (
+const Header = ({ links, user }) => (
   <HeaderContainer>
     <LogotypeContainer>
       <Logotype />
@@ -29,8 +29,8 @@ const Header = ({ links }) => (
     </NavContainer>
 
     <ProfileContainer>
-      <ProfileName>Adam Bergman</ProfileName>
-      <ProfileImage />
+      <ProfileName>{user.name}</ProfileName>
+      <ProfileImage>{user.img && <img src={user.img} alt="" />}</ProfileImage>
     </ProfileContainer>
   </HeaderContainer>
 );
@@ -43,6 +43,10 @@ Header.propTypes = {
       active: PropTypes.bool,
     }),
   ).isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    img: PropTypes.string,
+  }).isRequired,
 };
 
 export default Header;

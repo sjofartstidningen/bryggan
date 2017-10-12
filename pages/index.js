@@ -9,6 +9,6 @@ const links = [
 
 export default () => (
   <div className="wrapper">
-    <Header links={links} />
+    <Header links={links} user={{ name: 'Adam Bergman' }} />
   </div>
 );
