@@ -1,22 +1,14 @@
 import React from 'react';
-import Logotype from '../components/Logotype';
+import Header from '../components/Header';
+
+const links = [
+  { href: '/', title: 'Dashboard' },
+  { href: '/tidningen', title: 'Tidningen', active: true },
+  { href: '/nyhetsbrev', title: 'Nyhetsbrevet' },
+];
 
 export default () => (
   <div className="wrapper">
-    <header className="header">
-      <div className="logotype">
-        <Logotype />
-      </div>
-
-      <nav className="navigation">
-        <ul>
-          <li>Dashboard</li>
-          <li>Tidningen</li>
-          <li>Nyhetsbrev</li>
-        </ul>
-      </nav>
-
-      <div className="profile">Adam Bergman</div>
-    </header>
+    <Header links={links} />
   </div>
 );
