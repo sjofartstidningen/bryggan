@@ -1,5 +1,6 @@
+// @flow
+
 import React from 'react';
-import PropTypes from 'prop-types';
 import Logotype from '../Logotype';
 import {
   HeaderContainer,
@@ -12,41 +13,42 @@ import {
   ProfileImage,
 } from './components';
 
-const Header = ({ links, user }) => (
+type Props = {
+  activeLink: string,
+  user: ?User,
+};
+
+const links = [
+  { href: '/', title: 'Dashboard' },
+  { href: '/tidningen', title: 'Tidningen' },
+  { href: '/nyhetsbrev', title: 'Nyhetsbrevet' },
+];
+
+const Header = ({ activeLink, user }: Props) => (
   <HeaderContainer>
     <LogotypeContainer>
       <Logotype />
     </LogotypeContainer>
 
-    <NavContainer className="navigation">
+    <NavContainer>
       <Nav>
         {links.map(link => (
-          <NavItem key={link.href} active={link.active}>
+          <NavItem key={link.href} active={link.href === activeLink}>
             {link.title}
           </NavItem>
         ))}
       </Nav>
     </NavContainer>
 
-    <ProfileContainer>
-      <ProfileName>{user.name}</ProfileName>
-      <ProfileImage>{user.img && <img src={user.img} alt="" />}</ProfileImage>
-    </ProfileContainer>
+    {user && (
+      <ProfileContainer>
+        <ProfileName>{user.name}</ProfileName>
+        <ProfileImage>{user.img && <img src={user.img} alt="" />}</ProfileImage>
+      </ProfileContainer>
+    )}
   </HeaderContainer>
 );
 
-Header.propTypes = {
-  links: PropTypes.arrayOf(
-    PropTypes.shape({
-      href: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      active: PropTypes.bool,
-    }),
-  ).isRequired,
-  user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    img: PropTypes.string,
-  }).isRequired,
-};
+Header.defaultProps = { user: null };
 
 export default Header;

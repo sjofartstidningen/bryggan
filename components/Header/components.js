@@ -1,3 +1,5 @@
+// @flow
+import type { ChildrenArray, ComponentType } from 'react';
 import styled from 'styled-components';
 
 export const HeaderContainer = styled.header`
@@ -26,7 +28,10 @@ export const Nav = styled.ul`
   list-style: none;
 `;
 
-export const NavItem = styled.li`
+export const NavItem: ComponentType<{
+  active: boolean,
+  children: ChildrenArray<any>,
+}> = styled.li`
   display: inline-block;
   margin-right: 0.5em;
   border-right: 1px solid #999;

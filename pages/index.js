@@ -1,14 +1,10 @@
-import React from 'react';
-import Header from '../components/Header';
+// @flow
 
-const links = [
-  { href: '/', title: 'Dashboard' },
-  { href: '/tidningen', title: 'Tidningen', active: true },
-  { href: '/nyhetsbrev', title: 'Nyhetsbrevet' },
-];
+import React from 'react';
+import Layout from '../components/Layout';
 
 export default () => (
-  <div className="wrapper">
-    <Header links={links} user={{ name: 'Adam Bergman' }} />
-  </div>
+  <Layout activeLink={'/'} user={{ name: 'Adam Bergman' }}>
+    <h1>Hello world!</h1>
+  </Layout>
 );
