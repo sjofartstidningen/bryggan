@@ -17,8 +17,10 @@
     "husky": "^0.14.3",
     "lint-staged": "^4.2.3",
     "next": "^4.0.3",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "styled-components": "^2.2.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
