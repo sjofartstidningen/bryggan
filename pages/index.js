@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
+// @flow
 
-export default class Index extends Component {
-  state = { name: 'World' };
+import React from 'react';
+import Layout from '../components/Layout';
 
-  render() {
-    return (
-      <div>
-        <h1>Hello {this.state.name}</h1>
-      </div>
-    );
-  }
-}
+export default () => (
+  <Layout activeLink={'/'} user={{ name: 'Adam Bergman' }}>
+    <h1>Hello world!</h1>
+  </Layout>
+);
