@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import type { ComponentType } from 'react';
 import styled from 'styled-components';
 
 const Svg = styled.svg`
@@ -9,7 +10,7 @@ const Svg = styled.svg`
   height: auto;
 `;
 
-const Path = styled.path`
+const Path: ComponentType<{ white?: boolean }> = styled.path`
   fill: ${props => (props.white ? '#fff' : '#000')};
 `;
 
