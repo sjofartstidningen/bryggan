@@ -16,6 +16,7 @@
     "express": "^4.16.2",
     "next": "^4.0.3",
     "prop-types": "^15.6.0",
+    "raf-schd": "^2.0.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "styled-components": "^2.2.1"

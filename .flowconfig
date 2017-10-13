@@ -3,7 +3,7 @@
 .*/node_modules/babel-plugin-transform-react-remove-prop-types/.*
 .*/node_modules/config-chain/.*
 .*/node_modules/npmconf/.*
-
+.*/node_modules/raf-schd/.*
 
 [include]
 
