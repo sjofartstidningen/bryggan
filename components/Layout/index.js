@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import type { Element } from 'react';
+import type { Node } from 'react';
 import Head from 'next/head';
 import Header from '../Header';
 
@@ -9,7 +9,7 @@ type Props = {
   activeLink: string,
   user: ?User,
   title?: string,
-  children?: Element<any>,
+  children?: Node,
 };
 
 const Layout = ({ activeLink, user, title, children }: Props) => (
