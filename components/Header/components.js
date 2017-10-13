@@ -46,6 +46,11 @@ export const NavItem = styled.li`
 export const NavLink: ComponentType<{ active: boolean }> = styled(Link)`
   color: ${props => (props.active ? '#000' : '#999')};
   text-decoration: none;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: #000;
+  }
 `;
 
 export const ProfileContainer = styled.div`
