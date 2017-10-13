@@ -2,5 +2,8 @@
   "presets": [
     "next/babel",
     "flow"
+  ],
+  "plugins": [
+    ["transform-define", "./env-config.js"]
   ]
 }
