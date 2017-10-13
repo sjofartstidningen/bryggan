@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react';
-import Link from 'next/link';
 import Logotype from '../Logotype';
+import Progress from '../Progress';
 import {
   HeaderContainer,
   LogotypeContainer,
@@ -28,6 +28,7 @@ const links = [
 
 const Header = ({ activeLink, user }: Props) => (
   <HeaderContainer>
+    <Progress />
     <LogotypeContainer>
       <Logotype />
     </LogotypeContainer>
