@@ -22,15 +22,11 @@ export default class Doc extends Document {
           <title>Bryggan – Sjöfartstidningen</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          <style>{`
-            *,
-            *::before,
-            *::after {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-          `}</style>
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="static/assets/css/main.css"
+          />
 
           {this.props.styleTags}
         </Head>
