@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import axios from 'axios';
+import { filesListFolder } from '../../utils/api/dropbox';
 import Layout from '../../components/Layout';
 import DropboxPreview from '../../components/DropboxPreview';
 
@@ -29,16 +29,7 @@ export default class Tidningen extends Component<Props, *> {
     if (!process.env.DROPBOX_ACCESS_TOKEN) return {};
 
     try {
-      // $FlowFixMe
-      const { data } = await axios({
-        method: 'post',
-        url: 'https://api.dropbox.com/2/files/list_folder',
-        headers: {
-          Authorization: `Bearer ${process.env.DROPBOX_ACCESS_TOKEN}`,
-        },
-        data: { path: '/Bryggan' },
-      });
-
+      const { data } = await filesListFolder({ path: '/Bryggan' });
       return { entries: data.entries };
     } catch (e) {
       if (e.response) {
@@ -61,16 +52,7 @@ export default class Tidningen extends Component<Props, *> {
     const { issues } = this.state;
 
     try {
-      // $FlowFixMe
-      const { data } = await axios({
-        method: 'post',
-        url: 'https://api.dropbox.com/2/files/list_folder',
-        headers: {
-          Authorization: `Bearer ${process.env.DROPBOX_ACCESS_TOKEN}`,
-        },
-        data: { path: path_lower },
-      });
-
+      const { data } = await filesListFolder({ path: path_lower });
       const updatedIssues = {
         ...issues,
         [name]: data.entries,

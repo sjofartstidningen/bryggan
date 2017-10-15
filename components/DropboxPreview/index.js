@@ -1,9 +1,13 @@
+// @flow
 import React, { Component } from 'react';
-import axios from 'axios';
+import { filesGetThumbnail } from '../../utils/api/dropbox';
 
-export default class DropboxPreview extends Component {
+type Props = { path: string };
+type State = { blobUrl: ?string };
+
+export default class DropboxPreview extends Component<Props, State> {
   state = {
-    blob: null,
+    blobUrl: null,
   };
 
   componentDidMount() {
@@ -12,6 +16,7 @@ export default class DropboxPreview extends Component {
 
   fetchBlob = async () => {
     const { path } = this.props;
+
     try {
       const args = {
         path,
@@ -19,18 +24,10 @@ export default class DropboxPreview extends Component {
         size: 'w640h480',
       };
 
-      const { data } = await axios({
-        method: 'get',
-        url: 'https://content.dropboxapi.com/2/files/get_thumbnail',
-        params: {
-          authorization: `Bearer ${process.env.DROPBOX_ACCESS_TOKEN}`,
-          arg: JSON.stringify(args),
-        },
-        responseType: 'blob',
-      });
+      const { data } = await filesGetThumbnail(args);
 
-      const blob = URL.createObjectURL(data);
-      this.setState(() => ({ blob }));
+      const blobUrl = URL.createObjectURL(data);
+      this.setState(() => ({ blobUrl }));
     } catch (e) {
       console.error(path);
       console.error(e);
@@ -38,7 +35,7 @@ export default class DropboxPreview extends Component {
   };
 
   render() {
-    const { blob } = this.state;
-    return blob ? <img src={blob} alt="" /> : this.props.path;
+    const { blobUrl } = this.state;
+    return blobUrl ? <img src={blobUrl} alt="" /> : this.props.path;
   }
 }
