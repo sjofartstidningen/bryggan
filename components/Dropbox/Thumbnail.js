@@ -3,18 +3,23 @@ import { Component } from 'react';
 import type { Node } from 'react';
 import { filesGetThumbnail } from '../../utils/api/dropbox';
 
+type RenderProps = {
+  src: string,
+  data: ?FileMetaData,
+};
+
 type Props = {
   path: string,
   format?: 'jpeg' | 'png',
   size?: 'w32h32' | 'w64h64' | 'w128h128' | 'w640h480' | 'w1024h768',
-  render: ({ src: string }) => Node,
+  render: RenderProps => Node,
   loading?: ?() => Node,
 };
 
-type State = { blobUrl: ?string };
+type State = { blobUrl: ?string, data: ?FileMetaData };
 
 export default class Thumbnail extends Component<Props, State> {
-  state = { blobUrl: null };
+  state = { blobUrl: null, data: null };
 
   static defaultProps = {
     format: 'jpeg',
@@ -35,15 +40,17 @@ export default class Thumbnail extends Component<Props, State> {
 
   fetchBlob = async () => {
     const { path, format, size } = this.props;
-    const { data } = await filesGetThumbnail({ path, format, size });
+    const { data, headers } = await filesGetThumbnail({ path, format, size });
     const blobUrl = URL.createObjectURL(data);
-    this.setState(() => ({ blobUrl }));
+    const resData = JSON.parse(headers['dropbox-api-result']);
+
+    this.setState(() => ({ blobUrl, data: resData }));
   };
 
   render() {
     const { render, loading } = this.props;
-    const { blobUrl } = this.state;
+    const { blobUrl, data } = this.state;
 
-    return blobUrl ? render({ src: blobUrl }) : loading && loading();
+    return blobUrl ? render({ src: blobUrl, data }) : loading && loading();
   }
 }

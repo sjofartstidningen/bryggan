@@ -17,10 +17,13 @@ type Props = {
 
 export default class Tidningen extends Component<Props, *> {
   static async getInitialProps() {
-    if (!process.env.DROPBOX_ACCESS_TOKEN) return {};
+    if (!process.env.DROPBOX_ACCESS_TOKEN)
+      return { error: { message: 'DROPBOX_ACCESS_TOKEN is not defined.' } };
 
     try {
-      const { data } = await filesListFolder({ path: '/Bryggan' });
+      const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
+      const { data } = await filesListFolder({ path: '/Bryggan', sortBy });
+
       return { entries: data.entries };
     } catch (e) {
       if (e.response) {
@@ -59,7 +62,9 @@ export default class Tidningen extends Component<Props, *> {
                           <Thumbnail
                             path={previewUrl}
                             size="w640h480"
-                            render={({ src }) => <img src={src} alt="" />}
+                            render={({ src, data }) => (
+                              <img src={src} alt={JSON.stringify(data)} />
+                            )}
                           />
                         );
                       })}

@@ -3,11 +3,13 @@ import { Component } from 'react';
 import type { Node } from 'react';
 import { filesListFolder } from '../../utils/api/dropbox';
 
-type Entries = Array<FileMetaData | FolderMetaData>;
+type Entry = FileMetaData | FolderMetaData;
+type Entries = Array<Entry>;
 
 type Props = {
   path: string,
   recursive?: boolean,
+  sortBy?: string | ((a: Entry, b: Entry) => number),
   render: ({ entries: Entries }) => Node,
   loading?: ?() => Node,
 };
@@ -24,6 +26,7 @@ export default class Folder extends Component<Props, State> {
   static defaultProps = {
     loading: null,
     reursive: false,
+    sortBy: 'name',
   };
 
   componentDidMount() {
@@ -31,9 +34,20 @@ export default class Folder extends Component<Props, State> {
   }
 
   fetchEntries = async () => {
-    const { path, recursive } = this.props;
-    const { data } = await filesListFolder({ path, recursive });
+    const { path, recursive, sortBy } = this.props;
+    const sortByFn = (a, b) => {
+      if (typeof sortBy === 'string') return a[sortBy] < b[sortBy] ? 1 : -1;
+      if (typeof sortBy === 'function') return sortBy(a, b);
+      return 0;
+    };
+
+    const { data } = await filesListFolder({
+      path,
+      recursive,
+      sortBy: sortByFn,
+    });
     const { entries } = data;
+
     this.setState(() => ({ entries }));
   };
 

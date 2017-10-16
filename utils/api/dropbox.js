@@ -19,28 +19,46 @@ const dropboxContent = axios.create({
     authorization: `Bearer ${accessToken}`,
     reject_cors_preflight: true,
   },
-  headers: {
-    'Content-Type': 'text/plain; charset=dropbox-cors-hack',
-  },
+  headers: { 'Content-Type': 'text/plain; charset=dropbox-cors-hack' },
 });
 
 /**
  * filesListFolder
  */
-type FilesListFolderArgs = { path: string, recursive?: boolean };
-type FilesListFolder = AxiosResponse<{
-  entries: Array<FileMetaData | FolderMetaData>,
-  cursor: string,
-  has_more: boolean,
-}>;
+type Entry = FileMetaData | FolderMetaData;
+type FilesListFolderArgs = {
+  path: string,
+  recursive?: boolean,
+  sortBy?: (a: Entry, b: Entry) => number,
+};
+type FilesListFolder = AxiosResponse<
+  {
+    entries: Array<Entry>,
+    cursor: string,
+    has_more: boolean,
+  },
+  *,
+>;
 
 export const filesListFolder = (
-  { path, recursive = false }: FilesListFolderArgs = {},
+  { path, recursive = false, sortBy }: FilesListFolderArgs = {},
 ): FilesListFolder =>
   dropboxRPC({
     method: 'post',
     url: '/files/list_folder',
     data: { path, recursive },
+  }).then(res => {
+    if (!sortBy) return res;
+
+    const { entries } = res.data;
+    const sorted = entries.sort(sortBy);
+    return {
+      ...res,
+      data: {
+        ...res.data,
+        entries: sorted,
+      },
+    };
   });
 
 /**
@@ -51,7 +69,7 @@ type FilesGetThumbnailArgs = {
   format?: 'jpeg' | 'png',
   size?: 'w32h32' | 'w64h64' | 'w128h128' | 'w640h480' | 'w1024h768',
 };
-type FilesGetThumbnail = AxiosResponse<Blob>;
+type FilesGetThumbnail = AxiosResponse<Blob, { 'dropbox-api-result': string }>;
 
 export const filesGetThumbnail = (
   { path, format = 'jpeg', size = 'w64h64' }: FilesGetThumbnailArgs = {},
