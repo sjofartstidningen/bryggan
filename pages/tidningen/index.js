@@ -2,29 +2,20 @@
 import React, { Component } from 'react';
 import { filesListFolder } from '../../utils/api/dropbox';
 import Layout from '../../components/Layout';
-import DropboxPreview from '../../components/DropboxPreview';
+import Folder from '../../components/Dropbox/Folder';
+import Thumbnail from '../../components/Dropbox/Thumbnail';
 
-type Entry = {
-  '.tag': 'folder' | 'file',
-  name: string,
-  path_lower: string,
-  path_display: string,
-  id: string,
-};
+type Entries = Array<FileMetaData | FolderMetaData>;
 
 type Props = {
-  entries?: Array<Entry>,
-  error?: {
+  entries?: Entries,
+  error?: ?{
     message: string,
     status?: number,
   },
 };
 
 export default class Tidningen extends Component<Props, *> {
-  state = {
-    issues: {},
-  };
-
   static async getInitialProps() {
     if (!process.env.DROPBOX_ACCESS_TOKEN) return {};
 
@@ -41,58 +32,41 @@ export default class Tidningen extends Component<Props, *> {
     }
   }
 
-  componentDidMount() {
-    const [lastYear] = this.props.entries || [];
-    if (lastYear) this.getIssues(lastYear);
-  }
-
-  getIssues = async (entry: Entry) => {
-    if (!process.env.DROPBOX_ACCESS_TOKEN) return {};
-    const { path_lower, name } = entry;
-    const { issues } = this.state;
-
-    try {
-      const { data } = await filesListFolder({ path: path_lower });
-      const updatedIssues = {
-        ...issues,
-        [name]: data.entries,
-      };
-
-      this.setState(() => ({ issues: updatedIssues }));
-    } catch (e) {
-      console.error(e);
-    }
+  static defaultProps = {
+    entries: [],
+    error: null,
   };
 
   render() {
-    const { entries, error } = this.props;
+    const { entries: years, error } = this.props;
     return (
       <Layout title="Tidningen – Bryggan" activeLink="/tidningen">
         <h1>Tidningen</h1>
         <div className="error">{error && error.message}</div>
         <div className="years">
-          {entries &&
-            entries.map(entry => {
-              const issues = this.state.issues[entry.name];
-
-              return (
-                <section key={entry.id}>
-                  <h2>{entry.name}</h2>
-                  {issues && (
-                    <ul>
-                      {issues.map(issue => (
-                        <li key={issue.id}>
-                          {issue.name}
-                          <DropboxPreview
-                            path={`${issue.path_lower}/${entry.name}-${issue.name}-001.jpg`}
+          {years &&
+            years.map((year, i) => (
+              <section key={year.id}>
+                <h2>{year.name}</h2>
+                {i === 0 && (
+                  <Folder
+                    path={year.path_lower}
+                    loading={() => 'loading entries'}
+                    render={({ entries }) =>
+                      entries.map(entry => {
+                        const previewUrl = `${entry.path_lower}/${year.name}-${entry.name}-001.jpg`;
+                        return (
+                          <Thumbnail
+                            path={previewUrl}
+                            size="w640h480"
+                            render={({ src }) => <img src={src} alt="" />}
                           />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </section>
-              );
-            })}
+                        );
+                      })}
+                  />
+                )}
+              </section>
+            ))}
         </div>
       </Layout>
     );
