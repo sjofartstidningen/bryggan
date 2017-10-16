@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 // @flow
 
-declare type AxiosResponse<T> = Promise<{
-  data: T,
+declare type AxiosResponse<D, H> = Promise<{
+  data: D,
   status: number,
   statusText: string,
-  headers: { [key: string]: string },
+  headers: H,
   config: { [key: string]: mixed },
   request: { [key: string]: mixed },
 }>;

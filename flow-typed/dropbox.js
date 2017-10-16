@@ -1,6 +1,26 @@
 /* eslint-disable no-undef */
 // @flow
 
+type PhotoMetaData = {
+  '.tag': 'photo',
+  dimensions: { height: number, width: number },
+  location: ?string,
+  time_taken: ?string,
+};
+
+type VideoMetaData = {
+  '.tag': 'video',
+  dimensions: { height: number, width: number },
+  location: ?string,
+  time_taken: ?string,
+  duration: ?number,
+};
+
+type MediaInfo = {
+  '.tag': 'metadata',
+  metadata: PhotoMetaData | VideoMetaData,
+};
+
 type FolderSharingInfo = {
   read_only: boolean,
   parent_shared_folder_id: ?string,
@@ -24,7 +44,7 @@ declare type FileMetaData = {
   size: number,
   path_lower: string,
   path_display: string,
-  media_info?: {},
+  media_info?: MediaInfo,
   sharing_info: ?FolderSharingInfo,
   property_groups: PropertyGroup[],
   has_explicit_shared_members?: boolean,
