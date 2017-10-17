@@ -1,7 +1,10 @@
 // @flow
 import { Component } from 'react';
 import type { Node } from 'react';
+import Queue from 'p-queue';
 import { filesGetThumbnail } from '../../utils/api/dropbox';
+
+const queue = new Queue({ concurrency: 3 });
 
 type RenderProps = {
   src: string,
@@ -40,7 +43,9 @@ export default class Thumbnail extends Component<Props, State> {
 
   fetchBlob = async () => {
     const { path, format, size } = this.props;
-    const { data, headers } = await filesGetThumbnail({ path, format, size });
+    const { data, headers } = await queue.add(() =>
+      filesGetThumbnail({ path, format, size }),
+    );
     const blobUrl = URL.createObjectURL(data);
     const resData = JSON.parse(headers['dropbox-api-result']);
 
