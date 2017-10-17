@@ -16,6 +16,7 @@ function YearHeader({ translateTitle, children }: Props) {
               display: 'inline-block',
               transform: `translateX(${stuck ? translateTitle : 0}px)`,
               transition: 'transform 0.3s ease-in-out',
+              willChange: 'transform',
             }}
           >
             {children}
