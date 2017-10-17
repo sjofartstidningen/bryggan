@@ -8,7 +8,7 @@ import Header from '../Header';
 
 const Container = styled.div`
   width: 100vw;
-  max-width: 70rem;
+  max-width: 44rem;
   margin: 0 auto;
   font-size: 1rem;
 `;
