@@ -8,6 +8,7 @@ type Props = { translateTitle: number, children: string };
 function YearHeader({ translateTitle, children }: Props) {
   return (
     <StickyEvent
+      style={{ zIndex: 2 }}
       render={({ stuck }) => (
         <Header2 style={{ backgroundColor: 'white' }}>
           <span

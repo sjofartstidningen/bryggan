@@ -43,12 +43,8 @@ export default class StickyEvent extends Component<Props, State> {
   render() {
     const { stuck } = this.state;
     return [
-      <TopSentinel
-        key="sentinel"
-        innerRef={this.setRef}
-        className="sticky-event-top-sentinel"
-      />,
-      <StickyEl key="stick-el" className="sticky-event-el">
+      <TopSentinel key="sentinel" innerRef={this.setRef} />,
+      <StickyEl key="stick-el" {...this.props}>
         {this.props.render({ stuck })}
       </StickyEl>,
     ];

@@ -1,20 +1,21 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { filesGetThumbnailSrc } from '../../../utils/api/dropbox';
 import YearHeader from './YearHeader';
-import YearImage, { YearImageLoading } from './YearImage';
+import YearImage from './YearImage';
 import Folder from '../../Dropbox/Folder';
-import Thumbnail from '../../Dropbox/Thumbnail';
 
 type Props = {
   years: Array<FileMetaData | FolderMetaData>,
   translateTitle: number,
 };
 
-const ImageContainer = styled.div`
+const ImagesContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
   padding: 1em;
+  z-index: 1;
 `;
 
 function YearView({ years, translateTitle }: Props) {
@@ -25,33 +26,28 @@ function YearView({ years, translateTitle }: Props) {
           <section key={year.id} style={{ position: 'relative' }}>
             <YearHeader translateTitle={translateTitle}>{year.name}</YearHeader>
 
-            <ImageContainer>
+            <ImagesContainer>
               <Folder
                 path={year.path_lower}
                 render={({ entries: issues }) =>
                   issues.map(issue => {
-                    const previewUrl = `${issue.path_lower}/${year.name}-${issue.name}-001.pdf`;
+                    const previewPath = `${issue.path_lower}/${year.name}-${issue.name}-001.pdf`;
+                    const src = filesGetThumbnailSrc({
+                      path: previewPath,
+                      format: 'jpeg',
+                      size: 'w640h480',
+                    });
+
                     return (
-                      <Thumbnail
+                      <YearImage
                         key={issue.id}
-                        path={previewUrl}
-                        size="w640h480"
-                        render={({ src }) => (
-                          <YearImage
-                            src={src}
-                            description={`${year.name}/${issue.name}`}
-                          />
-                        )}
-                        loading={() => (
-                          <YearImageLoading
-                            description={`${year.name}/${issue.name}`}
-                          />
-                        )}
+                        src={src}
+                        description={`${year.name}/${issue.name}`}
                       />
                     );
                   })}
               />
-            </ImageContainer>
+            </ImagesContainer>
           </section>
         ))}
     </div>

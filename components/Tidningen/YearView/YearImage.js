@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 
 type Props = {
@@ -12,16 +12,32 @@ const ImgContainer = styled.div`
   width: calc((100% - 3em) / 4);
   margin-right: 1em;
   margin-bottom: 1em;
+  z-index: 1;
 
   &:nth-child(4n) {
     margin-right: 0;
   }
 `;
 
+const Loading = styled.div`
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: calc(100% * (275 / 210));
+  background-color: ${props => (props.show ? '#999' : 'transparent')};
+  transition: background 0.3s ease-in-out;
+`;
+
 const Img = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
   display: block;
   max-width: 100%;
   border: 1px solid #999;
+  opacity: ${props => (props.show ? 1 : 0)};
+  visibility: ${props => (props.show ? 'visible' : 'hidden')};
+  transition: all 0.3s ease-in-out;
 `;
 
 const Desc = styled.p`
@@ -34,23 +50,25 @@ const Desc = styled.p`
   color: #999;
 `;
 
-function YearImage({ src, description }: Props) {
-  return (
-    <ImgContainer>
-      <Img src={src} alt={description} />
-      <Desc>{description}</Desc>
-    </ImgContainer>
-  );
+export default class YearImage extends Component<Props, { loading: boolean }> {
+  state = { loading: true };
+
+  handleLoad = () => this.setState(() => ({ loading: false }));
+
+  render() {
+    const { src, description } = this.props;
+    const { loading } = this.state;
+
+    return (
+      <ImgContainer>
+        <Loading show={loading}>
+          <Img src={src} show={!loading} onLoad={this.handleLoad} />
+        </Loading>
+        <Desc>{description}</Desc>
+      </ImgContainer>
+    );
+  }
 }
-
-export default YearImage;
-
-const Loading = styled.div`
-  width: 100%;
-  height: 0;
-  padding-top: calc(100% * (275 / 210));
-  background-color: #999;
-`;
 
 export function YearImageLoading({ description }: { description: string }) {
   return (
