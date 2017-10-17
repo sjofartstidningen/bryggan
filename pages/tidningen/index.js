@@ -1,7 +1,11 @@
 // @flow
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import { filesListFolder } from '../../utils/api/dropbox';
 import Layout from '../../components/Layout';
+import StickyEvent from '../../components/StickyEvent';
+import Header1 from '../../components/Typography/Header1';
+import Header2 from '../../components/Typography/Header2';
 import Folder from '../../components/Dropbox/Folder';
 import Thumbnail from '../../components/Dropbox/Thumbnail';
 
@@ -44,32 +48,38 @@ export default class Tidningen extends Component<Props, *> {
     const { entries: years, error } = this.props;
     return (
       <Layout title="Tidningen – Bryggan" activeLink="/tidningen">
-        <h1>Tidningen</h1>
+        <Header1>Tidningen</Header1>
         <div className="error">{error && error.message}</div>
         <div className="years">
           {years &&
             years.map((year, i) => (
-              <section key={year.id}>
-                <h2>{year.name}</h2>
-                {i === 0 && (
-                  <Folder
-                    path={year.path_lower}
-                    loading={() => 'loading entries'}
-                    render={({ entries }) =>
-                      entries.map(entry => {
-                        const previewUrl = `${entry.path_lower}/${year.name}-${entry.name}-001.jpg`;
-                        return (
-                          <Thumbnail
-                            path={previewUrl}
-                            size="w640h480"
-                            render={({ src, data }) => (
-                              <img src={src} alt={JSON.stringify(data)} />
-                            )}
-                          />
-                        );
-                      })}
-                  />
-                )}
+              <section key={year.id} style={{ position: 'relative' }}>
+                <StickyEvent
+                  render={({ stuck }) => (
+                    <Header2>
+                      {year.name}
+                      {stuck ? 'stuck' : 'not stuck'}
+                    </Header2>
+                  )}
+                />
+                <Folder
+                  path={year.path_lower}
+                  loading={() => 'loading entries'}
+                  render={({ entries }) =>
+                    entries.map(entry => {
+                      const previewUrl = `${entry.path_lower}/${year.name}-${entry.name}-001.pdf`;
+                      return (
+                        <Thumbnail
+                          key={entry.id}
+                          path={previewUrl}
+                          size="w640h480"
+                          render={({ src, data }) => (
+                            <img src={src} alt={JSON.stringify(data)} />
+                          )}
+                        />
+                      );
+                    })}
+                />
               </section>
             ))}
         </div>
