@@ -10,7 +10,7 @@ export const Bar = styled.div`
   left: 0;
   width: 100vw;
   height: 2px;
-  background: #000;
+  background: ${props => props.theme.color.black};
   opacity: 0;
   z-index: 3;
   transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
