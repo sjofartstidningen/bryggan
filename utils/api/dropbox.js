@@ -1,5 +1,6 @@
 // @flow
 import axios from 'axios';
+import URL from 'url';
 
 const accessToken = process.env.DROPBOX_ACCESS_TOKEN || '';
 
@@ -79,4 +80,18 @@ export const filesGetThumbnail = (
     url: '/files/get_thumbnail',
     params: { arg: JSON.stringify({ path, format, size }) },
     responseType: 'blob',
+  });
+
+export const filesGetThumbnailSrc = (
+  { path, format = 'jpeg', size = 'w64h64' }: FilesGetThumbnailArgs = {},
+): string =>
+  URL.format({
+    protocol: 'https:',
+    hostname: 'content.dropboxapi.com',
+    pathname: '/2/files/get_thumbnail',
+    query: {
+      authorization: `Bearer ${accessToken}`,
+      reject_cors_preflight: true,
+      arg: JSON.stringify({ path, format, size }),
+    },
   });
