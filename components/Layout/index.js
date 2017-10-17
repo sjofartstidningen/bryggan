@@ -1,15 +1,23 @@
 // @flow
 
 import React from 'react';
-import type { Element } from 'react';
+import type { Node } from 'react';
 import Head from 'next/head';
+import styled from 'styled-components';
 import Header from '../Header';
+
+const Container = styled.div`
+  width: 100vw;
+  max-width: 44rem;
+  margin: 0 auto;
+  font-size: 1rem;
+`;
 
 type Props = {
   activeLink: string,
   user: ?User,
   title?: string,
-  children?: Element<any>,
+  children?: Node,
 };
 
 const Layout = ({ activeLink, user, title, children }: Props) => (
@@ -20,7 +28,7 @@ const Layout = ({ activeLink, user, title, children }: Props) => (
 
     <Header activeLink={activeLink} user={user} />
 
-    {children}
+    <Container>{children}</Container>
   </div>
 );
 

@@ -1,6 +1,7 @@
 // @flow
-import type { ChildrenArray, ComponentType } from 'react';
+import type { ComponentType } from 'react';
 import styled from 'styled-components';
+import Link from '../Link';
 
 export const HeaderContainer = styled.header`
   display: flex;
@@ -28,10 +29,7 @@ export const Nav = styled.ul`
   list-style: none;
 `;
 
-export const NavItem: ComponentType<{
-  active: boolean,
-  children: ChildrenArray<any>,
-}> = styled.li`
+export const NavItem = styled.li`
   display: inline-block;
   margin-right: 0.5em;
   border-right: 1px solid #999;
@@ -42,6 +40,16 @@ export const NavItem: ComponentType<{
     margin: 0;
     border: none;
     padding: 0;
+  }
+`;
+
+export const NavLink: ComponentType<{ active: boolean }> = styled(Link)`
+  color: ${props => (props.active ? '#000' : '#999')};
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: #000;
   }
 `;
 

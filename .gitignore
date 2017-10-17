@@ -13,4 +13,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+env-config.js
 
+# Editor
+.vscode
