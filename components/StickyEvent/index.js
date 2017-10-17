@@ -12,7 +12,7 @@ type Props = {
 type State = { stuck: boolean };
 
 export default class StickyEvent extends Component<Props, State> {
-  ref: HTMLElement;
+  sentinel: HTMLElement;
   observer: IntersectionObserver;
 
   state = {
@@ -26,23 +26,23 @@ export default class StickyEvent extends Component<Props, State> {
     else containerEl = window.body;
 
     this.observer = createObserver(containerEl);
-    this.observer.observe(this.ref);
+    this.observer.observe(this.sentinel);
 
     document.addEventListener('sticky-change', (e: mixed) => {
       if (e instanceof CustomEvent) {
         const { target, stuck } = e.detail;
-        if (target === this.ref) this.setState(() => ({ stuck }));
+        if (target === this.sentinel) this.setState(() => ({ stuck }));
       }
     });
   }
 
   componentWillUnount() {
     // $FlowFixMe
-    this.observer.unobserve(this.ref);
+    this.observer.unobserve(this.sentinel);
   }
 
   setRef = (ref: HTMLElement) => {
-    this.ref = ref;
+    this.sentinel = ref;
   };
 
   render() {
