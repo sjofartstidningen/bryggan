@@ -20,12 +20,7 @@ export default class StickyEvent extends Component<Props, State> {
   };
 
   componentDidMount() {
-    let containerEl;
-
-    if (this.props.container) containerEl = this.props.container;
-    else containerEl = window.body;
-
-    this.observer = createObserver(containerEl);
+    this.observer = createObserver(this.props.container);
     this.observer.observe(this.sentinel);
 
     document.addEventListener('sticky-change', (e: mixed) => {

@@ -6,9 +6,9 @@ function fireEvent(stuck: boolean, target: HTMLElement) {
 }
 
 function createObservers() {
-  const existingObservers: Map<HTMLElement, IntersectionObserver> = new Map();
+  const existingObservers: Map<?HTMLElement, IntersectionObserver> = new Map();
 
-  return (container: HTMLElement): IntersectionObserver => {
+  return (container: ?HTMLElement): IntersectionObserver => {
     const existingObserver = existingObservers.get(container);
     if (existingObserver) return existingObserver;
 
