@@ -6,6 +6,7 @@ import Layout from '../../components/Layout';
 import StickyEvent from '../../components/StickyEvent';
 import Header1 from '../../components/Typography/Header1';
 import Header2 from '../../components/Typography/Header2';
+import YearView from '../../components/Tidningen/YearView';
 import Folder from '../../components/Dropbox/Folder';
 import Thumbnail from '../../components/Dropbox/Thumbnail';
 
@@ -68,50 +69,8 @@ export default class Tidningen extends Component<Props, State> {
         <Header1 style={{ position: 'sticky', top: 0 }}>
           <span ref={this.getTitleWidth}>Tidningen</span>
         </Header1>
-
         <div className="error">{error && error.message}</div>
-
-        <div className="years" style={{ zIndex: 1 }}>
-          {years &&
-            years.map(year => (
-              <section key={year.id} style={{ position: 'relative' }}>
-                <StickyEvent
-                  render={({ stuck }) => (
-                    <Header2 style={{ backgroundColor: 'white' }}>
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          transform: `translateX(${stuck ? titleWidth : 0}px)`,
-                          transition: 'transform 0.3s ease-in-out',
-                        }}
-                      >
-                        {year.name}
-                      </span>
-                    </Header2>
-                  )}
-                />
-
-                <Folder
-                  path={year.path_lower}
-                  loading={() => 'loading entries'}
-                  render={({ entries }) =>
-                    entries.map(entry => {
-                      const previewUrl = `${entry.path_lower}/${year.name}-${entry.name}-001.pdf`;
-                      return (
-                        <Thumbnail
-                          key={entry.id}
-                          path={previewUrl}
-                          size="w640h480"
-                          render={({ src, data }) => (
-                            <img src={src} alt={JSON.stringify(data)} />
-                          )}
-                        />
-                      );
-                    })}
-                />
-              </section>
-            ))}
-        </div>
+        <YearView years={years} translateTitle={titleWidth} />
       </Layout>
     );
   }
