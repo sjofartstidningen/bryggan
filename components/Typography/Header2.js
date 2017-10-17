@@ -9,4 +9,5 @@ export default styled.h2`
   font-weight: 400;
   font-size: 1.5em;
   letter-spacing: 0.05em;
+  z-index: 4;
 `;

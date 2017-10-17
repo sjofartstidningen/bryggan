@@ -8,4 +8,5 @@ export default styled.h1`
   font-size: 2.25em;
   letter-spacing: 0.05em;
   color: #999;
+  z-index: 5;
 `;
