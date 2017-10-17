@@ -1,7 +1,10 @@
 // @flow
 import { Component } from 'react';
 import type { Node } from 'react';
+import Queue from 'p-queue';
 import { filesListFolder } from '../../utils/api/dropbox';
+
+const queue = new Queue({ concurrency: 3 });
 
 type Entry = FileMetaData | FolderMetaData;
 type Entries = Array<Entry>;
@@ -41,11 +44,13 @@ export default class Folder extends Component<Props, State> {
       return 0;
     };
 
-    const { data } = await filesListFolder({
-      path,
-      recursive,
-      sortBy: sortByFn,
-    });
+    const { data } = await queue.add(() =>
+      filesListFolder({
+        path,
+        recursive,
+        sortBy: sortByFn,
+      }),
+    );
     const { entries } = data;
 
     this.setState(() => ({ entries }));
