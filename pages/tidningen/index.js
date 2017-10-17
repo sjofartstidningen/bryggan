@@ -19,7 +19,11 @@ type Props = {
   },
 };
 
-export default class Tidningen extends Component<Props, *> {
+type State = {
+  titleWidth: number,
+};
+
+export default class Tidningen extends Component<Props, State> {
   static async getInitialProps() {
     if (!process.env.DROPBOX_ACCESS_TOKEN)
       return { error: { message: 'DROPBOX_ACCESS_TOKEN is not defined.' } };
@@ -44,24 +48,49 @@ export default class Tidningen extends Component<Props, *> {
     error: null,
   };
 
+  state = {
+    titleWidth: 0,
+  };
+
+  getTitleWidth = (ref: ?HTMLElement): void => {
+    if (ref != null) {
+      const { width } = ref.getBoundingClientRect();
+      this.setState(() => ({ titleWidth: width }));
+    }
+  };
+
   render() {
     const { entries: years, error } = this.props;
+    const { titleWidth } = this.state;
+
     return (
       <Layout title="Tidningen – Bryggan" activeLink="/tidningen">
-        <Header1>Tidningen</Header1>
+        <Header1 style={{ position: 'sticky', top: 0 }}>
+          <span ref={this.getTitleWidth}>Tidningen</span>
+        </Header1>
+
         <div className="error">{error && error.message}</div>
-        <div className="years">
+
+        <div className="years" style={{ zIndex: 1 }}>
           {years &&
-            years.map((year, i) => (
+            years.map(year => (
               <section key={year.id} style={{ position: 'relative' }}>
                 <StickyEvent
                   render={({ stuck }) => (
-                    <Header2>
-                      {year.name}
-                      {stuck ? 'stuck' : 'not stuck'}
+                    <Header2 style={{ backgroundColor: 'white' }}>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          transform: `translateX(${stuck ? titleWidth : 0}px)`,
+                          transition: 'transform 0.3s ease-in-out',
+                        }}
+                      >
+                        {year.name}
+                      </span>
                     </Header2>
                   )}
                 />
+
                 <Folder
                   path={year.path_lower}
                   loading={() => 'loading entries'}
