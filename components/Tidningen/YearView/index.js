@@ -1,17 +1,18 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { filesGetThumbnailSrc } from '../../../utils/api/dropbox';
 import YearHeader from './YearHeader';
-import YearImage from './YearImage';
+import YearIssue from './YearIssue';
 import Folder from '../../Dropbox/Folder';
 
+type Entry = FileMetaData | FolderMetaData;
+
 type Props = {
-  years: Array<FileMetaData | FolderMetaData>,
+  years: Array<Entry>,
   translateTitle: number,
 };
 
-const ImagesContainer = styled.div`
+const PreviewsContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
   padding: 1em;
@@ -26,28 +27,19 @@ function YearView({ years, translateTitle }: Props) {
           <section key={year.id} style={{ position: 'relative' }}>
             <YearHeader translateTitle={translateTitle}>{year.name}</YearHeader>
 
-            <ImagesContainer>
+            <PreviewsContainer>
               <Folder
                 path={year.path_lower}
                 render={({ entries: issues }) =>
-                  issues.map(issue => {
-                    const previewPath = `${issue.path_lower}/${year.name}-${issue.name}-001.pdf`;
-                    const src = filesGetThumbnailSrc({
-                      path: previewPath,
-                      format: 'jpeg',
-                      size: 'w640h480',
-                    });
-
-                    return (
-                      <YearImage
-                        key={issue.id}
-                        src={src}
-                        description={`${year.name}/${issue.name}`}
-                      />
-                    );
-                  })}
+                  issues.map(issue => (
+                    <YearIssue
+                      key={issue.id}
+                      issue={issue}
+                      yearName={year.name}
+                    />
+                  ))}
               />
-            </ImagesContainer>
+            </PreviewsContainer>
           </section>
         ))}
     </div>

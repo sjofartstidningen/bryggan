@@ -1,14 +1,9 @@
 // @flow
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import { filesListFolder } from '../../utils/api/dropbox';
 import Layout from '../../components/Layout';
-import StickyEvent from '../../components/StickyEvent';
 import Header1 from '../../components/Typography/Header1';
-import Header2 from '../../components/Typography/Header2';
 import YearView from '../../components/Tidningen/YearView';
-import Folder from '../../components/Dropbox/Folder';
-import Thumbnail from '../../components/Dropbox/Thumbnail';
 
 type Entries = Array<FileMetaData | FolderMetaData>;
 
@@ -70,7 +65,7 @@ export default class Tidningen extends Component<Props, State> {
           <span ref={this.getTitleWidth}>Tidningen</span>
         </Header1>
         <div className="error">{error && error.message}</div>
-        <YearView years={years} translateTitle={titleWidth} />
+        {years && <YearView years={years} translateTitle={titleWidth} />}
       </Layout>
     );
   }
