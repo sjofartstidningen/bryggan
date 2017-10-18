@@ -16,6 +16,7 @@ const IssueContainer = styled.button`
   border-radius: 0;
   padding: 0;
   font-size: 1em;
+  background-color: transparent;
   cursor: pointer;
   z-index: 1;
 
@@ -115,7 +116,7 @@ export default class YearIssue extends Component<Props, State> {
       const { name, year } = this.props.issue;
       Router.push(
         {
-          pathname: '/',
+          pathname: '/tidningen/issue',
           query: { year, name },
         },
         `tidningen/${year}/${name}`,
