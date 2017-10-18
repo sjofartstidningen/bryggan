@@ -1,49 +1,30 @@
 // @flow
 import React from 'react';
-import styled from 'styled-components';
-import YearHeader from './YearHeader';
-import YearIssue from './YearIssue';
-import Folder from '../../Dropbox/Folder';
-
-type Entry = FileMetaData | FolderMetaData;
+import { connect } from 'react-redux';
+import YearComp from './Year';
+import type { Year } from '../../../store/tidningen/types';
 
 type Props = {
-  years: Array<Entry>,
+  years: Year[],
   translateTitle: number,
 };
 
-const PreviewsContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  padding: ${props => props.theme.size(0)}em;
-  z-index: 1;
-`;
-
-function YearView({ years, translateTitle }: Props) {
+function YearView(props: Props) {
+  const { years, translateTitle } = props;
   return (
     <div className="years">
       {years.length > 0 &&
         years.map(year => (
-          <section key={year.id} style={{ position: 'relative' }}>
-            <YearHeader translateTitle={translateTitle}>{year.name}</YearHeader>
-
-            <PreviewsContainer>
-              <Folder
-                path={year.path_lower}
-                render={({ entries: issues }) =>
-                  issues.map(issue => (
-                    <YearIssue
-                      key={issue.id}
-                      issue={issue}
-                      yearName={year.name}
-                    />
-                  ))}
-              />
-            </PreviewsContainer>
-          </section>
+          <YearComp year={year.name} translateTitle={translateTitle} />
         ))}
     </div>
   );
 }
 
-export default YearView;
+const mapStateToProps = state => ({
+  years: state.tidningen.years,
+  issues: state.tidningen.issues,
+});
+
+// $FlowFixMe
+export default connect(mapStateToProps)(YearView);

@@ -2,7 +2,7 @@
 import type { Reducer } from 'redux';
 import type { State, Action } from './types';
 
-import { ADD_YEARS, ADD_ISSUES, FETCH_ERROR } from './actions';
+import { ADD_YEARS, ADD_ISSUES, FETCH_ERROR } from './constants';
 
 const initialState = {
   years: [],

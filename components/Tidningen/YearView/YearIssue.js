@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { filesGetThumbnailSrc } from '../../../utils/api/dropbox';
+import raf from 'raf-schd';
 import Loader from '../../Loader';
+import type { Issue } from '../../../store/tidningen/types';
 
 const IssueContainer = styled.div`
   display: inline-block;
@@ -55,34 +56,32 @@ const Desc = styled.p`
   color: ${props => props.theme.color.grey};
 `;
 
-type Props = {
-  issue: FileMetaData | FolderMetaData,
-  yearName: string,
-};
+type Props = { issue?: Issue };
 
 type State = { loading: boolean };
 
 export default class YearIssue extends Component<Props, State> {
   state = { loading: true };
-  handleImgLoaded = () => this.setState(() => ({ loading: false }));
+  handleImgLoaded = raf(() => this.setState(() => ({ loading: false })));
 
   render() {
-    const { issue, yearName } = this.props;
+    const { issue } = this.props;
     const { loading } = this.state;
-
-    const src = filesGetThumbnailSrc({
-      path: `${issue.path_lower}/${yearName}-${issue.name}-001.pdf`,
-      format: 'jpeg',
-      size: 'w640h480',
-    });
 
     return (
       <IssueContainer>
         <ImgContainer>
-          <Img src={src} show={!loading} onLoad={this.handleImgLoaded} />
+          {issue && (
+            <Img
+              src={issue.coverSrc}
+              alt={`Cover for issue #${issue.name}`}
+              show={!loading}
+              onLoad={this.handleImgLoaded}
+            />
+          )}
           <ImgLoader show={loading} />
         </ImgContainer>
-        <Desc>Nummer {issue.name}</Desc>
+        <Desc>{issue && !loading ? `Nummer ${issue.name}` : 'Laddar'}</Desc>
       </IssueContainer>
     );
   }
