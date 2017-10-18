@@ -65,6 +65,7 @@ export function getIssues(year: string): ThunkAction {
         .map(entry => ({
           id: entry.id,
           name: entry.name,
+          year,
           path: entry.path_lower,
           coverSrc: filesGetThumbnailSrc({
             path: `${entry.path_lower}/${year}-${entry.name}-001.pdf`,
