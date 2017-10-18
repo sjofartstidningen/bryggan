@@ -1,10 +1,14 @@
 // @flow
 
 import React from 'react';
+import withRedux from 'next-redux-wrapper';
+import { initStore } from '../store';
 import Layout from '../components/Layout';
 
-export default () => (
-  <Layout activeLink={'/'} user={{ name: 'Adam Bergman' }}>
+const Index = () => (
+  <Layout user={{ name: 'Adam Bergman' }}>
     <h1>Dashboard</h1>
   </Layout>
 );
+
+export default withRedux(initStore)(Index);

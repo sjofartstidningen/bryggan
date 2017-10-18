@@ -1,7 +1,7 @@
 // @flow
-
 import React from 'react';
 import type { Node } from 'react';
+import { connect } from 'react-redux';
 import Head from 'next/head';
 import styled, { ThemeProvider } from 'styled-components';
 import theme from '../../styles/theme';
@@ -15,20 +15,22 @@ const Container = styled.div`
 `;
 
 type Props = {
-  activeLink: string,
+  error: ?{ message: string },
   user: ?User,
   title?: string,
   children?: Node,
 };
 
-const Layout = ({ activeLink, user, title, children }: Props) => (
+const Layout = ({ error, user, title, children }: Props) => (
   <ThemeProvider theme={theme}>
     <div>
       <Head>
         <title>{title}</title>
       </Head>
 
-      <Header activeLink={activeLink} user={user} />
+      <div className="error">{error && error.message}</div>
+
+      <Header user={user} />
 
       <Container>{children}</Container>
     </div>
@@ -41,4 +43,7 @@ Layout.defaultProps = {
   children: null,
 };
 
-export default Layout;
+const mapStateToProps = ({ tidningen }) => ({ error: tidningen.error });
+
+// $FlowFixMe
+export default connect(mapStateToProps)(Layout);
