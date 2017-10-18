@@ -3,6 +3,8 @@ import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
+import Router from 'next/router';
+import Progress from 'nprogress';
 import styled, { ThemeProvider } from 'styled-components';
 import theme from '../../styles/theme';
 import Header from '../Header';
@@ -47,3 +49,10 @@ const mapStateToProps = ({ tidningen }) => ({ error: tidningen.error });
 
 // $FlowFixMe
 export default connect(mapStateToProps)(Layout);
+
+/**
+ * Progress bar
+ */
+Router.onRouteChangeStart = () => Progress.start();
+Router.onRouteChangeComplete = () => Progress.done();
+Router.onRouteChangeError = () => Progress.done();
