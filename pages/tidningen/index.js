@@ -7,7 +7,7 @@ import { H1 } from '../../components/Typography/headings';
 import YearView from '../../components/Tidningen/YearView';
 
 import { initStore } from '../../store';
-import { addYears } from '../../store/tidningen/actions';
+import { addYears, fetchError } from '../../store/tidningen/actions';
 
 type Entries = Array<FileMetaData | FolderMetaData>;
 
@@ -45,9 +45,11 @@ class Tidningen extends Component<Props, State> {
     } catch (e) {
       if (e.response) {
         const { response } = e;
+        store.dispatch(fetchError(response.message));
         return { error: { message: response.data, status: response.status } };
       }
 
+      store.dispatch(fetchError(e.message));
       return { error: { message: e.message } };
     }
   }
