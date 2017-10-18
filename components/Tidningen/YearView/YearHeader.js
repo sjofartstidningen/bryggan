@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import StickyEvent from '../../StickyEvent';
-import Header2 from '../../Typography/Header2';
+import { H2 } from '../../Typography/headings';
 
 type Props = { translateTitle: number, children: string };
 
@@ -10,7 +10,7 @@ function YearHeader({ translateTitle, children }: Props) {
     <StickyEvent
       style={{ zIndex: 2 }}
       render={({ stuck }) => (
-        <Header2 style={{ backgroundColor: 'white' }}>
+        <H2 style={{ backgroundColor: 'white' }}>
           <span
             style={{
               display: 'inline-block',
@@ -21,7 +21,7 @@ function YearHeader({ translateTitle, children }: Props) {
           >
             {children}
           </span>
-        </Header2>
+        </H2>
       )}
     />
   );

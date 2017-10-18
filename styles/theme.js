@@ -12,4 +12,10 @@ export default {
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
   },
   pageAspectRatio: 275 / 210,
+  zIndex: {
+    bottom: -1,
+    zero: 0,
+    middle: 1,
+    top: 2,
+  },
 };
