@@ -6,7 +6,7 @@ import { initStore } from '../../store';
 import Layout from '../../components/Layout';
 
 const Nyhetsbrevet = () => (
-  <Layout activeLink={'/nyhetsbrevet'} user={{ name: 'Adam Bergman' }}>
+  <Layout user={{ name: 'Adam Bergman' }}>
     <h1>Nyhetsbrevet</h1>
   </Layout>
 );
