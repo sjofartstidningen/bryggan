@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import raf from 'raf-schd';
+import Router from 'next/router';
 import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
-// import Link from '../../Link';
 import type { Issue } from '../../../store/tidningen/types';
 
 const IssueContainer = styled.button`
@@ -110,12 +110,25 @@ export default class YearIssue extends Component<Props, State> {
   state = { loading: true };
   handleImgLoaded = raf(() => this.setState(() => ({ loading: false })));
 
+  handleClick = () => {
+    if (this.props.issue) {
+      const { name, year } = this.props.issue;
+      Router.push(
+        {
+          pathname: '/',
+          query: { year, name },
+        },
+        `tidningen/${year}/${name}`,
+      );
+    }
+  };
+
   render() {
     const { issue } = this.props;
     const { loading } = this.state;
 
     return (
-      <IssueContainer>
+      <IssueContainer onClick={this.handleClick}>
         <ImgContainer>
           {issue && (
             <Img
