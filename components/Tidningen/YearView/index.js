@@ -15,7 +15,11 @@ function YearView(props: Props) {
     <div className="years">
       {years.length > 0 &&
         years.map(year => (
-          <YearComp year={year.name} translateTitle={translateTitle} />
+          <YearComp
+            key={year.id}
+            year={year.name}
+            translateTitle={translateTitle}
+          />
         ))}
     </div>
   );
