@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import raf from 'raf-schd';
 import Loader from '../../Loader';
+import LazyImage from '../../LazyImage';
 import type { Issue } from '../../../store/tidningen/types';
 
 const IssueContainer = styled.div`
@@ -25,7 +26,7 @@ const ImgContainer = styled.div`
   padding-top: calc(100% * ${props => props.theme.pageAspectRatio});
 `;
 
-const Img = styled.img`
+const Img = styled(LazyImage)`
   position: absolute;
   top: 0;
   left: 0;
