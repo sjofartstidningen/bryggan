@@ -4,6 +4,7 @@ export type Year = { +id: string, +name: string, +path: string };
 export type Issue = {
   +id: string,
   +name: string,
+  +year: string,
   +path: string,
   +coverSrc: string,
 };
