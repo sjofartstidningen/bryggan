@@ -39,7 +39,7 @@ class Tidningen extends Component<*, State> {
             Tidningen
           </span>
         </H1>
-        {<YearView translateTitle={titleWidth} />}
+        <YearView translateTitle={titleWidth} />
       </Layout>
     );
   }
