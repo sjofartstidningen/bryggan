@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { filesListFolder } from '../../utils/api/dropbox';
 import Layout from '../../components/Layout';
-import Header1 from '../../components/Typography/Header1';
+import { H1 } from '../../components/Typography/headings';
 import YearView from '../../components/Tidningen/YearView';
 
 type Entries = Array<FileMetaData | FolderMetaData>;
@@ -61,9 +61,11 @@ export default class Tidningen extends Component<Props, State> {
 
     return (
       <Layout title="Tidningen – Bryggan" activeLink="/tidningen">
-        <Header1 style={{ position: 'sticky', top: 0 }}>
-          <span ref={this.getTitleWidth}>Tidningen</span>
-        </Header1>
+        <H1 style={{ position: 'sticky', top: 0, zIndex: 3 }}>
+          <span ref={this.getTitleWidth} style={{ backgroundColor: '#fff' }}>
+            Tidningen
+          </span>
+        </H1>
         <div className="error">{error && error.message}</div>
         {years && <YearView years={years} translateTitle={titleWidth} />}
       </Layout>

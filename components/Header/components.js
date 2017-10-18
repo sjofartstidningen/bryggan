@@ -8,19 +8,18 @@ export const HeaderContainer = styled.header`
   align-items: center;
   width: 100vw;
   padding: 1em;
-  font-size: 1em;
+  font-size: ${props => props.theme.size(0)}rem;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-family: ${props => props.theme.font.serif};
 `;
 
 export const LogotypeContainer = styled.div`
   width: 40px;
-  margin-right: 2em;
+  margin-right: ${props => props.theme.size(1)}em;
 `;
 
 export const NavContainer = styled.div`
-  margin-right: 1em;
+  margin-right: ${props => props.theme.size(1)}em;
 `;
 
 export const Nav = styled.ul`
@@ -31,10 +30,11 @@ export const Nav = styled.ul`
 
 export const NavItem = styled.li`
   display: inline-block;
-  margin-right: 0.5em;
-  border-right: 1px solid #999;
-  padding-right: 0.5em;
-  color: ${props => (props.active ? '#000' : '#999')};
+  margin-right: ${props => props.theme.size(-1)}em;
+  border-right: 1px solid ${props => props.theme.color.grey};
+  padding-right: ${props => props.theme.size(-1)}em;
+  color: ${props =>
+    props.active ? props.theme.color.black : props.theme.color.grey};
 
   &:last-child {
     margin: 0;
@@ -44,12 +44,13 @@ export const NavItem = styled.li`
 `;
 
 export const NavLink: ComponentType<{ active: boolean }> = styled(Link)`
-  color: ${props => (props.active ? '#000' : '#999')};
+  color: ${props =>
+    props.active ? props.theme.color.black : props.theme.color.grey};
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 
   &:hover {
-    color: #000;
+    color: ${props => props.theme.color.black};
   }
 `;
 
@@ -60,17 +61,17 @@ export const ProfileContainer = styled.div`
 `;
 
 export const ProfileName = styled.span`
-  margin-right: 0.5em;
-  line-height: calc(1.5em - 4px);
+  margin-right: ${props => props.theme.size(-1)}em;
+  line-height: calc(${props => props.theme.size(1)}em - 4px);
 `;
 
 export const ProfileImage = styled.div`
   position: relative;
   display: inline-block;
-  width: calc(1.5em - 4px);
-  height: calc(1.5em - 4px);
+  width: calc(${props => props.theme.size(1)}em - 4px);
+  height: calc(${props => props.theme.size(1)}em - 4px);
   border-radius: 100%;
-  background-color: #999;
+  background-color: ${props => props.theme.color.grey};
 
   &::before {
     content: '';
@@ -79,7 +80,7 @@ export const ProfileImage = styled.div`
     left: -2px;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    border: 1px solid #000;
+    border: 1px solid ${props => props.theme.color.black};
     border-radius: 100%;
   }
 `;

@@ -10,7 +10,7 @@ export const Bar = styled.div`
   left: 0;
   width: 100vw;
   height: 2px;
-  background: #000;
+  background: ${props => props.theme.color.black};
   opacity: 0;
   z-index: 3;
   transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
@@ -23,7 +23,8 @@ export const Bar = styled.div`
     right: 0;
     width: 100px;
     height: 100%;
-    box-shadow: 0 0 10px #000, 0 0 5px #000;
+    box-shadow: 0 0 10px ${props => props.theme.color.black},
+      0 0 5px ${props => props.theme.color.black};
     transform: rotate(3deg) translate(0px, -4px);
   }
 `;

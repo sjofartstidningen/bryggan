@@ -6,9 +6,9 @@ import Loader from '../../Loader';
 
 const IssueContainer = styled.div`
   display: inline-block;
-  width: calc((100% - 3em) / 4);
-  margin-right: 1em;
-  margin-bottom: 1em;
+  width: calc((100% - ${props => props.theme.size(0) * 3}em) / 4);
+  margin-right: ${props => props.theme.size(0)}em;
+  margin-bottom: ${props => props.theme.size(0)}em;
   z-index: 1;
 
   &:nth-child(4n) {
@@ -20,8 +20,8 @@ const ImgContainer = styled.div`
   position: relative;
   width: 100%;
   height: 0;
-  border: 1px solid #999;
-  padding-top: calc(100% * (275 / 210));
+  border: 1px solid ${props => props.theme.color.grey};
+  padding-top: calc(100% * ${props => props.theme.pageAspectRatio});
 `;
 
 const Img = styled.img`
@@ -48,12 +48,11 @@ const ImgLoader = styled(Loader)`
 
 const Desc = styled.p`
   margin: 0;
-  margin-top: 0.5em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  font-size: 0.74em;
+  margin-top: ${props => props.theme.size(-1)}em;
+  font-family: ${props => props.theme.font.serif};
+  font-size: ${props => props.theme.size(-1)}em;
   text-align: center;
-  color: #999;
+  color: ${props => props.theme.color.grey};
 `;
 
 type Props = {

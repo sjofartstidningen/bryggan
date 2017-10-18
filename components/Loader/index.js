@@ -6,7 +6,7 @@ const LoaderContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  border: 1px solid #999;
+  border: 1px solid ${props => props.theme.color.grey};
   border-radius: 100%;
   padding: 0.5em;
 `;
@@ -32,7 +32,7 @@ const waveAnimation = keyframes`
 `;
 
 const LoaderPath = styled.path`
-  stroke: #999;
+  stroke: ${props => props.theme.color.grey};
   stroke-width: 1px;
   fill: none;
   animation-name: ${waveAnimation};

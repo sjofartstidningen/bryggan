@@ -11,7 +11,8 @@ const Svg = styled.svg`
 `;
 
 const Path: ComponentType<{ white?: boolean }> = styled.path`
-  fill: ${props => (props.white ? '#fff' : '#000')};
+  fill: ${props =>
+    props.white ? props.theme.color.white : props.theme.color.black};
 `;
 
 export default () => (

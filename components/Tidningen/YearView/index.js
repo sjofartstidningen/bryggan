@@ -15,7 +15,7 @@ type Props = {
 const PreviewsContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
-  padding: 1em;
+  padding: ${props => props.theme.size(0)}em;
   z-index: 1;
 `;
 

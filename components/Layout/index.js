@@ -3,7 +3,8 @@
 import React from 'react';
 import type { Node } from 'react';
 import Head from 'next/head';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
+import theme from '../../styles/theme';
 import Header from '../Header';
 
 const Container = styled.div`
@@ -21,15 +22,17 @@ type Props = {
 };
 
 const Layout = ({ activeLink, user, title, children }: Props) => (
-  <div>
-    <Head>
-      <title>{title}</title>
-    </Head>
+  <ThemeProvider theme={theme}>
+    <div>
+      <Head>
+        <title>{title}</title>
+      </Head>
 
-    <Header activeLink={activeLink} user={user} />
+      <Header activeLink={activeLink} user={user} />
 
-    <Container>{children}</Container>
-  </div>
+      <Container>{children}</Container>
+    </div>
+  </ThemeProvider>
 );
 
 Layout.defaultProps = {
