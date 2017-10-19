@@ -76,7 +76,7 @@ const ImgContainer = styled.div`
   height: 0;
   border: 1px solid ${props => props.theme.color.grey};
   border-radius: 0;
-  padding-top: calc(100% * ${props => props.theme.pageAspectRatio});
+  padding-top: calc(100% * ${props => props.aspectRatio});
   transition: border 0.3s ease-in-out;
 `;
 
@@ -137,25 +137,36 @@ type Props = {
   handleClick: () => void,
 };
 
-type State = { loading: boolean };
+type State = { loading: boolean, aspectRatio: number, blob: ?string };
 
 export default class PageThumbnail extends Component<Props, State> {
-  state = { loading: true };
+  state = {
+    loading: true,
+    aspectRatio: 211 / 164,
+    blob: null,
+  };
+
   handleImgLoaded = raf(() => this.setState(() => ({ loading: false })));
+
+  handleRef = (ref: HTMLElement) => {
+    const { width, height } = ref.getBoundingClientRect();
+    this.setState(() => ({ aspectRatio: height / width }));
+  };
 
   render() {
     const { bind, src, description, alt, handleClick } = this.props;
-    const { loading } = this.state;
+    const { loading, aspectRatio } = this.state;
 
     return (
       <IssueContainer bind={bind} onClick={handleClick} disable={loading}>
-        <ImgContainer>
+        <ImgContainer aspectRatio={aspectRatio}>
           {src && (
             <Img
               src={src}
               alt={alt || ''}
               show={!loading}
               onLoad={this.handleImgLoaded}
+              getRef={this.handleRef}
             />
           )}
           <ImgLoader show={loading} />
