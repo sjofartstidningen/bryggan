@@ -42,6 +42,10 @@ type State = {
 class Issue extends Component<*, State> {
   static async getInitialProps({ query, store }) {
     const { year, issue } = query;
+    const { pages } = store.getState().tidningen;
+
+    if (pages && pages.year === year && pages.issue === issue) return {};
+
     await getPages(year, issue)(store.dispatch, store.getState);
     return {};
   }

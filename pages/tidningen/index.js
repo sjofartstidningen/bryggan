@@ -34,6 +34,9 @@ type State = {
 
 class Tidningen extends Component<*, State> {
   static async getInitialProps({ store }) {
+    const { tidningen } = store.getState();
+    if (tidningen.years.length > 0) return {};
+
     await getYears()(store.dispatch, store.getState);
     return {};
   }
