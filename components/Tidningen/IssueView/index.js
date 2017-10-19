@@ -2,33 +2,41 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import type { Page } from '../../../store/tidningen/types';
+import IssueHeader from './IssueHeader';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 
 type Props = {
   pages: Page[],
+  year: string,
+  issue: string,
+  translateTitle: number,
 };
 
 function IssueView(props: Props) {
-  const { pages } = props;
+  const { pages, year, issue, translateTitle } = props;
   return (
-    <PreviewsContainer>
-      {pages.length > 0 &&
-        pages.map((page, i) => (
-          <PageThumbnail
-            bind
-            src={page.coverSrc}
-            description={`${i + 1}`}
-            alt={page.name}
-            handleClick={() => undefined}
-          />
-        ))}
-    </PreviewsContainer>
+    <section style={{ position: 'relative' }}>
+      <IssueHeader
+        translateTitle={translateTitle}
+      >{`${year} > ${issue}`}</IssueHeader>
+      <PreviewsContainer bind>
+        {pages.length > 0 &&
+          pages.map((page, i) => (
+            <PageThumbnail
+              src={page.coverSrc}
+              description={`${i + 1}`}
+              alt={page.name}
+              handleClick={() => undefined}
+            />
+          ))}
+      </PreviewsContainer>
+    </section>
   );
 }
 
 const mapStateToProps = state => ({
-  pages: state.tidningen.pages.pages || [],
+  ...state.tidningen.pages,
 });
 
 // $FlowFixMe

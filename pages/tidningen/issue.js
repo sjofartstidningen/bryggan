@@ -14,7 +14,6 @@ import IssueView from '../../components/Tidningen/IssueView';
 const Title = styled(H1)`
   border-bottom: 1px solid transparent;
   padding-bottom: 0.5rem;
-  background-color: ${props => props.theme.color.white};
   transition: border-color 0.3s ease-in-out;
   will-change: border-color;
 
@@ -29,24 +28,33 @@ const TitleLink = styled(Link)`
   text-decoration: none;
   color: ${props => props.theme.color.grey};
   transition: color 0.3s ease-in-out;
+  background-color: ${props => props.theme.color.white};
 
   &:hover {
     color: ${props => props.theme.color.black};
   }
 `;
 
-const Small = styled.small`
-  font-size: ${props => props.theme.size(-1)}em;
-  color: ${props => props.theme.color.black};
-`;
+type State = {
+  titleWidth: number,
+};
 
-class Issue extends Component<*, *> {
+class Issue extends Component<*, State> {
   static async getInitialProps(props) {
     const { query, store } = props;
     const { year, issue } = query;
     await getPages(year, issue)(store.dispatch, store.getState);
     return {};
   }
+
+  state = { titleWidth: 0 };
+
+  getTitleWidth = (ref: ?HTMLElement): void => {
+    if (ref != null) {
+      const { width } = ref.getBoundingClientRect();
+      this.setState(() => ({ titleWidth: width }));
+    }
+  };
 
   render() {
     const { year, issue } = this.props.url.query;
@@ -56,14 +64,13 @@ class Issue extends Component<*, *> {
           style={{ zIndex: 3 }}
           render={({ stuck }) => (
             <Title stuck={stuck}>
-              <TitleLink href="/tidningen">Tidningen</TitleLink>{' '}
-              <Small>
-                &gt; {year} &gt; {issue}
-              </Small>
+              <TitleLink href="/tidningen">
+                <span ref={this.getTitleWidth}>Tidningen</span>
+              </TitleLink>
             </Title>
           )}
         />
-        <IssueView />
+        <IssueView translateTitle={this.state.titleWidth} />
       </Layout>
     );
   }
