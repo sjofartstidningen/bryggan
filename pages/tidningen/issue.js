@@ -40,8 +40,7 @@ type State = {
 };
 
 class Issue extends Component<*, State> {
-  static async getInitialProps(props) {
-    const { query, store } = props;
+  static async getInitialProps({ query, store }) {
     const { year, issue } = query;
     await getPages(year, issue)(store.dispatch, store.getState);
     return {};
