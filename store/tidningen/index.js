@@ -2,20 +2,21 @@
 import type { Reducer } from 'redux';
 import type { State, Action } from './types';
 
-import { ADD_YEARS, ADD_ISSUES, FETCH_ERROR } from './constants';
+import * as constants from './constants';
 
 const initialState = {
   years: [],
   issues: {},
+  pages: null,
   error: null,
 };
 
 const reducer: Reducer<State, Action> = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_YEARS:
+    case constants.ADD_YEARS:
       return { ...state, years: action.payload.years };
 
-    case ADD_ISSUES:
+    case constants.ADD_ISSUES:
       return {
         ...state,
         issues: {
@@ -24,7 +25,17 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
         },
       };
 
-    case FETCH_ERROR:
+    case constants.ADD_PAGES:
+      return {
+        ...state,
+        pages: {
+          year: action.payload.year,
+          issue: action.payload.issue,
+          pages: action.payload.pages,
+        },
+      };
+
+    case constants.FETCH_ERROR:
       return {
         ...state,
         error: { message: action.payload.message },
