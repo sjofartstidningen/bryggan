@@ -29,6 +29,12 @@ type FolderSharingInfo = {
   no_access: boolean,
 };
 
+type FileSharingInfo = {
+  read_only: boolean,
+  parent_shared_folder_id: string,
+  modified_by: ?string,
+};
+
 type PropertyGroup = {
   template_id: string,
   fields: { name: string, value: string }[],
@@ -45,7 +51,7 @@ declare type FileMetaData = {
   path_lower: string,
   path_display: string,
   media_info?: MediaInfo,
-  sharing_info: ?FolderSharingInfo,
+  sharing_info: ?FileSharingInfo,
   property_groups: PropertyGroup[],
   has_explicit_shared_members?: boolean,
   content_hash: string,
