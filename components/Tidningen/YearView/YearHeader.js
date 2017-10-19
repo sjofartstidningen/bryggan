@@ -32,7 +32,7 @@ function YearHeader({ translateTitle, children }: Props) {
       render={({ stuck }) => (
         <Title stuck={stuck}>
           <TitleSpan stuck={stuck} translate={translateTitle}>
-            {children}
+            {stuck && '>'} {children}
           </TitleSpan>
         </Title>
       )}

@@ -6,6 +6,7 @@ import { initStore } from '../../store';
 import { getPages } from '../../store/tidningen/actions';
 
 import StickyEvent from '../../components/StickyEvent';
+import Link from '../../components/Link';
 import Layout from '../../components/Layout';
 import { H1 } from '../../components/Typography/headings';
 import IssueView from '../../components/Tidningen/IssueView';
@@ -24,6 +25,21 @@ const Title = styled(H1)`
     `};
 `;
 
+const TitleLink = styled(Link)`
+  text-decoration: none;
+  color: ${props => props.theme.color.grey};
+  transition: color 0.3s ease-in-out;
+
+  &:hover {
+    color: ${props => props.theme.color.black};
+  }
+`;
+
+const Small = styled.small`
+  font-size: ${props => props.theme.size(-1)}em;
+  color: ${props => props.theme.color.black};
+`;
+
 class Issue extends Component<*, *> {
   static async getInitialProps(props) {
     const { query, store } = props;
@@ -40,7 +56,10 @@ class Issue extends Component<*, *> {
           style={{ zIndex: 3 }}
           render={({ stuck }) => (
             <Title stuck={stuck}>
-              Nummer {issue}-{year}
+              <TitleLink href="/tidningen">Tidningen</TitleLink>{' '}
+              <Small>
+                &gt; {year} &gt; {issue}
+              </Small>
             </Title>
           )}
         />
