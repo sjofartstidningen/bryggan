@@ -6,10 +6,8 @@ import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
 
 const IssueContainer = styled.button`
-  display: inline-block;
-  width: calc((100% - ${props => props.theme.size(0) * 3}em) / 4);
-  margin-right: ${props => props.theme.size(0)}em;
-  margin-bottom: ${props => props.theme.size(0)}em;
+  display: block;
+  width: 100%;
   border: none;
   border-radius: 0;
   padding: 0;
@@ -17,10 +15,6 @@ const IssueContainer = styled.button`
   background-color: transparent;
   cursor: pointer;
   z-index: 1;
-
-  &:nth-child(4n) {
-    margin-right: 0;
-  }
 
   &:hover,
   &:focus {
@@ -42,32 +36,6 @@ const IssueContainer = styled.button`
   &:focus > div {
     border-color: ${props => props.theme.color.brand};
   }
-
-  ${props =>
-    props.bind &&
-    css`
-      width: calc((100% - ${props.theme.size(0)}em) / 4);
-
-      &:nth-child(1) {
-        margin-left: calc((100% - ${props.theme.size(0)}em) / 4);
-      }
-
-      &:nth-child(4n) {
-        margin-right: ${props.theme.size(0)}em;
-      }
-
-      &:nth-child(4n - 1) {
-        margin-right: 0;
-      }
-
-      &:nth-child(2n) {
-        margin-right: 0;
-      }
-
-      &:last-child {
-        display: none;
-      }
-    `};
 `;
 
 const ImgContainer = styled.div`
@@ -130,7 +98,6 @@ const Desc = styled.p`
 `;
 
 type Props = {
-  bind?: boolean,
   src: string,
   description: string,
   alt?: string,
@@ -154,11 +121,11 @@ export default class PageThumbnail extends Component<Props, State> {
   };
 
   render() {
-    const { bind, src, description, alt, handleClick } = this.props;
+    const { src, description, alt, handleClick } = this.props;
     const { loading, aspectRatio } = this.state;
 
     return (
-      <IssueContainer bind={bind} onClick={handleClick} disable={loading}>
+      <IssueContainer onClick={handleClick} disable={loading}>
         <ImgContainer aspectRatio={aspectRatio}>
           {src && (
             <Img
