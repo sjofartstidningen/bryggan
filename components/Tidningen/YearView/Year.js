@@ -3,9 +3,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
+import Router from 'next/router';
 import YearHeader from './YearHeader';
-import YearIssue from './YearIssue';
+import PreviewsContainer from '../components/PreviewsContainer';
+import PageThumbnail from '../components/PageThumbnail';
 import type { Issue } from '../../../store/tidningen/types';
 import { getIssues } from '../../../store/tidningen/actions';
 
@@ -16,17 +17,21 @@ type Props = {
   getIssues: (year: string) => void,
 };
 
-const PreviewsContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  padding: ${props => props.theme.size(0)}em;
-  z-index: 1;
-`;
-
 class Year extends Component<Props, *> {
   componentDidMount() {
     if (this.props.issues.length < 1) this.props.getIssues(this.props.year);
   }
+
+  onPageClick = (issue: string) => {
+    const { year } = this.props;
+    Router.push(
+      {
+        pathname: '/tidningen/issue',
+        query: { year, issue },
+      },
+      `/tidningen/${year}/${issue}`,
+    );
+  };
 
   render() {
     const { year, issues, translateTitle } = this.props;
@@ -36,8 +41,23 @@ class Year extends Component<Props, *> {
 
         <PreviewsContainer>
           {issues.length > 0
-            ? issues.map(issue => <YearIssue key={issue.id} issue={issue} />)
-            : Array.from({ length: 11 }).map((_, i) => <YearIssue key={i} />)}
+            ? issues.map(issue => (
+                <PageThumbnail
+                  key={issue.id}
+                  src={issue.coverSrc}
+                  alt={`Nummber ${issue.name}`}
+                  description={`Nummber ${issue.name}`}
+                  handleClick={() => this.onPageClick(issue.name)}
+                />
+              ))
+            : Array.from({ length: 11 }).map((_, i) => (
+                <PageThumbnail
+                  key={i}
+                  src={''}
+                  description="Laddar"
+                  handleClick={() => undefined}
+                />
+              ))}
         </PreviewsContainer>
       </section>
     );
