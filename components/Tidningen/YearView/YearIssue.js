@@ -117,9 +117,9 @@ export default class YearIssue extends Component<Props, State> {
       Router.push(
         {
           pathname: '/tidningen/issue',
-          query: { year, name },
+          query: { year, issue: name },
         },
-        `tidningen/${year}/${name}`,
+        `/tidningen/${year}/${name}`,
       );
     }
   };
@@ -129,7 +129,7 @@ export default class YearIssue extends Component<Props, State> {
     const { loading } = this.state;
 
     return (
-      <IssueContainer onClick={this.handleClick}>
+      <IssueContainer onClick={this.handleClick} disable={loading}>
         <ImgContainer>
           {issue && (
             <Img
