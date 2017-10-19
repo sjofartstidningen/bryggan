@@ -10,6 +10,7 @@ import theme from '../../styles/theme';
 import Header from '../Header';
 
 const Container = styled.div`
+  position: relative;
   width: 100vw;
   max-width: 44rem;
   margin: 0 auto;
