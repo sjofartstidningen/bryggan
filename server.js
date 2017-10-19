@@ -14,7 +14,11 @@ const handler = app.getRequestHandler();
 app
   .prepare()
   .then(() => {
-    // server.get('page/:username', routeGenerator(app, '/page'));
+    server.get(
+      '/tidningen/:year/:issue',
+      routeGenerator(app, '/tidningen/issue'),
+    );
+
     server.get('*', (req, res) => handler(req, res));
 
     server.listen(port, err => {
