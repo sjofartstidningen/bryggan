@@ -6,6 +6,7 @@ import { getPages } from '../../store/tidningen/actions';
 
 import Layout from '../../components/Layout';
 import { H1 } from '../../components/Typography/headings';
+import IssueView from '../../components/Tidningen/IssueView';
 
 class Issue extends Component<*, *> {
   static async getInitialProps(props) {
@@ -22,6 +23,7 @@ class Issue extends Component<*, *> {
         <H1 style={{ position: 'sticky', top: 0, zIndex: 3 }}>
           Nummer {issue}-{year}
         </H1>
+        <IssueView />
       </Layout>
     );
   }
