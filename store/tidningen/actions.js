@@ -88,7 +88,7 @@ export function getPages(year: string, issue: string): types.ThunkAction {
   return async dispatch => {
     try {
       const path = `/Bryggan/${year}/${issue}`;
-      const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
+      const sortBy = (a, b) => (a.name > b.name ? 1 : -1);
 
       // $FlowFixMe
       const { data } = await filesListFolder({ path, sortBy });
