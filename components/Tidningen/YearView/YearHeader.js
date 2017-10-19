@@ -6,13 +6,13 @@ import { H2 } from '../../Typography/headings';
 
 const Title = styled(H2)`
   background-color: ${props => props.theme.color.white};
-  transition: border 0.3s ease-in-out;
-  will-change: border;
+  transition: border-color 0.3s ease-in-out;
+  will-change: border-color;
 
   ${props =>
     props.stuck &&
     css`
-      border: none;
+      border-color: transparent;
     `};
 `;
 

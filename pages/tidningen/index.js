@@ -11,13 +11,14 @@ import { initStore } from '../../store';
 import { getYears } from '../../store/tidningen/actions';
 
 const Title = styled(H1)`
-  transition: border 0.3s ease-in-out;
-  will-change: border;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease-in-out;
+  will-change: border-color;
 
   ${props =>
     props.stuck &&
     css`
-      border-bottom: 1px solid ${props.theme.color.grey};
+      border-color: ${props.theme.color.grey};
     `};
 `;
 
