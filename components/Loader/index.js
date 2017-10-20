@@ -12,17 +12,20 @@ const LoaderContainer = styled.div`
 `;
 
 const LoaderPadding = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 100%;
+  padding: 0.5em;
+  overflow: hidden;
 `;
 
 const LoaderSvg = styled.svg`
   position: absolute;
   display: block;
   top: 50%;
-  width: 100%;
+  width: auto;
   transform: translateY(-50%);
 `;
 

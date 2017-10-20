@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 export default styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   grid-gap: ${props => props.theme.size(0)}rem;
   padding: ${props => props.theme.size(0)}em;
   z-index: ${props => props.theme.zIndex.zero};

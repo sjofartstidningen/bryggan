@@ -64,8 +64,9 @@ const ImgLoader = styled(Loader)`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 5em;
-  height: 5em;
+  width: 50%;
+  height: 0;
+  padding-top: 50%;
   opacity: ${props => (props.show ? 1 : 0)};
   transform: translate(-50%, -50%);
   transition: opacity 0.3s ease-in-out;
