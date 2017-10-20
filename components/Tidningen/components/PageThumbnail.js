@@ -1,17 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import raf from 'raf-schd';
-import Router from 'next/router';
 import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
-import type { Issue } from '../../../store/tidningen/types';
 
 const IssueContainer = styled.button`
-  display: inline-block;
-  width: calc((100% - ${props => props.theme.size(0) * 3}em) / 4);
-  margin-right: ${props => props.theme.size(0)}em;
-  margin-bottom: ${props => props.theme.size(0)}em;
+  display: block;
+  width: 100%;
   border: none;
   border-radius: 0;
   padding: 0;
@@ -20,11 +16,9 @@ const IssueContainer = styled.button`
   cursor: pointer;
   z-index: 1;
 
-  &:nth-child(4n) {
-    margin-right: 0;
-  }
-
+  &:hover,
   &:focus {
+    z-index: 2;
     outline: none;
   }
 
@@ -50,7 +44,8 @@ const ImgContainer = styled.div`
   height: 0;
   border: 1px solid ${props => props.theme.color.grey};
   border-radius: 0;
-  padding-top: calc(100% * ${props => props.theme.pageAspectRatio});
+  padding-top: calc(100% * ${props => props.aspectRatio});
+  overflow: hidden;
   transition: border 0.3s ease-in-out;
 `;
 
@@ -59,7 +54,7 @@ const Img = styled(LazyImage)`
   top: 0;
   left: 0;
   display: block;
-  max-width: 100%;
+  width: 100%;
   opacity: ${props => (props.show ? 1 : 0)};
   visibility: ${props => (props.show ? 'visible' : 'hidden')};
   transition: all 0.3s ease-in-out;
@@ -76,7 +71,7 @@ const ImgLoader = styled(Loader)`
   transition: opacity 0.3s ease-in-out;
 `;
 
-const IssueLink = styled.p`
+const Desc = styled.p`
   position: relative;
   margin: 0;
   margin-top: ${props => props.theme.size(-1)}em;
@@ -103,47 +98,48 @@ const IssueLink = styled.p`
   }
 `;
 
-type Props = { issue?: Issue };
+type Props = {
+  src: string,
+  description: string,
+  alt?: string,
+  handleClick: () => void,
+};
 
-type State = { loading: boolean };
+type State = { loading: boolean, aspectRatio: number, blob: ?string };
 
-export default class YearIssue extends Component<Props, State> {
-  state = { loading: true };
+export default class PageThumbnail extends Component<Props, State> {
+  state = {
+    loading: true,
+    aspectRatio: 211 / 164,
+    blob: null,
+  };
+
   handleImgLoaded = raf(() => this.setState(() => ({ loading: false })));
 
-  handleClick = () => {
-    if (this.props.issue) {
-      const { name, year } = this.props.issue;
-      Router.push(
-        {
-          pathname: '/tidningen/issue',
-          query: { year, name },
-        },
-        `tidningen/${year}/${name}`,
-      );
-    }
+  handleRef = (ref: HTMLElement) => {
+    const { width, height } = ref.getBoundingClientRect();
+    this.setState(() => ({ aspectRatio: height / width }));
   };
 
   render() {
-    const { issue } = this.props;
-    const { loading } = this.state;
+    const { src, description, alt, handleClick } = this.props;
+    const { loading, aspectRatio } = this.state;
 
     return (
-      <IssueContainer onClick={this.handleClick}>
-        <ImgContainer>
-          {issue && (
+      <IssueContainer onClick={handleClick} disable={loading}>
+        <ImgContainer aspectRatio={aspectRatio}>
+          {src && (
             <Img
-              src={issue.coverSrc}
-              alt={`Cover for issue #${issue.name}`}
+              src={src}
+              alt={alt || ''}
               show={!loading}
               onLoad={this.handleImgLoaded}
+              getRef={this.handleRef}
             />
           )}
-          <ImgLoader show={loading} />
+          {loading && <ImgLoader show={loading} />}
         </ImgContainer>
-        <IssueLink>
-          {issue && !loading ? `Nummer ${issue.name}` : 'Laddar'}
-        </IssueLink>
+        <Desc>{!loading ? description : 'Laddar'}</Desc>
       </IssueContainer>
     );
   }

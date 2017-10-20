@@ -22,11 +22,8 @@ export default class Doc extends Document {
           <title>Bryggan – Sjöfartstidningen</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="static/assets/css/main.css"
-          />
+          <link rel="preload" href="/static/assets/css/main.css" as="style" />
+          <link rel="stylesheet" href="/static/assets/css/main.css" />
 
           {this.props.styleTags}
         </Head>
