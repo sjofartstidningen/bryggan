@@ -137,7 +137,7 @@ export default class PageThumbnail extends Component<Props, State> {
               getRef={this.handleRef}
             />
           )}
-          <ImgLoader show={loading} />
+          {loading && <ImgLoader show={loading} />}
         </ImgContainer>
         <Desc>{!loading ? description : 'Laddar'}</Desc>
       </IssueContainer>
