@@ -45,6 +45,7 @@ const ImgContainer = styled.div`
   border: 1px solid ${props => props.theme.color.grey};
   border-radius: 0;
   padding-top: calc(100% * ${props => props.aspectRatio});
+  overflow: hidden;
   transition: border 0.3s ease-in-out;
 `;
 
@@ -53,7 +54,7 @@ const Img = styled(LazyImage)`
   top: 0;
   left: 0;
   display: block;
-  max-width: 100%;
+  width: 100%;
   opacity: ${props => (props.show ? 1 : 0)};
   visibility: ${props => (props.show ? 'visible' : 'hidden')};
   transition: all 0.3s ease-in-out;

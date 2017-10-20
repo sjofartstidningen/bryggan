@@ -28,7 +28,7 @@ type Props = { translateTitle: number, children: string };
 function IssueHeader({ translateTitle, children }: Props) {
   return (
     <StickyEvent
-      style={{ zIndex: 2 }}
+      style={{ zIndex: 3 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
           <TitleSpan stuck={stuck} translate={translateTitle}>

@@ -64,7 +64,7 @@ class Issue extends Component<*, State> {
     return (
       <Layout title={`Nummer ${issue}-${year} – Bryggan`}>
         <StickyEvent
-          style={{ zIndex: 3 }}
+          style={{ zIndex: 4 }}
           render={({ stuck }) => (
             <Title stuck={stuck}>
               <TitleLink href="/tidningen">
