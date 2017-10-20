@@ -25,10 +25,10 @@ const TitleSpan = styled.span`
 
 type Props = { translateTitle: number, children: string };
 
-function IssueHeader({ translateTitle, children }: Props) {
+function SectionTitle({ translateTitle, children }: Props) {
   return (
     <StickyEvent
-      style={{ zIndex: 3 }}
+      style={{ zIndex: 2 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
           <TitleSpan stuck={stuck} translate={translateTitle}>
@@ -40,4 +40,4 @@ function IssueHeader({ translateTitle, children }: Props) {
   );
 }
 
-export default IssueHeader;
+export default SectionTitle;
