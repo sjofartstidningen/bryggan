@@ -1,4 +1,5 @@
 // @flow
+import Queue from 'p-queue';
 import { filesListFolder, filesGetThumbnailSrc } from '../../utils/api/dropbox';
 import * as constants from './constants';
 
@@ -35,11 +36,15 @@ export const fetchError = (
   payload,
 });
 
+const queue = new Queue({ concurrency: 5 });
+
 export function getYears(): types.ThunkAction {
   return async dispatch => {
     try {
       const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
-      const { data } = await filesListFolder({ path: '/Bryggan', sortBy });
+      const { data } = await queue.add(() =>
+        filesListFolder({ path: '/Bryggan', sortBy }),
+      );
       const years: types.Year[] = data.entries
         .filter(entry => entry['.tag'] === 'folder')
         .map(entry => ({
@@ -62,7 +67,7 @@ export function getIssues(year: string): types.ThunkAction {
       const path = `/Bryggan/${year}`;
       const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
 
-      const { data } = await filesListFolder({ path, sortBy });
+      const { data } = await queue.add(() => filesListFolder({ path, sortBy }));
       const issues: types.Issue[] = data.entries
         .filter(entry => entry['.tag'] === 'folder')
         .map(entry => ({
@@ -91,7 +96,7 @@ export function getPages(year: string, issue: string): types.ThunkAction {
       const sortBy = (a, b) => (a.name > b.name ? 1 : -1);
 
       // $FlowFixMe
-      const { data } = await filesListFolder({ path, sortBy });
+      const { data } = await queue.add(() => filesListFolder({ path, sortBy }));
       const pages: types.Page[] = data.entries
         .filter(entry => entry['.tag'] === 'file')
         .map(entry => {
