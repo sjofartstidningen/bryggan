@@ -14,11 +14,11 @@ const IssueContainer = styled.button`
   font-size: 1em;
   background-color: transparent;
   cursor: pointer;
-  z-index: 1;
+  z-index: ${props => props.theme.zIndex.zero};
 
   &:hover,
   &:focus {
-    z-index: 2;
+    z-index: ${props => props.theme.zIndex.middle};
     outline: none;
   }
 
