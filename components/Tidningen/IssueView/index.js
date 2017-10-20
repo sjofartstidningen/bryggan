@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import type { Page } from '../../../store/tidningen/types';
-import IssueHeader from './IssueHeader';
+import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 
@@ -17,9 +17,9 @@ function IssueView(props: Props) {
   const { pages, year, issue, translateTitle } = props;
   return (
     <section style={{ position: 'relative' }}>
-      <IssueHeader
-        translateTitle={translateTitle}
-      >{`${year} > ${issue}`}</IssueHeader>
+      <SectionTitle translateTitle={translateTitle}>
+        {`${year} > ${issue}`}
+      </SectionTitle>
       <PreviewsContainer bind>
         {pages.length > 0 &&
           pages.map((page, i) => (
@@ -27,7 +27,7 @@ function IssueView(props: Props) {
               key={page.id}
               src={page.coverSrc}
               description={`${i + 1}`}
-              alt={page.name}
+              alt={`Preview of page ${i + 1}`}
               handleClick={() => undefined}
             />
           ))}
