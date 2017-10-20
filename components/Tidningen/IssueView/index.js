@@ -24,6 +24,7 @@ function IssueView(props: Props) {
         {pages.length > 0 &&
           pages.map((page, i) => (
             <PageThumbnail
+              key={page.id}
               src={page.coverSrc}
               description={`${i + 1}`}
               alt={page.name}
