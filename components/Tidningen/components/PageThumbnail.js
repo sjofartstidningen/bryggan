@@ -60,18 +60,6 @@ const Img = styled(LazyImage)`
   transition: all 0.3s ease-in-out;
 `;
 
-const ImgLoader = styled(Loader)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 50%;
-  height: 0;
-  padding-top: 50%;
-  opacity: ${props => (props.show ? 1 : 0)};
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease-in-out;
-`;
-
 const Desc = styled.p`
   position: relative;
   margin: 0;
@@ -138,9 +126,9 @@ export default class PageThumbnail extends Component<Props, State> {
               getRef={this.handleRef}
             />
           )}
-          {loading && <ImgLoader show={loading} />}
+          {loading && <Loader width="50%" />}
         </ImgContainer>
-        <Desc>{!loading ? description : 'Laddar'}</Desc>
+        <Desc>{description}</Desc>
       </IssueContainer>
     );
   }
