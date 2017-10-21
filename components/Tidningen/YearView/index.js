@@ -12,7 +12,7 @@ type Props = {
 function YearView(props: Props) {
   const { years, translateTitle } = props;
   return (
-    <div className="years">
+    <div>
       {years.length > 0 &&
         years.map(year => (
           <YearComp

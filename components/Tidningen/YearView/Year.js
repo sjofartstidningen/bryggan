@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Router from 'next/router';
-import YearHeader from './YearHeader';
+import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 import type { Issue } from '../../../store/tidningen/types';
@@ -37,7 +37,7 @@ class Year extends Component<Props, *> {
     const { year, issues, translateTitle } = this.props;
     return (
       <section style={{ position: 'relative' }}>
-        <YearHeader translateTitle={translateTitle}>{year}</YearHeader>
+        <SectionTitle translateTitle={translateTitle}>{year}</SectionTitle>
 
         <PreviewsContainer>
           {issues.length > 0

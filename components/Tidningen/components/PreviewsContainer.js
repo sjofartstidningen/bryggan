@@ -6,7 +6,7 @@ export default styled.div`
   grid-template-columns: repeat(4, 1fr);
   grid-gap: ${props => props.theme.size(0)}rem;
   padding: ${props => props.theme.size(0)}em;
-  z-index: 1;
+  z-index: ${props => props.theme.zIndex.zero};
 
   ${props =>
     props.bind &&

@@ -3,26 +3,33 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const LoaderContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: ${props => props.width || '50%'};
+  height: 0;
   border: 1px solid ${props => props.theme.color.grey};
   border-radius: 100%;
-  padding: 0.5em;
+  padding-top: ${props => props.width || '50%'};
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease-in-out;
 `;
 
 const LoaderPadding = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 100%;
+  padding: 10%;
+  overflow: hidden;
 `;
 
 const LoaderSvg = styled.svg`
   position: absolute;
   display: block;
   top: 50%;
-  width: 100%;
+  width: auto;
   transform: translateY(-50%);
 `;
 

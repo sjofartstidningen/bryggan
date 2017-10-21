@@ -14,11 +14,11 @@ const IssueContainer = styled.button`
   font-size: 1em;
   background-color: transparent;
   cursor: pointer;
-  z-index: 1;
+  z-index: ${props => props.theme.zIndex.zero};
 
   &:hover,
   &:focus {
-    z-index: 2;
+    z-index: ${props => props.theme.zIndex.middle};
     outline: none;
   }
 
@@ -58,17 +58,6 @@ const Img = styled(LazyImage)`
   opacity: ${props => (props.show ? 1 : 0)};
   visibility: ${props => (props.show ? 'visible' : 'hidden')};
   transition: all 0.3s ease-in-out;
-`;
-
-const ImgLoader = styled(Loader)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5em;
-  height: 5em;
-  opacity: ${props => (props.show ? 1 : 0)};
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease-in-out;
 `;
 
 const Desc = styled.p`
@@ -137,9 +126,9 @@ export default class PageThumbnail extends Component<Props, State> {
               getRef={this.handleRef}
             />
           )}
-          {loading && <ImgLoader show={loading} />}
+          {loading && <Loader width="50%" />}
         </ImgContainer>
-        <Desc>{!loading ? description : 'Laddar'}</Desc>
+        <Desc>{description}</Desc>
       </IssueContainer>
     );
   }
