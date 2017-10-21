@@ -37,7 +37,9 @@ class Tidningen extends Component<*, State> {
 
     return (
       <Layout title="Bryggan - Tidningen">
-        <MainTitle getTitleWidth={this.getTitleWidth}>Tidningen</MainTitle>
+        <MainTitle>
+          <span ref={this.getTitleWidth}>Tidningen</span>
+        </MainTitle>
         <YearView translateTitle={titleWidth} />
       </Layout>
     );

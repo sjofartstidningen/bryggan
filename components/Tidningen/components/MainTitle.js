@@ -32,19 +32,16 @@ const TitleLink = styled(Link)`
 `;
 
 type Props = {
-  getTitleWidth: (?HTMLElement) => void,
   children: string,
 };
 
-export default function MainTitle({ getTitleWidth, children }: Props) {
+export default function MainTitle({ children }: Props) {
   return (
     <StickyEvent
       style={{ zIndex: 3 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
-          <TitleLink href="/tidningen">
-            <span ref={getTitleWidth}>{children}</span>
-          </TitleLink>
+          <TitleLink href="/tidningen">{children}</TitleLink>
         </Title>
       )}
     />
