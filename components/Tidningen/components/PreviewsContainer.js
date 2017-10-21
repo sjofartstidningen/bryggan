@@ -1,15 +1,17 @@
 // @flow
+import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 
-export default styled.div`
+const PreviewsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(${props => props.zoom}, 1fr);
   grid-gap: ${props => props.theme.size(0)}rem;
   padding: ${props => props.theme.size(0)}em;
   z-index: ${props => props.theme.zIndex.zero};
 
   ${props =>
     props.bind &&
+    props.zoom > 1 &&
     css`
       grid-column-gap: 0;
 
@@ -30,3 +32,10 @@ export default styled.div`
       }
     `};
 `;
+
+const mapStateToProps = state => ({
+  zoom: state.tidningen.zoom,
+});
+
+// $FlowFixMe
+export default connect(mapStateToProps)(PreviewsContainer);
