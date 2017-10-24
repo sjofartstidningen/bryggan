@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Fork of https://github.com/sindresorhus/p-queue
  * Because Uglify can't minify the untranspiled code
