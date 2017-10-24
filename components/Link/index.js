@@ -1,16 +1,25 @@
-// @flow
 import React from 'react';
-import Link from 'next/link';
+import PropTypes from 'prop-types';
+import OriginalLink from 'next/link';
 
-type Props = {
-  href: string,
-  as?: string, // eslint-disable-line
-  className?: string, // eslint-disable-line
-  children: string,
+function Link({ href, as, className, children }) {
+  return (
+    <OriginalLink href={href} as={as}>
+      <a className={className}>{children}</a>
+    </OriginalLink>
+  );
+}
+
+Link.propTypes = {
+  href: PropTypes.string.isRequired,
+  as: PropTypes.string,
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
-export default ({ href, as, className, children }: Props) => (
-  <Link href={href} as={as}>
-    <a className={className}>{children}</a>
-  </Link>
-);
+Link.defaultProps = {
+  as: null,
+  className: null,
+};
+
+export default Link;

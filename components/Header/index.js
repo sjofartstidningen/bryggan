@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Router from 'next/router';
 import raf from 'raf-schd';
 import Logotype from '../Logotype';
@@ -21,13 +21,17 @@ const links = [
   { href: '/nyhetsbrevet', title: 'Nyhetsbrevet' },
 ];
 
-type Props = { user: ?User };
-type State = { activeLink: ?string };
-
-class Header extends Component<Props, State> {
-  static defaultProps = { user: null };
-
+class Header extends Component {
   state = { activeLink: null };
+
+  static propTypes = {
+    user: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      img: PropTypes.string,
+    }),
+  };
+
+  static defaultProps = { user: null };
 
   componentDidMount() {
     this.checkActiveLink();

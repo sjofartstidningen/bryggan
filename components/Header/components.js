@@ -1,5 +1,3 @@
-// @flow
-import type { ComponentType } from 'react';
 import styled from 'styled-components';
 import Link from '../Link';
 
@@ -43,7 +41,7 @@ export const NavItem = styled.li`
   }
 `;
 
-export const NavLink: ComponentType<{ active: boolean }> = styled(Link)`
+export const NavLink = styled(Link)`
   color: ${props =>
     props.active ? props.theme.color.black : props.theme.color.grey};
   text-decoration: none;

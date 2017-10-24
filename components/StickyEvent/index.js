@@ -1,33 +1,29 @@
-// @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import createObserver from '../../utils/createObserver';
 import { TopSentinel, StickyEl } from './components';
 
-type Props = {
-  container?: HTMLElement,
-  render: ({ stuck: boolean }) => Node,
-};
-
-type State = { stuck: boolean };
-
-export default class StickyEvent extends Component<Props, State> {
-  sentinel: HTMLElement;
-  observer: IntersectionObserver;
-
+export default class StickyEvent extends Component {
   state = {
     stuck: false,
+  };
+
+  static propTypes = {
+    container: PropTypes.any, // eslint-disable-line
+    render: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    container: undefined,
   };
 
   componentDidMount() {
     this.observer = createObserver(this.props.container);
     this.observer.observe(this.sentinel);
 
-    document.addEventListener('sticky-change', (e: mixed) => {
-      if (e instanceof CustomEvent) {
-        const { target, stuck } = e.detail;
-        if (target === this.sentinel) this.setState(() => ({ stuck }));
-      }
+    document.addEventListener('sticky-change', e => {
+      const { target, stuck } = e.detail;
+      if (target === this.sentinel) this.setState(() => ({ stuck }));
     });
   }
 
@@ -36,7 +32,7 @@ export default class StickyEvent extends Component<Props, State> {
     this.observer.unobserve(this.sentinel);
   }
 
-  setRef = (ref: HTMLElement) => {
+  setRef = ref => {
     this.sentinel = ref;
   };
 

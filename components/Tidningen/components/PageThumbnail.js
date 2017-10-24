@@ -1,6 +1,6 @@
-// @flow
 import React, { Component } from 'react';
-import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import raf from 'raf-schd';
 import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
@@ -49,6 +49,10 @@ const ImgContainer = styled.div`
   transition: border 0.3s ease-in-out;
 `;
 
+ImgContainer.propTypes = {
+  aspectRatio: PropTypes.number.isRequired,
+};
+
 const Img = styled(LazyImage)`
   position: absolute;
   top: 0;
@@ -59,6 +63,10 @@ const Img = styled(LazyImage)`
   visibility: ${props => (props.show ? 'visible' : 'hidden')};
   transition: all 0.3s ease-in-out;
 `;
+
+Img.propTypes = {
+  show: PropTypes.bool,
+};
 
 const Desc = styled.p`
   position: relative;
@@ -87,25 +95,28 @@ const Desc = styled.p`
   }
 `;
 
-type Props = {
-  src: string,
-  description: string,
-  alt?: string,
-  handleClick: () => void,
-};
-
-type State = { loading: boolean, aspectRatio: number, blob: ?string };
-
-export default class PageThumbnail extends Component<Props, State> {
+export default class PageThumbnail extends Component {
   state = {
     loading: true,
     aspectRatio: 211 / 164,
     blob: null,
   };
 
+  static propTypes = {
+    src: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    handleClick: PropTypes.func,
+  };
+
+  static defaultProps = {
+    alt: '',
+    handleClick: () => undefined,
+  };
+
   handleImgLoaded = raf(() => this.setState(() => ({ loading: false })));
 
-  handleRef = (ref: HTMLElement) => {
+  handleRef = ref => {
     const { width, height } = ref.getBoundingClientRect();
     this.setState(() => ({ aspectRatio: height / width }));
   };

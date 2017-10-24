@@ -1,20 +1,11 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import type { Page } from '../../../store/tidningen/types';
 import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 
-type Props = {
-  pages: Page[],
-  year: string,
-  issue: string,
-  translateTitle: number,
-};
-
-function IssueView(props: Props) {
-  const { pages, year, issue, translateTitle } = props;
+function IssueView({ pages, year, issue, translateTitle }) {
   return (
     <section style={{ position: 'relative' }}>
       <SectionTitle translateTitle={translateTitle}>
@@ -36,9 +27,24 @@ function IssueView(props: Props) {
   );
 }
 
+IssueView.propTypes = {
+  pages: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      path: PropTypes.string,
+      updated_at: PropTypes.string,
+      updated_by: PropTypes.string,
+      coverSrc: PropTypes.string,
+    }),
+  ).isRequired,
+  year: PropTypes.string.isRequired,
+  issue: PropTypes.string.isRequired,
+  translateTitle: PropTypes.number.isRequired,
+};
+
 const mapStateToProps = state => ({
   ...state.tidningen.pages,
 });
 
-// $FlowFixMe
 export default connect(mapStateToProps)(IssueView);

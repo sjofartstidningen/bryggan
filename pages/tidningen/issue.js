@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import withRedux from 'next-redux-wrapper';
 import Layout from '../../components/Layout';
@@ -7,10 +6,6 @@ import IssueView from '../../components/Tidningen/IssueView';
 
 import { initStore } from '../../store';
 import { getPages } from '../../store/tidningen/actions';
-
-type State = {
-  titleWidth: number,
-};
 
 class Issue extends Component<*, State> {
   static async getInitialProps({ query, store }) {
@@ -25,7 +20,7 @@ class Issue extends Component<*, State> {
 
   state = { titleWidth: 0 };
 
-  getTitleWidth = (ref: ?HTMLElement): void => {
+  getTitleWidth = ref => {
     if (ref != null) {
       const { width } = ref.getBoundingClientRect();
       this.setState(() => ({ titleWidth: width }));

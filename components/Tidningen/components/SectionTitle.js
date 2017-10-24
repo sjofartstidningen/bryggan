@@ -1,5 +1,5 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import StickyEvent from '../../StickyEvent';
 import { H2 } from '../../Typography/headings';
@@ -16,6 +16,10 @@ const Title = styled(H2)`
     `};
 `;
 
+Title.propTypes = {
+  stuck: PropTypes.bool,
+};
+
 const TitleSpan = styled.span`
   display: inline-block;
   transform: translateX(${props => (props.stuck ? props.translate : 0)}px);
@@ -23,9 +27,12 @@ const TitleSpan = styled.span`
   will-change: transform;
 `;
 
-type Props = { translateTitle: number, children: string };
+TitleSpan.propTypes = {
+  stuck: PropTypes.bool,
+  translate: PropTypes.number.isRequired,
+};
 
-function SectionTitle({ translateTitle, children }: Props) {
+function SectionTitle({ translateTitle, children }) {
   return (
     <StickyEvent
       style={{ zIndex: 2 }}
@@ -39,5 +46,10 @@ function SectionTitle({ translateTitle, children }: Props) {
     />
   );
 }
+
+SectionTitle.propTypes = {
+  translateTitle: PropTypes.number.isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 export default SectionTitle;

@@ -1,5 +1,5 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 
 const LoaderContainer = styled.div`
@@ -48,9 +48,9 @@ const LoaderPath = styled.path`
   animation-iteration-count: infinite;
 `;
 
-export default function Loader(props: mixed) {
+function Loader({ className }) {
   return (
-    <LoaderContainer {...props}>
+    <LoaderContainer className={className}>
       <LoaderPadding>
         <LoaderSvg viewBox="0 0 150 16">
           <LoaderPath
@@ -62,3 +62,13 @@ export default function Loader(props: mixed) {
     </LoaderContainer>
   );
 }
+
+Loader.propTypes = {
+  className: PropTypes.string,
+};
+
+Loader.defaultProps = {
+  className: undefined,
+};
+
+export default Loader;

@@ -1,5 +1,5 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import StickyEvent from '../../StickyEvent';
 import Link from '../../Link';
@@ -17,6 +17,10 @@ const Title = styled(H1)`
     `};
 `;
 
+Title.propTypes = {
+  stuck: PropTypes.bool,
+};
+
 const TitleLink = styled(Link)`
   display: inline-block;
   padding-bottom: 0.5rem;
@@ -31,11 +35,7 @@ const TitleLink = styled(Link)`
   }
 `;
 
-type Props = {
-  children: string,
-};
-
-export default function MainTitle({ children }: Props) {
+function MainTitle({ children }) {
   return (
     <StickyEvent
       style={{ zIndex: 3 }}
@@ -47,3 +47,9 @@ export default function MainTitle({ children }: Props) {
     />
   );
 }
+
+MainTitle.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export default MainTitle;
