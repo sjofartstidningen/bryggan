@@ -19,7 +19,6 @@
     "next": "^4.0.3",
     "next-redux-wrapper": "^1.3.4",
     "nprogress": "^0.2.0",
-    "p-queue": "^2.2.0",
     "prop-types": "^15.6.0",
     "raf-schd": "^2.0.1",
     "react": "^16.0.0",

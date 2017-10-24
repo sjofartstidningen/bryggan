@@ -1,4 +1,4 @@
-import Queue from 'p-queue';
+import Queue from '../../utils/p-queue';
 import { filesListFolder, filesGetThumbnailSrc } from '../../utils/api/dropbox';
 import * as constants from './constants';
 
