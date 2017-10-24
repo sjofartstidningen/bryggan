@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { filesGetThumbnail } from '../../utils/api/dropbox';
 
 function createObserver() {
   if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
@@ -26,7 +26,7 @@ function createObserver() {
 
 const observer = createObserver();
 
-export default class LazyImage extends Component<Props, State> {
+export default class LazyImage extends Component {
   state = { inView: false, blobSrc: null };
 
   static propTypes = {
@@ -56,15 +56,14 @@ export default class LazyImage extends Component<Props, State> {
   }
 
   fetchImage = async () => {
+    const { width, height } = this.ref.getBoundingClientRect();
     const { src } = this.props;
-    const { data, headers } = await axios({
-      method: 'get',
-      url: src,
-      responseType: 'blob',
+    const { data, headers } = await filesGetThumbnail({
+      path: src,
+      dimensions: { width, height },
     });
 
     const metaData = JSON.parse(headers['dropbox-api-result']);
-
     const blobSrc = URL.createObjectURL(data);
     this.setState(() => ({ blobSrc }));
     this.onLoad(metaData);
@@ -101,6 +100,11 @@ export default class LazyImage extends Component<Props, State> {
     if (this.props.onError && inView) this.props.onError(e);
   };
 
+  onRef = ref => {
+    this.ref = ref;
+    if (ref) this.observeRef(ref);
+  };
+
   handleLoad = () => {
     if (this.props.getRef) this.props.getRef(this.ref);
   };
@@ -114,7 +118,7 @@ export default class LazyImage extends Component<Props, State> {
         src={blobSrc || ''}
         className={className}
         alt={alt}
-        ref={this.observeRef}
+        ref={this.onRef}
         onLoad={this.handleLoad}
       />
     );

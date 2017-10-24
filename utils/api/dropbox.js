@@ -47,13 +47,32 @@ export const filesListFolder = ({ path, recursive = false, sortBy } = {}) =>
 /**
  * filesGetThumbnail
  */
+const determineSize = ({ width, height }) => {
+  const sizes = [
+    { width: 32, height: 32, label: 'w32h32' },
+    { width: 64, height: 64, label: 'w64h64' },
+    { width: 128, height: 128, label: 'w128h128' },
+    { width: 640, height: 480, label: 'w640h480' },
+    { width: 1024, height: 768, label: 'w1024h768' },
+  ];
+
+  const bestMatch = sizes.find(dim => {
+    const { width: w, height: h } = dim;
+    return width < w && height < h;
+  });
+
+  return bestMatch.label || 'w1024h768';
+};
+
 export const filesGetThumbnail = (
-  { path, format = 'jpeg', size = 'w64h64' } = {},
+  { path, format = 'jpeg', dimensions = {} } = {},
 ) =>
   dropboxContent({
     method: 'get',
     url: '/files/get_thumbnail',
-    params: { arg: JSON.stringify({ path, format, size }) },
+    params: {
+      arg: JSON.stringify({ path, format, size: determineSize(dimensions) }),
+    },
     responseType: 'blob',
   });
 
