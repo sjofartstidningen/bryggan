@@ -29,6 +29,14 @@ export const addPages = (payload: {
   payload,
 });
 
+export const increaseZoom = (): types.ActionIncZoom => ({
+  type: constants.INC_ZOOM,
+});
+
+export const decreaseZoom = (): types.ActionDecZoom => ({
+  type: constants.DEC_ZOOM,
+});
+
 export const fetchError = (
   payload: types.FetchError,
 ): types.ActionFetchError => ({

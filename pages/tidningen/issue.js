@@ -36,7 +36,9 @@ class Issue extends Component<*, State> {
     const { year, issue } = this.props.url.query;
     return (
       <Layout title={`Nummer ${issue}-${year} – Bryggan`}>
-        <MainTitle getTitleWidth={this.getTitleWidth}>Tidningen</MainTitle>
+        <MainTitle>
+          <span ref={this.getTitleWidth}>Tidningen</span>
+        </MainTitle>
         <IssueView translateTitle={this.state.titleWidth} />
       </Layout>
     );

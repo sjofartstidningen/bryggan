@@ -26,6 +26,8 @@ export type Page = {
   +coverSrc: string,
 };
 
+export type ZoomLevel = number;
+
 export type FetchError = {
   +message: string,
 };
@@ -43,6 +45,7 @@ export type State = {
     +issue: string,
     +pages: Page[],
   },
+  +zoom: ZoomLevel,
   +error: ?FetchError,
 };
 
@@ -61,6 +64,14 @@ export type ActionAddPages = {
   payload: { year: string, issue: string, pages: Page[] },
 };
 
+export type ActionIncZoom = {
+  type: 'INC_ZOOM',
+};
+
+export type ActionDecZoom = {
+  type: 'DEC_ZOOM',
+};
+
 export type ActionFetchError = {
   type: 'FETCH_ERROR',
   payload: FetchError,
@@ -70,7 +81,9 @@ export type Action =
   | ActionAddYears
   | ActionAddIssues
   | ActionAddPages
-  | ActionFetchError;
+  | ActionFetchError
+  | ActionIncZoom
+  | ActionDecZoom;
 
 /**
  * Dispatch type

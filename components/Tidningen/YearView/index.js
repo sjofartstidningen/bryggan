@@ -27,7 +27,6 @@ function YearView(props: Props) {
 
 const mapStateToProps = state => ({
   years: state.tidningen.years,
-  issues: state.tidningen.issues,
 });
 
 // $FlowFixMe
