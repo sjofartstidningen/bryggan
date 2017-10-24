@@ -1,28 +1,26 @@
-// @flow
 import { Component } from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import Queue from 'p-queue';
 import { filesGetThumbnail } from '../../utils/api/dropbox';
 
 const queue = new Queue({ concurrency: 3 });
 
-type RenderProps = {
-  src: string,
-  data: ?FileMetaData,
-};
-
-type Props = {
-  path: string,
-  format?: 'jpeg' | 'png',
-  size?: 'w32h32' | 'w64h64' | 'w128h128' | 'w640h480' | 'w1024h768',
-  render: RenderProps => Node,
-  loading?: ?() => Node,
-};
-
-type State = { blobUrl: ?string, data: ?FileMetaData };
-
-export default class Thumbnail extends Component<Props, State> {
+export default class Thumbnail extends Component {
   state = { blobUrl: null, data: null };
+
+  static propTypes = {
+    path: PropTypes.string.isRequired,
+    format: PropTypes.oneOf(['jpeg', 'png']),
+    size: PropTypes.oneOf([
+      'w32h32',
+      'w64h64',
+      'w128h128',
+      'w640h480',
+      'w1024h768',
+    ]),
+    render: PropTypes.func.isRequired,
+    loading: PropTypes.func,
+  };
 
   static defaultProps = {
     format: 'jpeg',

@@ -1,34 +1,26 @@
-// @flow
 import { Component } from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import Queue from 'p-queue';
 import { filesListFolder } from '../../utils/api/dropbox';
 
 const queue = new Queue({ concurrency: 3 });
 
-type Entry = FileMetaData | FolderMetaData;
-type Entries = Array<Entry>;
-
-type Props = {
-  path: string,
-  recursive?: boolean,
-  sortBy?: string | ((a: Entry, b: Entry) => number),
-  render: ({ entries: Entries }) => Node,
-  loading?: ?() => Node,
-};
-
-type State = {
-  entries: Entries,
-};
-
-export default class Folder extends Component<Props, State> {
+export default class Folder extends Component {
   state = {
     entries: [],
   };
 
+  static propTypes = {
+    path: PropTypes.string.isRequired,
+    recursive: PropTypes.bool,
+    loading: PropTypes.func,
+    sortBy: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    render: PropTypes.func.isRequired,
+  };
+
   static defaultProps = {
     loading: null,
-    reursive: false,
+    recursive: false,
     sortBy: 'name',
   };
 

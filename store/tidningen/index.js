@@ -1,6 +1,3 @@
-// @flow
-import type { Reducer } from 'redux';
-import type { State, Action } from './types';
 import * as constants from './constants';
 
 import clamp from '../../utils/clamp';
@@ -13,7 +10,7 @@ const initialState = {
   error: null,
 };
 
-const reducer: Reducer<State, Action> = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case constants.ADD_YEARS:
       return { ...state, years: action.payload.years };
@@ -56,7 +53,6 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
       };
 
     default:
-      (action: empty); // eslint-disable-line
       return state;
   }
 };

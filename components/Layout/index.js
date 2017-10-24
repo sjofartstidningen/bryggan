@@ -1,6 +1,5 @@
-// @flow
 import React from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Router from 'next/router';
@@ -17,14 +16,7 @@ const Container = styled.div`
   font-size: 1rem;
 `;
 
-type Props = {
-  error: ?{ message: string },
-  user: ?User,
-  title?: string,
-  children?: Node,
-};
-
-const Layout = ({ error, user, title, children }: Props) => (
+const Layout = ({ error, user, title, children }) => (
   <ThemeProvider theme={theme}>
     <div>
       <Head>
@@ -40,9 +32,20 @@ const Layout = ({ error, user, title, children }: Props) => (
   </ThemeProvider>
 );
 
+Layout.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    img: PropTypes.string,
+  }),
+  title: PropTypes.string,
+  error: PropTypes.shape({ message: PropTypes.string.isRequired }),
+  children: PropTypes.node,
+};
+
 Layout.defaultProps = {
   user: null,
   title: 'Bryggan - Sjöfartstidningen',
+  error: null,
   children: null,
 };
 

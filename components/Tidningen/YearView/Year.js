@@ -1,28 +1,35 @@
 /* eslint-disable react/no-array-index-key */
-// @flow
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Router from 'next/router';
 import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
-import type { Issue } from '../../../store/tidningen/types';
 import { getIssues } from '../../../store/tidningen/actions';
 
-type Props = {
-  year: string,
-  issues: Issue[],
-  translateTitle: number,
-  getIssues: (year: string) => void,
-};
+class Year extends Component {
+  static propTypes = {
+    year: PropTypes.string.isRequired,
+    issues: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        year: PropTypes.string,
+        path: PropTypes.string,
+        coverSrc: PropTypes.string,
+      }),
+    ).isRequired,
+    translateTitle: PropTypes.number.isRequired,
+    getIssues: PropTypes.func.isRequired,
+  };
 
-class Year extends Component<Props, *> {
   componentDidMount() {
     if (this.props.issues.length < 1) this.props.getIssues(this.props.year);
   }
 
-  onPageClick = (issue: string) => {
+  onPageClick = issue => {
     const { year } = this.props;
     Router.push(
       {

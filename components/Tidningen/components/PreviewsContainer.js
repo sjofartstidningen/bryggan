@@ -1,4 +1,4 @@
-// @flow
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 
@@ -33,9 +33,13 @@ const PreviewsContainer = styled.div`
     `};
 `;
 
+PreviewsContainer.propTypes = {
+  zoom: PropTypes.number.isRequired,
+  bind: PropTypes.bool,
+};
+
 const mapStateToProps = state => ({
   zoom: state.tidningen.zoom,
 });
 
-// $FlowFixMe
 export default connect(mapStateToProps)(PreviewsContainer);

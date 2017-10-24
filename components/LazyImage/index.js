@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 
-function createObserver(): ?IntersectionObserver {
+function createObserver() {
   if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
       records => {
@@ -24,24 +24,19 @@ function createObserver(): ?IntersectionObserver {
   return null;
 }
 
-const observer: ?IntersectionObserver = createObserver();
-
-type Props = {
-  className?: string,
-  alt?: string,
-  src: string,
-  onLoad?: (e: FileMetaData) => void,
-  onError?: (e: SyntheticEvent<*>) => void,
-  getRef?: (ref: HTMLElement) => void,
-};
-
-type State = {
-  inView: boolean,
-  blobSrc: ?string,
-};
+const observer = createObserver();
 
 export default class LazyImage extends Component<Props, State> {
-  ref: HTMLElement;
+  state = { inView: false, blobSrc: null };
+
+  static propTypes = {
+    src: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    className: PropTypes.string,
+    onLoad: PropTypes.func,
+    onError: PropTypes.func,
+    getRef: PropTypes.func,
+  };
 
   static defaultProps = {
     className: '',
@@ -50,8 +45,6 @@ export default class LazyImage extends Component<Props, State> {
     onError: () => undefined,
     getRef: () => undefined,
   };
-
-  state = { inView: false, blobSrc: null };
 
   componentDidMount() {
     document.addEventListener('image-in-view', this.handleImageInView);
@@ -70,25 +63,23 @@ export default class LazyImage extends Component<Props, State> {
       responseType: 'blob',
     });
 
-    const metaData: FileMetaData = JSON.parse(headers['dropbox-api-result']);
+    const metaData = JSON.parse(headers['dropbox-api-result']);
 
     const blobSrc = URL.createObjectURL(data);
     this.setState(() => ({ blobSrc }));
     this.onLoad(metaData);
   };
 
-  handleImageInView = (e: mixed) => {
-    if (e instanceof CustomEvent) {
-      const { detail } = e;
-      if (observer && this.ref && detail.target === this.ref) {
-        this.setState(() => ({ inView: true }));
-        this.fetchImage();
-        this.unobserveRef();
-      }
+  handleImageInView = e => {
+    const { detail } = e;
+    if (observer && this.ref && detail.target === this.ref) {
+      this.setState(() => ({ inView: true }));
+      this.fetchImage();
+      this.unobserveRef();
     }
   };
 
-  observeRef = (ref: ?HTMLElement) => {
+  observeRef = ref => {
     if (ref && observer) {
       this.ref = ref;
       observer.observe(ref);
@@ -97,16 +88,15 @@ export default class LazyImage extends Component<Props, State> {
 
   unobserveRef = () => {
     if (observer && this.ref) {
-      // $FlowFixMe
       observer.unobserve(this.ref);
     }
   };
 
-  onLoad = (e: FileMetaData) => {
+  onLoad = e => {
     if (this.props.onLoad) this.props.onLoad(e);
   };
 
-  onError = (e: SyntheticEvent<*>) => {
+  onError = e => {
     const { inView } = this.state;
     if (this.props.onError && inView) this.props.onError(e);
   };

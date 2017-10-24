@@ -1,14 +1,14 @@
 // @flow
 
-function fireEvent(stuck: boolean, target: HTMLElement) {
+function fireEvent(stuck, target) {
   const event = new CustomEvent('sticky-change', { detail: { stuck, target } });
   document.dispatchEvent(event);
 }
 
 function createObservers() {
-  const existingObservers: Map<?HTMLElement, IntersectionObserver> = new Map();
+  const existingObservers = new Map();
 
-  return (container: ?HTMLElement): IntersectionObserver => {
+  return container => {
     const existingObserver = existingObservers.get(container);
     if (existingObserver) return existingObserver;
 

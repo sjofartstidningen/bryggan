@@ -1,16 +1,9 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import YearComp from './Year';
-import type { Year } from '../../../store/tidningen/types';
 
-type Props = {
-  years: Year[],
-  translateTitle: number,
-};
-
-function YearView(props: Props) {
-  const { years, translateTitle } = props;
+function YearView({ years, translateTitle }) {
   return (
     <div>
       {years.length > 0 &&
@@ -25,9 +18,19 @@ function YearView(props: Props) {
   );
 }
 
+YearView.propTypes = {
+  years: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      path: PropTypes.string,
+    }),
+  ).isRequired,
+  translateTitle: PropTypes.number.isRequired,
+};
+
 const mapStateToProps = state => ({
   years: state.tidningen.years,
 });
 
-// $FlowFixMe
 export default connect(mapStateToProps)(YearView);

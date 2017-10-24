@@ -1,4 +1,3 @@
-// @flow
 import axios from 'axios';
 import URL from 'url';
 
@@ -26,24 +25,7 @@ const dropboxContent = axios.create({
 /**
  * filesListFolder
  */
-type Entry = FileMetaData | FolderMetaData;
-type FilesListFolderArgs = {
-  path: string,
-  recursive?: boolean,
-  sortBy?: (a: Entry, b: Entry) => number,
-};
-type FilesListFolder = AxiosResponse<
-  {
-    entries: Array<Entry>,
-    cursor: string,
-    has_more: boolean,
-  },
-  *,
->;
-
-export const filesListFolder = (
-  { path, recursive = false, sortBy }: FilesListFolderArgs = {},
-): FilesListFolder =>
+export const filesListFolder = ({ path, recursive = false, sortBy } = {}) =>
   dropboxRPC({
     method: 'post',
     url: '/files/list_folder',
@@ -65,16 +47,9 @@ export const filesListFolder = (
 /**
  * filesGetThumbnail
  */
-type FilesGetThumbnailArgs = {
-  path: string,
-  format?: 'jpeg' | 'png',
-  size?: 'w32h32' | 'w64h64' | 'w128h128' | 'w640h480' | 'w1024h768',
-};
-type FilesGetThumbnail = AxiosResponse<Blob, { 'dropbox-api-result': string }>;
-
 export const filesGetThumbnail = (
-  { path, format = 'jpeg', size = 'w64h64' }: FilesGetThumbnailArgs = {},
-): FilesGetThumbnail =>
+  { path, format = 'jpeg', size = 'w64h64' } = {},
+) =>
   dropboxContent({
     method: 'get',
     url: '/files/get_thumbnail',
@@ -83,8 +58,8 @@ export const filesGetThumbnail = (
   });
 
 export const filesGetThumbnailSrc = (
-  { path, format = 'jpeg', size = 'w64h64' }: FilesGetThumbnailArgs = {},
-): string =>
+  { path, format = 'jpeg', size = 'w64h64' } = {},
+) =>
   URL.format({
     protocol: 'https:',
     hostname: 'content.dropboxapi.com',
