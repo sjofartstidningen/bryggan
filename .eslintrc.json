@@ -1,0 +1,6 @@
+{
+  "extends": ["sjofartstidningen-react"],
+  "rules": {
+    "react/sort-comp": 0
+  }
+}
