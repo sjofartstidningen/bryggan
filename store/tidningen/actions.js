@@ -69,10 +69,7 @@ export function getIssues(year) {
           name: entry.name,
           year,
           path: entry.path_lower,
-          coverSrc: filesGetThumbnailSrc({
-            path: `${entry.path_lower}/${year}-${entry.name}-001.pdf`,
-            size: 'w640h480',
-          }),
+          coverSrc: `${entry.path_lower}/${year}-${entry.name}-001.pdf`,
         }));
 
       return dispatch(addIssues({ year, issues }));
@@ -104,10 +101,7 @@ export function getPages(year, issue) {
             path: entry.path_lower,
             updated_at: updatedAt,
             updated_by: updatedBy,
-            coverSrc: filesGetThumbnailSrc({
-              path: entry.path_lower,
-              size: 'w640h480',
-            }),
+            coverSrc: entry.path_lower,
           };
         });
 
