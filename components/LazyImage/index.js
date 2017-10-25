@@ -15,7 +15,7 @@ function createObserver() {
           document.dispatchEvent(event);
         });
       },
-      { threshold: [0, 1] },
+      { threshold: [0] },
     );
 
     return observer;
