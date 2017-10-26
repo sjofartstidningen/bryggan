@@ -52,8 +52,8 @@ class Year extends Component {
                 <PageThumbnail
                   key={issue.id}
                   src={issue.coverSrc}
-                  alt={`Nummber ${issue.name}`}
-                  description={`Nummber ${issue.name}`}
+                  alt={`Nummer ${issue.name}`}
+                  description={`Nummer ${issue.name}`}
                   handleClick={() => this.onPageClick(issue.name)}
                 />
               ))
