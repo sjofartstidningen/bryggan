@@ -48,9 +48,9 @@ const LoaderPath = styled.path`
   animation-iteration-count: infinite;
 `;
 
-function Loader({ className }) {
+function Loader({ className, width }) {
   return (
-    <LoaderContainer className={className}>
+    <LoaderContainer className={className} width={width}>
       <LoaderPadding>
         <LoaderSvg viewBox="0 0 150 16">
           <LoaderPath
@@ -65,10 +65,12 @@ function Loader({ className }) {
 
 Loader.propTypes = {
   className: PropTypes.string,
+  width: PropTypes.string,
 };
 
 Loader.defaultProps = {
   className: undefined,
+  width: undefined,
 };
 
 export default Loader;
