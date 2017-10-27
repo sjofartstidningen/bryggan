@@ -61,7 +61,7 @@ class IssueView extends Component {
     const { showPreview } = this.state;
 
     return [
-      <section style={{ position: 'relative' }}>
+      <section key="pages" style={{ position: 'relative' }}>
         <SectionTitle translateTitle={translateTitle}>
           {`${year} > ${issue}`}
         </SectionTitle>
@@ -81,8 +81,9 @@ class IssueView extends Component {
       </section>,
       showPreview && (
         <PageView
+          key="preview"
           pdfUrl={this.generatePdfUrl(showPreview)}
-          page={showPreview}
+          page={`${showPreview}`}
           total={pages.length}
           onClose={this.handleClose}
           onPrev={this.handleTraverse(false)}
