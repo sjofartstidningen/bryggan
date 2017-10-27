@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 const PreviewsContainer = styled.div`
+  position: relative;
   display: grid;
   grid-template-columns: repeat(${props => props.zoom}, 1fr);
   grid-gap: ${props => props.theme.size(0)}rem;

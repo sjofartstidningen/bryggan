@@ -35,7 +35,7 @@ TitleSpan.propTypes = {
 function SectionTitle({ translateTitle, children }) {
   return (
     <StickyEvent
-      style={{ zIndex: 2 }}
+      style={{ zIndex: 1 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
           <TitleSpan stuck={stuck} translate={translateTitle}>
