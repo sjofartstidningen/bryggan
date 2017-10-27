@@ -84,7 +84,7 @@ class IssueView extends Component {
           key="preview"
           pdfUrl={this.generatePdfUrl(showPreview)}
           page={`${showPreview}`}
-          total={pages.length}
+          total={pages.length - 1}
           onClose={this.handleClose}
           onPrev={this.handleTraverse(false)}
           onNext={this.handleTraverse(true)}
