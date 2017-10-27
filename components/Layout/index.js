@@ -12,6 +12,7 @@ const Container = styled.div`
   width: 100vw;
   max-width: 44rem;
   margin: 0 auto;
+  padding: ${props => props.theme.size(0)}em;
   font-size: 1rem;
 `;
 
