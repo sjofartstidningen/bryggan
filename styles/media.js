@@ -7,13 +7,14 @@ const sizes = {
   xlarge: '(min-width: 120em)',
 };
 
-export default Object.keys(sizes).reduce((acc, label) => {
-  return {
+export default Object.keys(sizes).reduce(
+  (acc, label) => ({
     ...acc,
     [label]: (...args) => css`
       @media screen and ${sizes[label]} {
         ${css(...args)};
       }
     `,
-  };
-}, {});
+  }),
+  {},
+);
