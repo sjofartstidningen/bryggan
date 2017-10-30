@@ -49,7 +49,7 @@ export default class PageView extends Component {
   // eslint-disable-next-line
   componentDidMount() {
     window.PDFJS.workerSrc =
-      'https://unpkg.com/pdfjs-dist/build/pdf.worker.min.js';
+      'https://unpkg.com/pdfjs-dist@1.10.88/build/pdf.worker.min.js';
   }
 
   getContainerWidth = ref => {
