@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Loader from '../../Loader';
 
 const Container = styled.div`
+  position: relative;
   width: 100%;
   height: 0px;
   border: 1px solid ${props => props.theme.color.white};
@@ -12,6 +13,6 @@ const Container = styled.div`
 
 export default () => (
   <Container>
-    <Loader width="10%" />
+    <Loader width="25%" />
   </Container>
 );
