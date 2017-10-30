@@ -9,16 +9,15 @@ import Loader from './Loader';
 
 const PreviewContainer = styled.div`
   position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   top: 0;
   left: 0;
   width: 100vw;
   min-height: 100vh;
+  max-height: 100vh;
   padding: ${props => props.theme.size(0)}em;
   background-color: ${props => props.theme.color.black};
   z-index: ${props => props.theme.zIndex.top};
+  overflow-x: scroll;
 `;
 
 const LogotypeContainer = styled.div`
@@ -30,8 +29,8 @@ const LogotypeContainer = styled.div`
 
 const PdfContainer = styled.div`
   width: ${props =>
-    props.containerWidth ? `${props.containerWidth}px` : '100%'};
-  max-width: 50rem;
+    props.containerWidth ? `${props.containerWidth}px` : 'auto'};
+  margin: 0 auto;
 `;
 
 export default class PageView extends Component {
@@ -46,6 +45,7 @@ export default class PageView extends Component {
 
   state = {
     containerWidth: undefined,
+    zoom: 0,
   };
 
   // eslint-disable-next-line
@@ -54,12 +54,12 @@ export default class PageView extends Component {
     window.PDFJS.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS.version}/build/pdf.worker.min.js`;
   }
 
+  handleZoom = step => this.setState(({ zoom }) => ({ zoom: zoom + step }));
+
   getContainerWidth = raf(ref => {
     if (ref != null) {
       const { width, height, top } = ref.getBoundingClientRect();
-      const controls = ref.querySelector('.pdf-controls');
-      const controlsHeight = controls.getBoundingClientRect().height;
-      const containerMaxHeight = window.innerHeight - top - controlsHeight;
+      const containerMaxHeight = window.innerHeight - top;
 
       const aspectRatio = width / height;
       const containerWidth = containerMaxHeight * aspectRatio;
@@ -69,28 +69,31 @@ export default class PageView extends Component {
 
   render() {
     const { pdfUrl, page, total, onPrev, onNext, onClose } = this.props;
-    const { containerWidth } = this.state;
+    const { containerWidth, zoom } = this.state;
+
+    const width = containerWidth * (1 + 0.15 * zoom);
 
     return (
       <PreviewContainer>
         <LogotypeContainer>
           <Logotype invert />
         </LogotypeContainer>
-        <PdfContainer
-          innerRef={this.getContainerWidth}
-          containerWidth={containerWidth}
-        >
-          <PdfControls
-            className="pdf-controls"
-            page={page}
-            total={total}
-            onPrev={onPrev}
-            onNext={onNext}
-            onClose={onClose}
-          />
+
+        <PdfControls
+          className="pdf-controls"
+          page={page}
+          total={total}
+          zoom={1 + 0.15 * zoom}
+          onPrev={onPrev}
+          onNext={onNext}
+          onClose={onClose}
+          onZoom={this.handleZoom}
+        />
+
+        <PdfContainer innerRef={this.getContainerWidth} containerWidth={width}>
           <Document className="pdf-document" file={pdfUrl} loading={<Loader />}>
             <Page
-              width={containerWidth}
+              width={width}
               pageIndex={0}
               renderAnnotations={false}
               renderTextLayer={false}

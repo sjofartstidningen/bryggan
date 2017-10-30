@@ -4,16 +4,25 @@ import styled, { css } from 'styled-components';
 import Hidden from '../../Typography/Hidden';
 import ArrowRight from '../../Icons/ArrowRight';
 import ArrowLeft from '../../Icons/ArrowLeft';
+import Plus from '../../Icons/Plus';
+import Minus from '../../Icons/Minus';
 
 const Container = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 30rem;
+  margin: 0 auto;
   margin-bottom: ${props => props.theme.size(0)}em;
   border-bottom: 1px solid ${props => props.theme.color.white};
   padding: ${props => props.theme.size(-2)}em ${props => props.theme.size(-1)}em;
   font-family: ${props => props.theme.font.serif};
   color: ${props => props.theme.color.white};
+`;
+
+const Group = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const Button = styled.button`
@@ -60,8 +69,6 @@ const Info = styled.span`
 `;
 
 const CloseBtn = styled(Button)`
-  margin-left: auto;
-
   &::before,
   &::after {
     content: '';
@@ -84,10 +91,12 @@ export default class PdfControls extends Component {
   static propTypes = {
     page: PropTypes.string.isRequired,
     total: PropTypes.number.isRequired,
+    zoom: PropTypes.number.isRequired,
     className: PropTypes.string,
     onNext: PropTypes.func.isRequired,
     onPrev: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
+    onZoom: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -136,23 +145,47 @@ export default class PdfControls extends Component {
   };
 
   render() {
-    const { page, total, onPrev, onNext, onClose, className } = this.props;
+    const {
+      page,
+      total,
+      zoom,
+      onPrev,
+      onNext,
+      onClose,
+      onZoom,
+      className,
+    } = this.props;
     const { isFirst, isLast } = this.state;
 
     return (
       <Container className={className}>
-        <Button disabled={isFirst} left onClick={onPrev}>
-          <ArrowLeft />
-        </Button>
-        <Info>
-          {page} av {total}
-        </Info>
-        <Button disabled={isLast} right onClick={onNext}>
-          <ArrowRight />
-        </Button>
-        <CloseBtn onClick={onClose}>
-          <Hidden>Stäng</Hidden>
-        </CloseBtn>
+        <Group>
+          <Button disabled={isFirst} left onClick={onPrev}>
+            <ArrowLeft />
+          </Button>
+          <Info>
+            {page} av {total}
+          </Info>
+          <Button disabled={isLast} right onClick={onNext}>
+            <ArrowRight />
+          </Button>
+        </Group>
+
+        <Group>
+          <Button onClick={() => onZoom(-1)}>
+            <Minus />
+          </Button>
+          <Info>{(100 * zoom).toFixed(0)}%</Info>
+          <Button onClick={() => onZoom(1)}>
+            <Plus />
+          </Button>
+        </Group>
+
+        <Group>
+          <CloseBtn onClick={onClose}>
+            <Hidden>Stäng</Hidden>
+          </CloseBtn>
+        </Group>
       </Container>
     );
   }
