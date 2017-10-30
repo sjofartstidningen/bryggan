@@ -84,9 +84,14 @@ export default class PdfControls extends Component {
   static propTypes = {
     page: PropTypes.string.isRequired,
     total: PropTypes.number.isRequired,
+    className: PropTypes.string,
     onNext: PropTypes.func.isRequired,
     onPrev: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    className: '',
   };
 
   state = {
@@ -131,11 +136,11 @@ export default class PdfControls extends Component {
   };
 
   render() {
-    const { page, total, onPrev, onNext, onClose } = this.props;
+    const { page, total, onPrev, onNext, onClose, className } = this.props;
     const { isFirst, isLast } = this.state;
 
     return (
-      <Container>
+      <Container className={className}>
         <Button disabled={isFirst} left onClick={onPrev}>
           <ArrowLeft />
         </Button>

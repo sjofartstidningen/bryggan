@@ -7,7 +7,7 @@ const Container = styled.div`
   height: 0px;
   border: 1px solid ${props => props.theme.color.white};
   padding: 0;
-  padding-top: calc(100% * 211 / 164);
+  padding-top: calc(100% * ${props => props.theme.pageAspectRatio});
 `;
 
 export default () => (

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Document, Page } from 'react-pdf';
+import raf from 'raf-schd';
 import Logotype from '../../Logotype';
 import PdfControls from './Controls';
 import Loader from './Loader';
@@ -28,7 +29,8 @@ const LogotypeContainer = styled.div`
 `;
 
 const PdfContainer = styled.div`
-  width: 100%;
+  width: ${props =>
+    props.containerWidth ? `${props.containerWidth}px` : '100%'};
   max-width: 50rem;
 `;
 
@@ -52,12 +54,18 @@ export default class PageView extends Component {
     window.PDFJS.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS.version}/build/pdf.worker.min.js`;
   }
 
-  getContainerWidth = ref => {
+  getContainerWidth = raf(ref => {
     if (ref != null) {
-      const { width } = ref.getBoundingClientRect();
-      this.setState(() => ({ containerWidth: width }));
+      const { width, height, top } = ref.getBoundingClientRect();
+      const controls = ref.querySelector('.pdf-controls');
+      const controlsHeight = controls.getBoundingClientRect().height;
+      const containerMaxHeight = window.innerHeight - top - controlsHeight;
+
+      const aspectRatio = width / height;
+      const containerWidth = containerMaxHeight * aspectRatio;
+      this.setState(() => ({ containerWidth }));
     }
-  };
+  });
 
   render() {
     const { pdfUrl, page, total, onPrev, onNext, onClose } = this.props;
@@ -68,15 +76,19 @@ export default class PageView extends Component {
         <LogotypeContainer>
           <Logotype invert />
         </LogotypeContainer>
-        <PdfContainer innerRef={this.getContainerWidth}>
+        <PdfContainer
+          innerRef={this.getContainerWidth}
+          containerWidth={containerWidth}
+        >
           <PdfControls
+            className="pdf-controls"
             page={page}
             total={total}
             onPrev={onPrev}
             onNext={onNext}
             onClose={onClose}
           />
-          <Document file={pdfUrl} loading={<Loader />}>
+          <Document className="pdf-document" file={pdfUrl} loading={<Loader />}>
             <Page
               width={containerWidth}
               pageIndex={0}
