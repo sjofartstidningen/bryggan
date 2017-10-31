@@ -29,8 +29,8 @@ const SvgContainer = styled.svg`
 `;
 
 // eslint-disable-next-line
-export const Svg = ({ children, ...props }) => (
-  <IconContainer>
+export const Svg = ({ children, className, ...props }) => (
+  <IconContainer className={className}>
     <SvgContainer viewBox="0 0 24 24" {...props}>
       {children}
     </SvgContainer>

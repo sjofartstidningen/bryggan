@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { filesDownloadUrl } from '../../../utils/api/dropbox';
 import leftPad from '../../../utils/left-pad';
 import SectionTitle from '../components/SectionTitle';
@@ -8,6 +9,10 @@ import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 import PageView from '../PageView';
 import ChevronsRight from '../../Icons/ChevronsRight';
+
+const Icon = styled(ChevronsRight)`
+  margin: 0 0.2em;
+`;
 
 class IssueView extends Component {
   static propTypes = {
@@ -64,7 +69,9 @@ class IssueView extends Component {
     return [
       <section key="pages" style={{ position: 'relative' }}>
         <SectionTitle translateTitle={translateTitle}>
-          {year} <ChevronsRight baseline /> {issue}
+          {year}
+          <Icon baseline />
+          {issue}
         </SectionTitle>
         <PreviewsContainer bind>
           {pages &&

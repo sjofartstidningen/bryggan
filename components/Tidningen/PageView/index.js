@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { modularScale } from 'polished';
 import { Document, Page } from 'react-pdf';
 import raf from 'raf-schd';
+import transition from '../../../styles/transitions';
 import Logotype from '../../Logotype';
 import PdfControls from './Controls';
 import Loader from './Loader';
@@ -14,7 +16,7 @@ const PreviewContainer = styled.div`
   width: 100vw;
   min-height: 100vh;
   max-height: 100vh;
-  padding: ${props => props.theme.size(0)}em;
+  padding: ${modularScale(0)};
   background-color: ${props => props.theme.color.black};
   z-index: ${props => props.theme.zIndex.top};
   overflow-x: scroll;
@@ -22,8 +24,8 @@ const PreviewContainer = styled.div`
 
 const LogotypeContainer = styled.div`
   position: absolute;
-  top: ${props => props.theme.size(0)}em;
-  left: ${props => props.theme.size(0)}em;
+  top: ${modularScale(0)};
+  left: ${modularScale(0)};
   width: 40px;
 `;
 
@@ -31,6 +33,11 @@ const PdfContainer = styled.div`
   width: ${props =>
     props.containerWidth ? `${props.containerWidth}px` : 'auto'};
   margin: 0 auto;
+  ${transition('width')};
+
+  & .pdf-page canvas {
+    ${transition('width')};
+  }
 `;
 
 export default class PageView extends Component {
@@ -93,6 +100,7 @@ export default class PageView extends Component {
         <PdfContainer innerRef={this.getContainerWidth} containerWidth={width}>
           <Document className="pdf-document" file={pdfUrl} loading={<Loader />}>
             <Page
+              className="pdf-page"
               width={width}
               pageIndex={0}
               renderAnnotations={false}

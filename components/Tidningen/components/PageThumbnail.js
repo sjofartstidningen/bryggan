@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { modularScale } from 'polished';
 import raf from 'raf-schd';
+import transition from '../../../styles/transitions';
 import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
 
@@ -46,7 +48,7 @@ const ImgContainer = styled.div`
   border-radius: 0;
   padding-top: calc(100% * ${props => props.aspectRatio});
   overflow: hidden;
-  transition: border 0.3s ease-in-out;
+  ${transition('border')};
 `;
 
 ImgContainer.propTypes = {
@@ -61,7 +63,7 @@ const Img = styled(LazyImage)`
   width: 100%;
   opacity: ${props => (props.show ? 1 : 0)};
   visibility: ${props => (props.show ? 'visible' : 'hidden')};
-  transition: all 0.3s ease-in-out;
+  ${transition('opacity', 'visibility')};
 `;
 
 Img.propTypes = {
@@ -71,14 +73,13 @@ Img.propTypes = {
 const Desc = styled.p`
   position: relative;
   margin: 0;
-  margin-top: ${props => props.theme.size(-1)}em;
+  margin-top: ${modularScale(-1)};
   font-family: ${props => props.theme.font.serif};
-  font-size: ${props => props.theme.size(-1)}em;
+  font-size: ${modularScale(-1)};
   text-align: center;
   color: ${props => props.theme.color.grey};
   overflow: hidden;
-  will-change: color;
-  transition: color 0.3s ease-in-out;
+  ${transition('color')};
 
   &::after {
     content: 'Visa';
@@ -90,8 +91,7 @@ const Desc = styled.p`
     height: 100%;
     color: ${props => props.theme.color.brand};
     transform: translateY(100%);
-    will-change: transform;
-    transition: transform 0.3s ease-in-out;
+    ${transition('transform')};
   }
 `;
 

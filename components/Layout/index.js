@@ -5,15 +5,17 @@ import Head from 'next/head';
 import Router from 'next/router';
 import Progress from 'nprogress';
 import styled, { ThemeProvider } from 'styled-components';
+import { modularScale } from 'polished';
 import theme from '../../styles/theme';
 import Header from '../Header';
 
 const Container = styled.div`
+  position: relative;
   width: 100vw;
   max-width: 44rem;
   margin: 0 auto;
-  padding: ${props => props.theme.size(0)}em;
-  font-size: 1rem;
+  padding: ${modularScale(0)};
+  font-size: ${modularScale(0)};
 `;
 
 const Layout = ({ error, user, title, children }) => (

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import { modularScale } from 'polished';
+import transition from '../../../styles/transitions';
 import Hidden from '../../Typography/Hidden';
 import ArrowRight from '../../Icons/ArrowRight';
 import ArrowLeft from '../../Icons/ArrowLeft';
@@ -13,9 +15,9 @@ const Container = styled.div`
   align-items: center;
   width: 30rem;
   margin: 0 auto;
-  margin-bottom: ${props => props.theme.size(0)}em;
+  margin-bottom: ${modularScale(0)};
   border-bottom: 1px solid ${props => props.theme.color.white};
-  padding: ${props => props.theme.size(-2)}em ${props => props.theme.size(-1)}em;
+  padding: ${modularScale(-2)} ${modularScale(-1)};
   font-family: ${props => props.theme.font.serif};
   color: ${props => props.theme.color.white};
 `;
@@ -28,9 +30,9 @@ const Group = styled.div`
 const Button = styled.button`
   position: relative;
   display: block;
-  width: ${props => props.theme.size(0)}em;
-  height: ${props => props.theme.size(0)}em;
-  font-size: ${props => props.theme.size(1)}em;
+  width: ${modularScale(0)};
+  height: ${modularScale(0)};
+  font-size: ${modularScale(1)};
   line-height: 1;
   border: none;
   border-radius: 0;
@@ -42,8 +44,7 @@ const Button = styled.button`
   ${props =>
     (props.left || props.right) &&
     css`
-      transition: transform 0.3s ease-in-out;
-      will-change: transform;
+      ${transition('transform')};
 
       &:hover {
         transform: translateX(${props.left && '-'}10%);
@@ -65,7 +66,7 @@ const Button = styled.button`
 `;
 
 const Info = styled.span`
-  margin: 0 ${props => props.theme.size(0)}em;
+  margin: 0 ${modularScale(0)};
 `;
 
 const CloseBtn = styled(Button)`
