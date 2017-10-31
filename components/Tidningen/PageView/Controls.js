@@ -16,8 +16,6 @@ const Container = styled.div`
   width: 30rem;
   margin: 0 auto;
   margin-bottom: ${modularScale(0)};
-  border-bottom: 1px solid ${props => props.theme.color.white};
-  padding: ${modularScale(-2)} ${modularScale(-1)};
   font-family: ${props => props.theme.font.serif};
   color: ${props => props.theme.color.white};
 `;
@@ -128,7 +126,7 @@ export default class PdfControls extends Component {
   }
 
   handleKeyDown = e => {
-    const { onPrev, onNext, onClose } = this.props;
+    const { onPrev, onNext, onClose, onZoom } = this.props;
     const { isFirst, isLast } = this.state;
 
     const { keyCode } = e;
@@ -140,6 +138,12 @@ export default class PdfControls extends Component {
         return !isLast && onNext();
       case 27:
         return onClose();
+      case 187:
+        return onZoom(1);
+      case 189:
+        return onZoom(-1);
+      case 48:
+        return onZoom();
       default:
         return null;
     }
