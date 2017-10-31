@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { modularScale } from 'polished';
 import { Document, Page } from 'react-pdf';
 import raf from 'raf-schd';
-import transition from '../../../styles/transitions';
+import { slideInDown, slideOutUp } from '../../../styles/animations';
 import Logotype from '../../Logotype';
 import PdfControls from './Controls';
 import Loader from './Loader';
@@ -22,6 +22,9 @@ const PreviewContainer = styled.div`
   background-color: ${props => props.theme.color.black};
   z-index: ${props => props.theme.zIndex.top};
   overflow-x: scroll;
+  ${slideInDown};
+
+  ${props => props.fadeOut && slideOutUp()};
 `;
 
 const LogotypeContainer = styled.div`
@@ -35,11 +38,6 @@ const PdfContainer = styled.div`
   width: ${props =>
     props.containerWidth ? `${props.containerWidth}px` : '30rem'};
   margin: 0 auto;
-  ${transition('width')};
-
-  & .pdf-page canvas {
-    ${transition('width')};
-  }
 `;
 
 export default class PageView extends Component {
@@ -55,6 +53,7 @@ export default class PageView extends Component {
   state = {
     containerWidth: undefined,
     zoom: 1,
+    fadeOut: false,
   };
 
   constructor(props) {
@@ -79,6 +78,11 @@ export default class PageView extends Component {
       zoom: step == null ? 1 : clamp(0.1, 2.5, zoom + step * 0.15),
     }));
 
+  handleClose = () => {
+    this.setState(() => ({ fadeOut: true }));
+    setTimeout(() => this.props.onClose(), 1000);
+  };
+
   handleLoad = raf(() => {
     if (this.container != null) {
       const pdf = this.container.querySelector('canvas');
@@ -93,12 +97,12 @@ export default class PageView extends Component {
   });
 
   render() {
-    const { pdfUrl, page, total, onPrev, onNext, onClose } = this.props;
-    const { containerWidth, zoom } = this.state;
+    const { pdfUrl, page, total, onPrev, onNext } = this.props;
+    const { containerWidth, zoom, fadeOut } = this.state;
     const width = containerWidth * zoom;
 
     return createPortal(
-      <PreviewContainer>
+      <PreviewContainer fadeOut={fadeOut}>
         <LogotypeContainer>
           <Logotype invert />
         </LogotypeContainer>
@@ -110,7 +114,7 @@ export default class PageView extends Component {
           zoom={zoom}
           onPrev={onPrev}
           onNext={onNext}
-          onClose={onClose}
+          onClose={this.handleClose}
           onZoom={this.handleZoom}
         />
 
