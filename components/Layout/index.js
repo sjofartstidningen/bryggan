@@ -9,6 +9,11 @@ import { modularScale } from 'polished';
 import theme from '../../styles/theme';
 import Header from '../Header';
 
+const Wrapper = styled.div`
+  position: relative;
+  z-index: ${props => props.theme.zIndex.zero};
+`;
+
 const Container = styled.div`
   position: relative;
   width: 100vw;
@@ -20,7 +25,7 @@ const Container = styled.div`
 
 const Layout = ({ error, user, title, children }) => (
   <ThemeProvider theme={theme}>
-    <div className="wrapper">
+    <Wrapper>
       <Head>
         <title>{title}</title>
       </Head>
@@ -30,7 +35,7 @@ const Layout = ({ error, user, title, children }) => (
       <Header user={user} />
 
       <Container className="container">{children}</Container>
-    </div>
+    </Wrapper>
   </ThemeProvider>
 );
 

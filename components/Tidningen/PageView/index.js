@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale } from 'polished';
@@ -55,10 +56,21 @@ export default class PageView extends Component {
     zoom: 0,
   };
 
-  // eslint-disable-next-line
+  constructor(props) {
+    super(props);
+    this.el = document.createElement('div');
+  }
+
   componentDidMount() {
     // eslint-disable-next-line
     window.PDFJS.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS.version}/build/pdf.worker.min.js`;
+
+    this.rootEl = document.getElementById('preview-root');
+    this.rootEl.appendChild(this.el);
+  }
+
+  componentWillUnmount() {
+    this.rootEl.removeChild(this.el);
   }
 
   handleZoom = step => this.setState(({ zoom }) => ({ zoom: zoom + step }));
@@ -80,7 +92,7 @@ export default class PageView extends Component {
 
     const width = containerWidth * (1 + 0.15 * zoom);
 
-    return (
+    return createPortal(
       <PreviewContainer>
         <LogotypeContainer>
           <Logotype invert />
@@ -108,7 +120,8 @@ export default class PageView extends Component {
             />
           </Document>
         </PdfContainer>
-      </PreviewContainer>
+      </PreviewContainer>,
+      this.el,
     );
   }
 }
