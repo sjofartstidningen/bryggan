@@ -6,6 +6,7 @@ import raf from 'raf-schd';
 import transition from '../../../styles/transitions';
 import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
+import Eye from '../../Icons/Eye';
 
 const IssueContainer = styled.button`
   display: block;
@@ -26,12 +27,13 @@ const IssueContainer = styled.button`
 
   &:hover p,
   &:focus p {
-    color: transparent;
+    color: ${props => props.theme.color.brand};
   }
 
-  &:hover p::after,
-  &:focus p::after {
-    transform: translateY(0);
+  &:hover p div,
+  &:focus p div {
+    opacity: 1;
+    transform: translate(0, 0);
   }
 
   &:hover > div,
@@ -78,21 +80,15 @@ const Desc = styled.p`
   font-size: ${modularScale(-1)};
   text-align: center;
   color: ${props => props.theme.color.grey};
-  overflow: hidden;
   ${transition('color')};
+`;
 
-  &::after {
-    content: 'Visa';
-    position: absolute;
-    display: block;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    color: ${props => props.theme.color.brand};
-    transform: translateY(100%);
-    ${transition('transform')};
-  }
+const Icon = styled(Eye)`
+  position: absolute;
+  margin-left: ${modularScale(-2)};
+  opacity: 0;
+  transform: translate(100%, 0);
+  ${transition('transform', 'opacity')};
 `;
 
 export default class PageThumbnail extends Component {
@@ -139,7 +135,10 @@ export default class PageThumbnail extends Component {
           )}
           {loading && <Loader width="50%" />}
         </ImgContainer>
-        <Desc>{description}</Desc>
+        <Desc>
+          {description}
+          <Icon baseline />
+        </Desc>
       </IssueContainer>
     );
   }

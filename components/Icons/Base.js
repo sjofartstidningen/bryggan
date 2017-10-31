@@ -46,3 +46,13 @@ const PolylineEl = styled.polyline``;
 export const Polyline = props => (
   <PolylineEl vectorEffect="non-scaling-stroke" {...props} />
 );
+
+const CircleEl = styled.circle``;
+export const Circle = props => (
+  <CircleEl vectorEffect="non-scaling-stroke" {...props} />
+);
+
+const PathEl = styled.path``;
+export const Path = props => (
+  <PathEl vectorEffect="non-scaling-stroke" {...props} />
+);
