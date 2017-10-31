@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
@@ -36,10 +36,13 @@ const TitleSpan = styled.span`
 `;
 
 const Icon = styled(ChevronsRight)`
-  margin-right: 0.2em;
-  margin-left: ${props => (props.stuck ? 0 : -1.2)}em;
-  opacity: ${props => (props.stuck ? 1 : 0)};
-  ${transition('margin-left', 'opacity')};
+  margin: 0 0.2em;
+
+  &:first-child {
+    margin-left: ${props => (props.stuck ? 0 : -1.2)}em;
+    opacity: ${props => (props.stuck ? 1 : 0)};
+    ${transition('margin-left', 'opacity')};
+  }
 `;
 
 TitleSpan.propTypes = {
@@ -55,8 +58,10 @@ function SectionTitle({ translateTitle, children }) {
         <Title stuck={stuck}>
           <Small>
             <TitleSpan stuck={stuck} translate={translateTitle}>
-              <Icon baseline stuck={stuck} />
-              {children}
+              {Children.map(children, child => [
+                <Icon baseline stuck={stuck} />,
+                child,
+              ])}
             </TitleSpan>
           </Small>
         </Title>
