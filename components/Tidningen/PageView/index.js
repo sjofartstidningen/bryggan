@@ -9,6 +9,7 @@ import transition from '../../../styles/transitions';
 import Logotype from '../../Logotype';
 import PdfControls from './Controls';
 import Loader from './Loader';
+import clamp from '../../../utils/clamp';
 
 const PreviewContainer = styled.div`
   position: fixed;
@@ -32,7 +33,7 @@ const LogotypeContainer = styled.div`
 
 const PdfContainer = styled.div`
   width: ${props =>
-    props.containerWidth ? `${props.containerWidth}px` : 'auto'};
+    props.containerWidth ? `${props.containerWidth}px` : '30rem'};
   margin: 0 auto;
   ${transition('width')};
 
@@ -53,7 +54,7 @@ export default class PageView extends Component {
 
   state = {
     containerWidth: undefined,
-    zoom: 0,
+    zoom: 1,
   };
 
   constructor(props) {
@@ -73,12 +74,17 @@ export default class PageView extends Component {
     this.rootEl.removeChild(this.el);
   }
 
-  handleZoom = step => this.setState(({ zoom }) => ({ zoom: zoom + step }));
+  handleZoom = step =>
+    this.setState(({ zoom }) => ({
+      zoom: step == null ? 1 : clamp(0.1, 2.5, zoom + step * 0.15),
+    }));
 
-  getContainerWidth = raf(ref => {
-    if (ref != null) {
-      const { width, height, top } = ref.getBoundingClientRect();
-      const containerMaxHeight = window.innerHeight - top;
+  handleLoad = raf(() => {
+    if (this.container != null) {
+      const pdf = this.container.querySelector('canvas');
+      const { width, height } = pdf.getBoundingClientRect();
+      const { top } = this.container.getBoundingClientRect();
+      const containerMaxHeight = window.innerHeight - top - 16;
 
       const aspectRatio = width / height;
       const containerWidth = containerMaxHeight * aspectRatio;
@@ -89,8 +95,7 @@ export default class PageView extends Component {
   render() {
     const { pdfUrl, page, total, onPrev, onNext, onClose } = this.props;
     const { containerWidth, zoom } = this.state;
-
-    const width = containerWidth * (1 + 0.15 * zoom);
+    const width = containerWidth * zoom;
 
     return createPortal(
       <PreviewContainer>
@@ -102,14 +107,19 @@ export default class PageView extends Component {
           className="pdf-controls"
           page={page}
           total={total}
-          zoom={1 + 0.15 * zoom}
+          zoom={zoom}
           onPrev={onPrev}
           onNext={onNext}
           onClose={onClose}
           onZoom={this.handleZoom}
         />
 
-        <PdfContainer innerRef={this.getContainerWidth} containerWidth={width}>
+        <PdfContainer
+          innerRef={ref => {
+            this.container = ref;
+          }}
+          containerWidth={width}
+        >
           <Document className="pdf-document" file={pdfUrl} loading={<Loader />}>
             <Page
               className="pdf-page"
@@ -117,6 +127,7 @@ export default class PageView extends Component {
               pageIndex={0}
               renderAnnotations={false}
               renderTextLayer={false}
+              onLoadSuccess={this.handleLoad}
             />
           </Document>
         </PdfContainer>

@@ -9,7 +9,7 @@ export default {
     serif:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
   },
-  pageAspectRatio: 275 / 210,
+  pageAspectRatio: 211 / 164,
   zIndex: {
     bottom: -1,
     zero: 0,

@@ -176,7 +176,7 @@ export default class PdfControls extends Component {
           <Button onClick={() => onZoom(-1)}>
             <Minus />
           </Button>
-          <Info>{(100 * zoom).toFixed(0)}%</Info>
+          <Info onClick={() => onZoom()}>{(100 * zoom).toFixed(0)}%</Info>
           <Button onClick={() => onZoom(1)}>
             <Plus />
           </Button>
