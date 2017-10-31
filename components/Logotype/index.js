@@ -11,15 +11,24 @@ const Svg = styled.svg`
 const Path = styled.path`
   fill: ${props =>
     props.white ? props.theme.color.white : props.theme.color.black};
+
+  .inverted & {
+    fill: ${props =>
+      props.white ? props.theme.color.black : props.theme.color.white};
+  }
 `;
 
 Path.propTypes = {
   white: PropTypes.bool,
 };
 
-function Logotype() {
+function Logotype({ invert }) {
   return (
-    <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 402.95 494.02">
+    <Svg
+      className={invert && 'inverted'}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 402.95 494.02"
+    >
       <title>Logotype</title>
       <desc>
         Logotype f&ouml;r Sj&ouml;fartstidningen f&ouml;rest&auml;llande ett
@@ -88,5 +97,13 @@ function Logotype() {
     </Svg>
   );
 }
+
+Logotype.propTypes = {
+  invert: PropTypes.bool,
+};
+
+Logotype.defaultProps = {
+  invert: false,
+};
 
 export default Logotype;

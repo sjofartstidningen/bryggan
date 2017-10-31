@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
+import media from '../../../styles/media';
 
 const PreviewsContainer = styled.div`
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(${props => props.zoom}, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: ${props => props.theme.size(0)}rem;
   padding: ${props => props.theme.size(0)}em;
   z-index: ${props => props.theme.zIndex.zero};
@@ -31,6 +33,10 @@ const PreviewsContainer = styled.div`
         padding-left: ${props.theme.size(0) / 2}em;
       }
     `};
+
+  ${media.notSmall`
+    grid-template-columns: repeat(${props => props.zoom}, 1fr);
+  `};
 `;
 
 PreviewsContainer.propTypes = {

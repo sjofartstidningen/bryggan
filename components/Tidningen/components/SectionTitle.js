@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import StickyEvent from '../../StickyEvent';
 import { H2 } from '../../Typography/headings';
+import ChevronsRight from '../../Icons/ChevronsRight';
 
 const Title = styled(H2)`
   background-color: ${props => props.theme.color.white};
@@ -35,11 +36,11 @@ TitleSpan.propTypes = {
 function SectionTitle({ translateTitle, children }) {
   return (
     <StickyEvent
-      style={{ zIndex: 2 }}
+      style={{ zIndex: 1 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
           <TitleSpan stuck={stuck} translate={translateTitle}>
-            {stuck && '>'} {children}
+            {stuck && <ChevronsRight baseline />} {children}
           </TitleSpan>
         </Title>
       )}

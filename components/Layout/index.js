@@ -9,16 +9,16 @@ import theme from '../../styles/theme';
 import Header from '../Header';
 
 const Container = styled.div`
-  position: relative;
   width: 100vw;
   max-width: 44rem;
   margin: 0 auto;
+  padding: ${props => props.theme.size(0)}em;
   font-size: 1rem;
 `;
 
 const Layout = ({ error, user, title, children }) => (
   <ThemeProvider theme={theme}>
-    <div>
+    <div className="wrapper">
       <Head>
         <title>{title}</title>
       </Head>
@@ -27,7 +27,7 @@ const Layout = ({ error, user, title, children }) => (
 
       <Header user={user} />
 
-      <Container>{children}</Container>
+      <Container className="container">{children}</Container>
     </div>
   </ThemeProvider>
 );
@@ -51,7 +51,6 @@ Layout.defaultProps = {
 
 const mapStateToProps = ({ tidningen }) => ({ error: tidningen.error });
 
-// $FlowFixMe
 export default connect(mapStateToProps)(Layout);
 
 /**

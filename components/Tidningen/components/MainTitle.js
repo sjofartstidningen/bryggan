@@ -38,7 +38,7 @@ const TitleLink = styled(Link)`
 function MainTitle({ children }) {
   return (
     <StickyEvent
-      style={{ zIndex: 3 }}
+      style={{ zIndex: 2 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
           <TitleLink href="/tidningen">{children}</TitleLink>

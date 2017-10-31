@@ -89,3 +89,15 @@ export const filesGetThumbnailSrc = (
       arg: JSON.stringify({ path, format, size }),
     },
   });
+
+export const filesDownloadUrl = ({ path } = {}) =>
+  URL.format({
+    protocol: 'https:',
+    hostname: 'content.dropboxapi.com',
+    pathname: '/2/files/download',
+    query: {
+      authorization: `Bearer ${accessToken}`,
+      reject_cors_preflight: true,
+      arg: JSON.stringify({ path }),
+    },
+  });
