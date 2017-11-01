@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
 import raf from 'raf-schd';
 import transition from '../../../styles/transitions';
 import Loader from '../../Loader';
 import LazyImage from '../../LazyImage';
 import Eye from '../../Icons/Eye';
+import IsHovering from '../../IsHovering';
 
 const IssueContainer = styled.button`
   display: block;
@@ -19,27 +20,12 @@ const IssueContainer = styled.button`
   cursor: pointer;
   z-index: ${props => props.theme.zIndex.zero};
 
-  &:hover,
-  &:focus {
-    z-index: ${props => props.theme.zIndex.middle};
-    outline: none;
-  }
-
-  &:hover p,
-  &:focus p {
-    color: ${props => props.theme.color.brand};
-  }
-
-  &:hover p div,
-  &:focus p div {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-
-  &:hover > div,
-  &:focus > div {
-    border-color: ${props => props.theme.color.brand};
-  }
+  ${props =>
+    props.hover &&
+    css`
+      z-index: ${props.theme.zIndex.middle};
+      outline: none;
+    `};
 `;
 
 const ImgContainer = styled.div`
@@ -51,11 +37,13 @@ const ImgContainer = styled.div`
   padding-top: calc(100% * ${props => props.aspectRatio});
   overflow: hidden;
   ${transition('border')};
-`;
 
-ImgContainer.propTypes = {
-  aspectRatio: PropTypes.number.isRequired,
-};
+  ${props =>
+    props.hover &&
+    css`
+      border-color: ${props.theme.color.brand};
+    `};
+`;
 
 const Img = styled(LazyImage)`
   position: absolute;
@@ -68,11 +56,7 @@ const Img = styled(LazyImage)`
   ${transition('opacity', 'visibility')};
 `;
 
-Img.propTypes = {
-  show: PropTypes.bool,
-};
-
-const Desc = styled.p`
+const Desc = styled.div`
   position: relative;
   margin: 0;
   margin-top: ${modularScale(-1)};
@@ -81,6 +65,12 @@ const Desc = styled.p`
   text-align: center;
   color: ${props => props.theme.color.grey};
   ${transition('color')};
+
+  ${props =>
+    props.hover &&
+    css`
+      color: ${props.theme.color.brand};
+    `};
 `;
 
 const Icon = styled(Eye)`
@@ -89,15 +79,16 @@ const Icon = styled(Eye)`
   opacity: 0;
   transform: translate(100%, 0);
   ${transition('transform', 'opacity')};
+
+  ${props =>
+    props.hover &&
+    css`
+      opacity: 1;
+      transform: translate(0, 0);
+    `};
 `;
 
 export default class PageThumbnail extends Component {
-  state = {
-    loading: true,
-    aspectRatio: 211 / 164,
-    blob: null,
-  };
-
   static propTypes = {
     src: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
@@ -110,6 +101,13 @@ export default class PageThumbnail extends Component {
     handleClick: () => undefined,
   };
 
+  state = {
+    loading: true,
+    aspectRatio: 211 / 164,
+    blob: null,
+    focus: false,
+  };
+
   handleImgLoaded = raf(() => this.setState(() => ({ loading: false })));
 
   handleRef = ref => {
@@ -117,29 +115,41 @@ export default class PageThumbnail extends Component {
     this.setState(() => ({ aspectRatio: height / width }));
   };
 
+  handleFocus = focus => this.setState(() => ({ focus }));
+
   render() {
     const { src, description, alt, handleClick } = this.props;
-    const { loading, aspectRatio } = this.state;
+    const { loading, aspectRatio, focus } = this.state;
 
     return (
-      <IssueContainer onClick={handleClick} disable={loading}>
-        <ImgContainer aspectRatio={aspectRatio}>
-          {src && (
-            <Img
-              src={src}
-              alt={alt || ''}
-              show={!loading}
-              onLoad={this.handleImgLoaded}
-              getRef={this.handleRef}
-            />
-          )}
-          {loading && <Loader width="50%" />}
-        </ImgContainer>
-        <Desc>
-          {description}
-          <Icon baseline />
-        </Desc>
-      </IssueContainer>
+      <IsHovering>
+        {({ hovering }) => (
+          <IssueContainer
+            onClick={handleClick}
+            onFocus={() => this.handleFocus(true)}
+            onBlur={() => this.handleFocus(false)}
+            disable={loading}
+            hover={hovering || focus}
+          >
+            <ImgContainer aspectRatio={aspectRatio} hover={hovering || focus}>
+              {src && (
+                <Img
+                  src={src}
+                  alt={alt || ''}
+                  show={!loading}
+                  onLoad={this.handleImgLoaded}
+                  getRef={this.handleRef}
+                />
+              )}
+              {loading && <Loader width="50%" />}
+            </ImgContainer>
+            <Desc hover={hovering || focus}>
+              {description}
+              <Icon baseline hover={hovering || focus} />
+            </Desc>
+          </IssueContainer>
+        )}
+      </IsHovering>
     );
   }
 }
