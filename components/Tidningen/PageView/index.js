@@ -89,8 +89,10 @@ export default class PageView extends Component {
   );
 
   handleClose = raf(() => {
+    this.container.addEventListener('transitionend', this.props.onClose, {
+      once: true,
+    });
     this.setState(() => ({ exit: true }));
-    setTimeout(() => this.props.onClose(), 1000);
   });
 
   handleRenderSuccess = raf(() => {
@@ -98,13 +100,17 @@ export default class PageView extends Component {
   });
 
   handleNext = raf(() => {
+    this.pdfContainer.addEventListener('transitionend', this.props.onNext, {
+      once: true,
+    });
     this.setState(() => ({ rendered: false }));
-    setTimeout(() => this.props.onNext(), 300);
   });
 
   handlePrev = raf(() => {
+    this.pdfContainer.addEventListener('transitionend', this.props.onPrev, {
+      once: true,
+    });
     this.setState(() => ({ rendered: false }));
-    setTimeout(() => this.props.onPrev(), 300);
   });
 
   render() {
@@ -112,7 +118,12 @@ export default class PageView extends Component {
     const { zoom, exit, rendered } = this.state;
 
     return createPortal(
-      <PreviewContainer exit={exit}>
+      <PreviewContainer
+        exit={exit}
+        innerRef={ref => {
+          this.container = ref;
+        }}
+      >
         <Header>
           <LogotypeContainer>
             <Logotype invert />
@@ -141,7 +152,7 @@ export default class PageView extends Component {
         <PdfContainer
           show={rendered}
           innerRef={ref => {
-            this.container = ref;
+            this.pdfContainer = ref;
           }}
         >
           <Document file={pdfUrl}>
