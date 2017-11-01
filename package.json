@@ -13,6 +13,7 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "auth0-lock": "^10.23.1",
     "axios": "^0.17.0",
     "express": "^4.16.2",
     "next": "^4.1.4",
