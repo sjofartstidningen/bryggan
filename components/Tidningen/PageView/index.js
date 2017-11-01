@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { modularScale } from 'polished';
 import { Document, Page } from 'react-pdf';
 import raf from 'raf-schd';
+import { slideInDown, slideOutUp } from '../../../styles/animations';
 import Logotype from '../../Logotype';
 import PdfControls from './Controls';
 import Loader from './Loader';
+import clamp from '../../../utils/clamp';
 
 const PreviewContainer = styled.div`
   position: fixed;
@@ -14,22 +18,25 @@ const PreviewContainer = styled.div`
   width: 100vw;
   min-height: 100vh;
   max-height: 100vh;
-  padding: ${props => props.theme.size(0)}em;
+  padding: ${modularScale(0)};
   background-color: ${props => props.theme.color.black};
   z-index: ${props => props.theme.zIndex.top};
   overflow-x: scroll;
+  ${slideInDown};
+
+  ${props => props.fadeOut && slideOutUp()};
 `;
 
 const LogotypeContainer = styled.div`
   position: absolute;
-  top: ${props => props.theme.size(0)}em;
-  left: ${props => props.theme.size(0)}em;
+  top: ${modularScale(0)};
+  left: ${modularScale(0)};
   width: 40px;
 `;
 
 const PdfContainer = styled.div`
   width: ${props =>
-    props.containerWidth ? `${props.containerWidth}px` : 'auto'};
+    props.containerWidth ? `${props.containerWidth}px` : '30rem'};
   margin: 0 auto;
 `;
 
@@ -45,21 +52,43 @@ export default class PageView extends Component {
 
   state = {
     containerWidth: undefined,
-    zoom: 0,
+    zoom: 1,
+    fadeOut: false,
   };
 
-  // eslint-disable-next-line
+  constructor(props) {
+    super(props);
+    this.el = document.createElement('div');
+  }
+
   componentDidMount() {
     // eslint-disable-next-line
     window.PDFJS.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS.version}/build/pdf.worker.min.js`;
+
+    this.rootEl = document.getElementById('preview-root');
+    this.rootEl.appendChild(this.el);
   }
 
-  handleZoom = step => this.setState(({ zoom }) => ({ zoom: zoom + step }));
+  componentWillUnmount() {
+    this.rootEl.removeChild(this.el);
+  }
 
-  getContainerWidth = raf(ref => {
-    if (ref != null) {
-      const { width, height, top } = ref.getBoundingClientRect();
-      const containerMaxHeight = window.innerHeight - top;
+  handleZoom = step =>
+    this.setState(({ zoom }) => ({
+      zoom: step == null ? 1 : clamp(0.1, 2.5, zoom + step * 0.15),
+    }));
+
+  handleClose = () => {
+    this.setState(() => ({ fadeOut: true }));
+    setTimeout(() => this.props.onClose(), 1000);
+  };
+
+  handleLoad = raf(() => {
+    if (this.container != null) {
+      const pdf = this.container.querySelector('canvas');
+      const { width, height } = pdf.getBoundingClientRect();
+      const { top } = this.container.getBoundingClientRect();
+      const containerMaxHeight = window.innerHeight - top - 16;
 
       const aspectRatio = width / height;
       const containerWidth = containerMaxHeight * aspectRatio;
@@ -68,13 +97,12 @@ export default class PageView extends Component {
   });
 
   render() {
-    const { pdfUrl, page, total, onPrev, onNext, onClose } = this.props;
-    const { containerWidth, zoom } = this.state;
+    const { pdfUrl, page, total, onPrev, onNext } = this.props;
+    const { containerWidth, zoom, fadeOut } = this.state;
+    const width = containerWidth * zoom;
 
-    const width = containerWidth * (1 + 0.15 * zoom);
-
-    return (
-      <PreviewContainer>
+    return createPortal(
+      <PreviewContainer fadeOut={fadeOut}>
         <LogotypeContainer>
           <Logotype invert />
         </LogotypeContainer>
@@ -83,24 +111,32 @@ export default class PageView extends Component {
           className="pdf-controls"
           page={page}
           total={total}
-          zoom={1 + 0.15 * zoom}
+          zoom={zoom}
           onPrev={onPrev}
           onNext={onNext}
-          onClose={onClose}
+          onClose={this.handleClose}
           onZoom={this.handleZoom}
         />
 
-        <PdfContainer innerRef={this.getContainerWidth} containerWidth={width}>
+        <PdfContainer
+          innerRef={ref => {
+            this.container = ref;
+          }}
+          containerWidth={width}
+        >
           <Document className="pdf-document" file={pdfUrl} loading={<Loader />}>
             <Page
+              className="pdf-page"
               width={width}
               pageIndex={0}
               renderAnnotations={false}
               renderTextLayer={false}
+              onLoadSuccess={this.handleLoad}
             />
           </Document>
         </PdfContainer>
-      </PreviewContainer>
+      </PreviewContainer>,
+      this.el,
     );
   }
 }

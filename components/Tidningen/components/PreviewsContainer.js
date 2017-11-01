@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
+import { modularScale } from 'polished';
 import media from '../../../styles/media';
 
 const PreviewsContainer = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: ${props => props.theme.size(0)}rem;
-  padding: ${props => props.theme.size(0)}em;
+  grid-gap: ${modularScale(0)};
+  padding: ${modularScale(0)};
   z-index: ${props => props.theme.zIndex.zero};
 
   ${props =>
@@ -26,11 +27,11 @@ const PreviewsContainer = styled.div`
       }
 
       & > *:nth-child(odd) {
-        padding-right: ${props.theme.size(0) / 2}em;
+        padding-right: calc(${modularScale(0)} / 2);
       }
 
       & > *:nth-child(even) {
-        padding-left: ${props.theme.size(0) / 2}em;
+        padding-left: calc(${modularScale(0)} / 2);
       }
     `};
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
+import transition from '../../styles/transitions';
 
 const LoaderContainer = styled.div`
   position: absolute;
@@ -12,7 +13,7 @@ const LoaderContainer = styled.div`
   border-radius: 100%;
   padding-top: ${props => props.width || '50%'};
   transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease-in-out;
+  ${transition('opacity')};
 `;
 
 const LoaderPadding = styled.div`

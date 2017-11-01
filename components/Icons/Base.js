@@ -29,8 +29,8 @@ const SvgContainer = styled.svg`
 `;
 
 // eslint-disable-next-line
-export const Svg = ({ children, ...props }) => (
-  <IconContainer>
+export const Svg = ({ children, className, ...props }) => (
+  <IconContainer className={className}>
     <SvgContainer viewBox="0 0 24 24" {...props}>
       {children}
     </SvgContainer>
@@ -45,4 +45,14 @@ export const Line = props => (
 const PolylineEl = styled.polyline``;
 export const Polyline = props => (
   <PolylineEl vectorEffect="non-scaling-stroke" {...props} />
+);
+
+const CircleEl = styled.circle``;
+export const Circle = props => (
+  <CircleEl vectorEffect="non-scaling-stroke" {...props} />
+);
+
+const PathEl = styled.path``;
+export const Path = props => (
+  <PathEl vectorEffect="non-scaling-stroke" {...props} />
 );

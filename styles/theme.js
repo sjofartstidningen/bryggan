@@ -1,5 +1,3 @@
-import ms from 'modular-scale';
-
 export default {
   color: {
     black: 'rgba(0, 0, 0, 1)',
@@ -7,12 +5,11 @@ export default {
     white: 'rgba(255, 255, 255, 1)',
     brand: 'rgba(5, 153, 228, 1)',
   },
-  size: step => ms(step, { ratio: 1.5, base: 1, decimals: 2 }),
   font: {
     serif:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
   },
-  pageAspectRatio: 275 / 210,
+  pageAspectRatio: 211 / 164,
   zIndex: {
     bottom: -1,
     zero: 0,

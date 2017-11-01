@@ -1,23 +1,25 @@
 import styled from 'styled-components';
+import { modularScale } from 'polished';
+import transition from '../../styles/transitions';
 import Link from '../Link';
 
 export const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   width: 100vw;
-  padding: 1em;
-  font-size: ${props => props.theme.size(0)}rem;
+  padding: ${modularScale(0)};
+  font-size: ${modularScale(0)};
   overflow: hidden;
   font-family: ${props => props.theme.font.serif};
 `;
 
 export const LogotypeContainer = styled.div`
   width: 40px;
-  margin-right: ${props => props.theme.size(1)}em;
+  margin-right: ${modularScale(1)};
 `;
 
 export const NavContainer = styled.div`
-  margin-right: ${props => props.theme.size(1)}em;
+  margin-right: ${modularScale(1)};
 `;
 
 export const Nav = styled.ul`
@@ -28,9 +30,9 @@ export const Nav = styled.ul`
 
 export const NavItem = styled.li`
   display: inline-block;
-  margin-right: ${props => props.theme.size(-1)}em;
+  margin-right: ${modularScale(-1)};
   border-right: 1px solid ${props => props.theme.color.grey};
-  padding-right: ${props => props.theme.size(-1)}em;
+  padding-right: ${modularScale(-1)};
   color: ${props =>
     props.active ? props.theme.color.black : props.theme.color.grey};
 
@@ -45,7 +47,7 @@ export const NavLink = styled(Link)`
   color: ${props =>
     props.active ? props.theme.color.black : props.theme.color.grey};
   text-decoration: none;
-  transition: color 0.2s ease-in-out;
+  ${transition('color')};
 
   &:hover {
     color: ${props => props.theme.color.black};
@@ -59,15 +61,15 @@ export const ProfileContainer = styled.div`
 `;
 
 export const ProfileName = styled.span`
-  margin-right: ${props => props.theme.size(-1)}em;
-  line-height: calc(${props => props.theme.size(1)}em - 4px);
+  margin-right: ${modularScale(-1)};
+  line-height: calc(${modularScale(1)} - 4px);
 `;
 
 export const ProfileImage = styled.div`
   position: relative;
   display: inline-block;
-  width: calc(${props => props.theme.size(1)}em - 4px);
-  height: calc(${props => props.theme.size(1)}em - 4px);
+  width: calc(${modularScale(1)} - 4px);
+  height: calc(${modularScale(1)} - 4px);
   border-radius: 100%;
   background-color: ${props => props.theme.color.grey};
 

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import { modularScale } from 'polished';
+import transition from '../../../styles/transitions';
 import Hidden from '../../Typography/Hidden';
 import ArrowRight from '../../Icons/ArrowRight';
 import ArrowLeft from '../../Icons/ArrowLeft';
@@ -13,9 +15,7 @@ const Container = styled.div`
   align-items: center;
   width: 30rem;
   margin: 0 auto;
-  margin-bottom: ${props => props.theme.size(0)}em;
-  border-bottom: 1px solid ${props => props.theme.color.white};
-  padding: ${props => props.theme.size(-2)}em ${props => props.theme.size(-1)}em;
+  margin-bottom: ${modularScale(0)};
   font-family: ${props => props.theme.font.serif};
   color: ${props => props.theme.color.white};
 `;
@@ -28,9 +28,9 @@ const Group = styled.div`
 const Button = styled.button`
   position: relative;
   display: block;
-  width: ${props => props.theme.size(0)}em;
-  height: ${props => props.theme.size(0)}em;
-  font-size: ${props => props.theme.size(1)}em;
+  width: ${modularScale(0)};
+  height: ${modularScale(0)};
+  font-size: ${modularScale(1)};
   line-height: 1;
   border: none;
   border-radius: 0;
@@ -42,8 +42,7 @@ const Button = styled.button`
   ${props =>
     (props.left || props.right) &&
     css`
-      transition: transform 0.3s ease-in-out;
-      will-change: transform;
+      ${transition('transform')};
 
       &:hover {
         transform: translateX(${props.left && '-'}10%);
@@ -65,7 +64,7 @@ const Button = styled.button`
 `;
 
 const Info = styled.span`
-  margin: 0 ${props => props.theme.size(0)}em;
+  margin: 0 ${modularScale(0)};
 `;
 
 const CloseBtn = styled(Button)`
@@ -127,7 +126,7 @@ export default class PdfControls extends Component {
   }
 
   handleKeyDown = e => {
-    const { onPrev, onNext, onClose } = this.props;
+    const { onPrev, onNext, onClose, onZoom } = this.props;
     const { isFirst, isLast } = this.state;
 
     const { keyCode } = e;
@@ -139,6 +138,12 @@ export default class PdfControls extends Component {
         return !isLast && onNext();
       case 27:
         return onClose();
+      case 187:
+        return onZoom(1);
+      case 189:
+        return onZoom(-1);
+      case 48:
+        return onZoom();
       default:
         return null;
     }
@@ -175,7 +180,7 @@ export default class PdfControls extends Component {
           <Button onClick={() => onZoom(-1)}>
             <Minus />
           </Button>
-          <Info>{(100 * zoom).toFixed(0)}%</Info>
+          <Info onClick={() => onZoom()}>{(100 * zoom).toFixed(0)}%</Info>
           <Button onClick={() => onZoom(1)}>
             <Plus />
           </Button>

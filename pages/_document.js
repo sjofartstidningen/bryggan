@@ -28,6 +28,7 @@ export default class Doc extends Document {
           {this.props.styleTags}
         </Head>
         <body>
+          <div id="preview-root" style={{ position: 'relative', zIndex: 1 }} />
           <Main />
           <NextScript />
         </body>

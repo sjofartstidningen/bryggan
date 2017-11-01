@@ -7,7 +7,6 @@ import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 import PageView from '../PageView';
-import ChevronsRight from '../../Icons/ChevronsRight';
 
 class IssueView extends Component {
   static propTypes = {
@@ -64,7 +63,7 @@ class IssueView extends Component {
     return [
       <section key="pages" style={{ position: 'relative' }}>
         <SectionTitle translateTitle={translateTitle}>
-          {year} <ChevronsRight baseline /> {issue}
+          {[year, issue]}
         </SectionTitle>
         <PreviewsContainer bind>
           {pages &&

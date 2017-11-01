@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import transition from '../../../styles/transitions';
 import StickyEvent from '../../StickyEvent';
 import Link from '../../Link';
 import { H1 } from '../../Typography/headings';
 
 const Title = styled(H1)`
   border-bottom: 1px solid transparent;
-  transition: border-color 0.3s ease-in-out;
-  will-change: border-color;
+  padding-bottom: 0.5rem;
+  ${transition('border-color')};
 
   ${props =>
     props.stuck &&
@@ -23,12 +24,10 @@ Title.propTypes = {
 
 const TitleLink = styled(Link)`
   display: inline-block;
-  padding-bottom: 0.5rem;
   text-decoration: none;
   color: ${props => props.theme.color.grey};
   background-color: ${props => props.theme.color.white};
-  transition: color 0.3s ease-in-out;
-  will-change: color;
+  ${transition('color')};
 
   &:hover {
     color: ${props => props.theme.color.black};
