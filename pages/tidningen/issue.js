@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import withRedux from 'next-redux-wrapper';
-import Layout from '../../components/Layout';
+import standard from '../../containers/standard';
 import MainTitle from '../../components/Tidningen/components/MainTitle';
 import IssueView from '../../components/Tidningen/IssueView';
 
-import { initStore } from '../../store';
 import { getPages } from '../../store/tidningen/actions';
 
 class Issue extends Component<*, State> {
@@ -15,7 +13,7 @@ class Issue extends Component<*, State> {
     if (pages && pages.year === year && pages.issue === issue) return {};
 
     await getPages(year, issue)(store.dispatch, store.getState);
-    return {};
+    return { title: `Nummer ${issue}-${year} – Bryggan` };
   }
 
   state = { titleWidth: 0 };
@@ -28,16 +26,13 @@ class Issue extends Component<*, State> {
   };
 
   render() {
-    const { year, issue } = this.props.url.query;
-    return (
-      <Layout title={`Nummer ${issue}-${year} – Bryggan`}>
-        <MainTitle>
-          <span ref={this.getTitleWidth}>Tidningen</span>
-        </MainTitle>
-        <IssueView translateTitle={this.state.titleWidth} />
-      </Layout>
-    );
+    return [
+      <MainTitle key="title">
+        <span ref={this.getTitleWidth}>Tidningen</span>
+      </MainTitle>,
+      <IssueView key="view" translateTitle={this.state.titleWidth} />,
+    ];
   }
 }
 
-export default withRedux(initStore)(Issue);
+export default standard(Issue);
