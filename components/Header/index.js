@@ -19,6 +19,7 @@ const links = [
   { href: '/', title: 'Dashboard' },
   { href: '/tidningen', title: 'Tidningen' },
   { href: '/nyhetsbrevet', title: 'Nyhetsbrevet' },
+  { href: '/auth/sign-in', title: 'Logga in' },
 ];
 
 class Header extends Component {
