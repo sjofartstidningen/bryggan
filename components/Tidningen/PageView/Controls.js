@@ -15,7 +15,6 @@ const Container = styled.div`
   align-items: center;
   width: 30rem;
   margin: 0 auto;
-  margin-bottom: ${modularScale(0)};
   font-family: ${props => props.theme.font.serif};
   color: ${props => props.theme.color.white};
 `;
