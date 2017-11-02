@@ -1,40 +1,48 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
-import standard from '../../containers/standard';
+import standardPage from '../../hoc/standardPage';
 import AuthService from '../../utils/auth';
 
 class SignIn extends Component {
-  state = {
-    containerId: 'put-lock-here',
-    loggedIn: false,
-  };
+  static async getInitialProps(ctx) {
+    const auth = new AuthService(
+      process.env.AUTH0_CLIENT_ID,
+      process.env.AUTH0_CLIENT_DOMAIN,
+    );
+
+    if (auth.loggedIn(ctx.req)) {
+      if (ctx.res) {
+        ctx.res.writeHead(302, { Location: '/' });
+        ctx.res.end();
+      }
+
+      Router.push('/');
+    }
+  }
 
   componentDidMount() {
     this.setupAuthService();
   }
 
   setupAuthService = () => {
-    this.auth = new AuthService(
+    const auth = new AuthService(
       process.env.AUTH0_CLIENT_ID,
       process.env.AUTH0_CLIENT_DOMAIN,
     );
 
-    const loggedIn = this.auth.loggedIn();
-    this.setState(() => ({ loggedIn }));
+    const loggedIn = auth.loggedIn();
 
-    if (!loggedIn) this.auth.login();
-
-    this.auth.lock.on('authenticated', result => {
-      this.auth.lock.hide();
-      console.log(result);
-      console.log(this.props.url.asPath);
+    if (!loggedIn) {
+      auth.login();
+    } else {
       Router.push('/');
-    });
+    }
   };
 
+  // eslint-disable-next-line
   render() {
-    return <div id={this.state.containerId} />;
+    return <div />;
   }
 }
 
-export default standard(SignIn);
+export default standardPage(SignIn);
