@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Router from 'next/router';
 import AuthService from '../../utils/auth';
+import standardPage from '../../hoc/standardPage';
+import { signOut } from '../../store/auth/actions';
 
-export default class SignOut extends Component {
+class SignOut extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+  };
+
   componentDidMount() {
     this.auth = new AuthService(
       process.env.AUTH0_CLIENT_ID,
@@ -10,6 +17,7 @@ export default class SignOut extends Component {
     );
 
     this.auth.logout();
+    this.props.dispatch(signOut());
     Router.push('/auth/sign-in');
   }
 
@@ -18,3 +26,5 @@ export default class SignOut extends Component {
     return <div />;
   }
 }
+
+export default standardPage(SignOut);
