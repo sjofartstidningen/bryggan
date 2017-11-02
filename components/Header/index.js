@@ -13,13 +13,14 @@ import {
   ProfileContainer,
   ProfileName,
   ProfileImage,
+  ProfileMenu,
 } from './components';
+import Link from '../Link';
 
 const links = [
   { href: '/', title: 'Dashboard' },
   { href: '/tidningen', title: 'Tidningen' },
   { href: '/nyhetsbrevet', title: 'Nyhetsbrevet' },
-  { href: '/auth/sign-in', title: 'Logga in' },
 ];
 
 class Header extends Component {
@@ -82,6 +83,14 @@ class Header extends Component {
             <ProfileImage>
               {user.img && <img src={user.img} alt="" />}
             </ProfileImage>
+            <ProfileMenu>
+              <li>
+                <Link href="/settings">Inställningar</Link>
+              </li>
+              <li>
+                <Link href="/auth/sign-out">Logga ut</Link>
+              </li>
+            </ProfileMenu>
           </ProfileContainer>
         )}
       </HeaderContainer>

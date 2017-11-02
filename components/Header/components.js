@@ -9,7 +9,6 @@ export const HeaderContainer = styled.header`
   width: 100vw;
   padding: ${modularScale(0)};
   font-size: ${modularScale(0)};
-  overflow: hidden;
   font-family: ${props => props.theme.font.serif};
 `;
 
@@ -55,6 +54,7 @@ export const NavLink = styled(Link)`
 `;
 
 export const ProfileContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   margin-left: auto;
@@ -83,4 +83,20 @@ export const ProfileImage = styled.div`
     border: 1px solid ${props => props.theme.color.black};
     border-radius: 100%;
   }
+
+  & img {
+    display: block;
+    width: 100%;
+    border-radius: 100%;
+  }
+`;
+
+export const ProfileMenu = styled.ul`
+  position: absolute;
+  top: 120%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
