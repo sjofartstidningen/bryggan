@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
 import { initStore } from '../store';
+import callInitialProps from '../utils/call-initial-props';
 import Layout from '../components/Layout';
 
 export default Page => {
@@ -15,10 +16,7 @@ export default Page => {
     };
 
     static async getInitialProps(ctx) {
-      const pageProps = Page.getInitialProps
-        ? await Page.getInitialProps({ ...ctx })
-        : {};
-
+      const pageProps = await callInitialProps(Page, ctx);
       return { ...pageProps };
     }
 

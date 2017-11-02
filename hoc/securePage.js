@@ -3,6 +3,7 @@ import Router from 'next/router';
 import standardPage from './standardPage';
 import AuthService from '../utils/auth';
 import { signIn, addToken, updateUser } from '../store/auth/actions';
+import callInitialProps from '../utils/call-initial-props';
 
 export default Page => {
   class SecurePage extends Component {
@@ -44,10 +45,7 @@ export default Page => {
         ctx.store.dispatch(addToken(payload));
       });
 
-      const pageProps = Page.getInitialProps
-        ? await Page.getInitialProps({ ...ctx })
-        : {};
-
+      const pageProps = await callInitialProps(Page, ctx);
       return { ...pageProps };
     }
 
