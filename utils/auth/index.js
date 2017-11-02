@@ -40,6 +40,11 @@ export default class AuthService {
           params: this.authParams,
           ...opts.auth,
         },
+        theme: {
+          primaryColor: 'rgba(0, 0, 0, 1)',
+          logo: '/static/assets/images/logo-auth0.png',
+        },
+        languageDictionary: { title: 'Bryggan' },
       });
 
       this.on = this.lock.on.bind(this.lock);
@@ -62,7 +67,13 @@ export default class AuthService {
     });
   };
 
-  logout = () => this.removeToken();
+  logout = () => {
+    if (!process.browser) return;
+
+    this.removeCookie('user');
+    this.removeCookie('jwt');
+    this.removeCookie('accessToken');
+  };
 
   loggedIn = req => !!this.getCookie('accessToken', req);
 
@@ -89,9 +100,5 @@ export default class AuthService {
     return getReqCookie(cookie, req);
   };
 
-  removeToken = () => {
-    Cookie.remove('user');
-    Cookie.remove('jwt');
-    Cookie.remove('accessToken');
-  };
+  removeCookie = cookie => Cookie.remove(cookie);
 }
