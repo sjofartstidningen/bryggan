@@ -56,7 +56,10 @@ Layout.defaultProps = {
   children: null,
 };
 
-const mapStateToProps = ({ tidningen }) => ({ error: tidningen.error });
+const mapStateToProps = ({ tidningen, auth }) => ({
+  error: tidningen.error,
+  user: auth.user,
+});
 
 export default connect(mapStateToProps)(Layout);
 
