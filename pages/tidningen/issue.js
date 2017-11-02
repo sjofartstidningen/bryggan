@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import standard from '../../containers/standard';
+import securePage from '../../hoc/securePage';
 import MainTitle from '../../components/Tidningen/components/MainTitle';
 import IssueView from '../../components/Tidningen/IssueView';
 
@@ -35,4 +35,4 @@ class Issue extends Component<*, State> {
   }
 }
 
-export default standard(Issue);
+export default securePage(Issue);

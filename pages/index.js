@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import standard from '../containers/standard';
+import securePage from '../hoc/securePage';
 
 class Index extends Component {
-  static async getInitialProps({ store }) {
-    store.dispatch({ type: 'FAKE' });
-    const state = store.getState();
-    return { state };
+  static async getInitialProps() {
+    return {};
   }
 
   render() {
@@ -13,4 +11,4 @@ class Index extends Component {
   }
 }
 
-export default standard(Index);
+export default securePage(Index);
