@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 import standardPage from './standardPage';
 import AuthService from '../utils/auth';
+import { signIn, addToken, updateUser } from '../store/auth/actions';
 
 export default Page => {
   class SecurePage extends Component {
@@ -25,12 +26,29 @@ export default Page => {
       }
 
       const user = auth.getUser(ctx.req);
+      const userObj = {
+        name: user.user_metadata.name,
+        email: user.email,
+        img: user.picture,
+      };
+
+      ctx.store.dispatch(signIn());
+      ctx.store.dispatch(updateUser(userObj));
+
+      const metadata = user.client_metadata;
+      Object.keys(metadata).forEach(token => {
+        const payload = {
+          token,
+          value: metadata[token],
+        };
+        ctx.store.dispatch(addToken(payload));
+      });
 
       const pageProps = Page.getInitialProps
         ? await Page.getInitialProps({ ...ctx })
         : {};
 
-      return { user, ...pageProps };
+      return { ...pageProps };
     }
 
     render() {
