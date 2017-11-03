@@ -21,6 +21,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: ${modularScale(0)};
   font-size: ${modularScale(0)};
+  z-index: ${props => props.theme.zIndex.middle};
 `;
 
 const Layout = ({ error, user, title, children }) => (
