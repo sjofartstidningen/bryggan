@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 import AuthService from '../../utils/auth';
 import standardPage from '../../hoc/standardPage';
+import config from '../../config';
 
 class SignedIn extends Component {
   componentDidMount() {
@@ -9,11 +10,7 @@ class SignedIn extends Component {
   }
 
   setupAuthService = () => {
-    this.auth = new AuthService(
-      process.env.AUTH0_CLIENT_ID,
-      process.env.AUTH0_CLIENT_DOMAIN,
-    );
-
+    this.auth = new AuthService(config.auth0id, config.auth0domain);
     this.auth.on('authenticated', () => Router.push('/'));
   };
 

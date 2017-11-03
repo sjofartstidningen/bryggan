@@ -4,6 +4,7 @@ import withRedux from 'next-redux-wrapper';
 import { initStore } from '../store';
 import callInitialProps from '../utils/call-initial-props';
 import Layout from '../components/Layout';
+import config from '../config';
 
 export default Page => {
   class Standard extends Component {
@@ -12,7 +13,7 @@ export default Page => {
     };
 
     static defaultProps = {
-      title: 'Bryggan – Sjöfartstidningen',
+      title: `${config.name} – ${config.company}`,
     };
 
     static async getInitialProps(ctx) {

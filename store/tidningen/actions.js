@@ -1,6 +1,8 @@
 import Queue from '../../utils/p-queue';
+import { join } from 'path';
 import { filesListFolder } from '../../utils/api/dropbox';
 import * as constants from './constants';
+import config from '../../config';
 
 export const addYears = payload => ({
   type: constants.ADD_YEARS,
@@ -37,7 +39,7 @@ export function getYears() {
     try {
       const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
       const { data } = await queue.add(() =>
-        filesListFolder({ path: '/Bryggan', sortBy }),
+        filesListFolder({ path: config.dropboxRoot, sortBy }),
       );
       const years = data.entries
         .filter(entry => entry['.tag'] === 'folder')
@@ -58,7 +60,7 @@ export function getYears() {
 export function getIssues(year) {
   return async dispatch => {
     try {
-      const path = `/Bryggan/${year}`;
+      const path = join(config.dropboxRoot, year);
       const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
 
       const { data } = await queue.add(() => filesListFolder({ path, sortBy }));
@@ -69,7 +71,7 @@ export function getIssues(year) {
           name: entry.name,
           year,
           path: entry.path_lower,
-          coverSrc: `${entry.path_lower}/${year}-${entry.name}-001.pdf`,
+          coverSrc: join(entry.path_lower, `${year}-${entry.name}-001.pdf`),
         }));
 
       return dispatch(addIssues({ year, issues }));
@@ -83,7 +85,7 @@ export function getIssues(year) {
 export function getPages(year, issue) {
   return async dispatch => {
     try {
-      const path = `/Bryggan/${year}/${issue}`;
+      const path = join(config.dropboxRoot, year, issue);
       const sortBy = (a, b) => (a.name > b.name ? 1 : -1);
 
       const { data } = await queue.add(() => filesListFolder({ path, sortBy }));

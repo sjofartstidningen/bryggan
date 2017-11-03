@@ -4,15 +4,12 @@ import standardPage from './standardPage';
 import AuthService from '../utils/auth';
 import { signIn, addToken, updateUser } from '../store/auth/actions';
 import callInitialProps from '../utils/call-initial-props';
+import config from '../config';
 
 export default Page => {
   class SecurePage extends Component {
     static async getInitialProps(ctx) {
-      const auth = new AuthService(
-        process.env.AUTH0_CLIENT_ID,
-        process.env.AUTH0_CLIENT_DOMAIN,
-      );
-
+      const auth = new AuthService(config.auth0id, config.auth0domain);
       const loggedIn = auth.loggedIn(ctx.req);
 
       if (!loggedIn) {

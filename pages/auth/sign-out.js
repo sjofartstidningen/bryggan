@@ -4,6 +4,7 @@ import Router from 'next/router';
 import AuthService from '../../utils/auth';
 import standardPage from '../../hoc/standardPage';
 import { signOut } from '../../store/auth/actions';
+import config from '../../config';
 
 class SignOut extends Component {
   static propTypes = {
@@ -11,10 +12,7 @@ class SignOut extends Component {
   };
 
   componentDidMount() {
-    this.auth = new AuthService(
-      process.env.AUTH0_CLIENT_ID,
-      process.env.AUTH0_CLIENT_DOMAIN,
-    );
+    this.auth = new AuthService(config.auth0id, config.auth0domain);
 
     this.auth.logout();
     this.props.dispatch(signOut());

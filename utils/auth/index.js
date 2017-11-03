@@ -1,6 +1,7 @@
 import Auth0Lock from 'auth0-lock';
 import Cookie from 'js-cookie';
 import decode from 'jwt-decode';
+import config from '../../config';
 
 const getLocalCookie = (cookie, asJson) => {
   if (asJson) return Cookie.getJSON(cookie);
@@ -36,7 +37,7 @@ export default class AuthService {
         ...opts,
         auth: {
           responseType: 'token',
-          redirectUrl: 'http://localhost:3000/auth/signed-in',
+          redirectUrl: `${config.baseUrl}/auth/signed-in`,
           params: this.authParams,
           ...opts.auth,
         },
@@ -44,7 +45,7 @@ export default class AuthService {
           primaryColor: 'rgba(0, 0, 0, 1)',
           logo: '/static/assets/images/logo-auth0.png',
         },
-        languageDictionary: { title: 'Bryggan' },
+        languageDictionary: { title: config.name },
       });
 
       this.on = this.lock.on.bind(this.lock);
