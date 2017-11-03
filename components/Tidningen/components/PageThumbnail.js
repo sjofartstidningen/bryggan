@@ -93,6 +93,7 @@ export default class PageThumbnail extends Component {
     src: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     alt: PropTypes.string,
+    dropboxAccessToken: PropTypes.string.isRequired,
     handleClick: PropTypes.func,
   };
 
@@ -118,7 +119,13 @@ export default class PageThumbnail extends Component {
   handleFocus = focus => this.setState(() => ({ focus }));
 
   render() {
-    const { src, description, alt, handleClick } = this.props;
+    const {
+      src,
+      description,
+      alt,
+      handleClick,
+      dropboxAccessToken,
+    } = this.props;
     const { loading, aspectRatio, focus } = this.state;
 
     return (
@@ -139,6 +146,7 @@ export default class PageThumbnail extends Component {
                   show={!loading}
                   onLoad={this.handleImgLoaded}
                   getRef={this.handleRef}
+                  dropboxAccessToken={dropboxAccessToken}
                 />
               )}
               {loading && <Loader width="50%" />}

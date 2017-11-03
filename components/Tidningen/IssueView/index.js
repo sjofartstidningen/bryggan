@@ -25,6 +25,7 @@ class IssueView extends Component {
     year: PropTypes.string.isRequired,
     issue: PropTypes.string.isRequired,
     translateTitle: PropTypes.number.isRequired,
+    dropboxAccessToken: PropTypes.string.isRequired,
   };
 
   state = {
@@ -47,7 +48,7 @@ class IssueView extends Component {
   };
 
   generatePdfUrl = page => {
-    const { year, issue } = this.props;
+    const { year, issue, dropboxAccessToken } = this.props;
     const pdfPath = join(
       config.dropboxRoot,
       year,
@@ -55,12 +56,21 @@ class IssueView extends Component {
       `${year}-${issue}-${leftPad(page, 3, 0)}.pdf`,
     );
 
-    const url = filesDownloadUrl({ path: pdfPath });
+    const url = filesDownloadUrl({
+      path: pdfPath,
+      accessToken: dropboxAccessToken,
+    });
     return url;
   };
 
   render() {
-    const { pages, year, issue, translateTitle } = this.props;
+    const {
+      pages,
+      year,
+      issue,
+      translateTitle,
+      dropboxAccessToken,
+    } = this.props;
     const { showPreview } = this.state;
 
     return [
@@ -78,6 +88,7 @@ class IssueView extends Component {
                 description={`${i + 1}`}
                 alt={`Preview of page ${i + 1}`}
                 handleClick={() => this.showPreview(i + 1)}
+                dropboxAccessToken={dropboxAccessToken}
               />
             ))}
         </PreviewsContainer>
@@ -99,6 +110,7 @@ class IssueView extends Component {
 
 const mapStateToProps = state => ({
   ...state.tidningen.pages,
+  dropboxAccessToken: state.auth.tokens.dropboxAccessToken,
 });
 
 export default connect(mapStateToProps)(IssueView);

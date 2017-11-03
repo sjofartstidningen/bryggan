@@ -1,5 +1,5 @@
-import Queue from '../../utils/p-queue';
 import { join } from 'path';
+import Queue from '../../utils/p-queue';
 import { filesListFolder } from '../../utils/api/dropbox';
 import * as constants from './constants';
 import config from '../../config';
@@ -34,12 +34,12 @@ export const fetchError = payload => ({
 
 const queue = new Queue({ concurrency: 5 });
 
-export function getYears() {
+export function getYears(accessToken) {
   return async dispatch => {
     try {
       const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
       const { data } = await queue.add(() =>
-        filesListFolder({ path: config.dropboxRoot, sortBy }),
+        filesListFolder({ path: config.dropboxRoot, sortBy, accessToken }),
       );
       const years = data.entries
         .filter(entry => entry['.tag'] === 'folder')
@@ -57,13 +57,15 @@ export function getYears() {
   };
 }
 
-export function getIssues(year) {
+export function getIssues(year, accessToken) {
   return async dispatch => {
     try {
       const path = join(config.dropboxRoot, year);
       const sortBy = (a, b) => (a.name < b.name ? 1 : -1);
 
-      const { data } = await queue.add(() => filesListFolder({ path, sortBy }));
+      const { data } = await queue.add(() =>
+        filesListFolder({ path, sortBy, accessToken }),
+      );
       const issues = data.entries
         .filter(entry => entry['.tag'] === 'folder')
         .map(entry => ({
@@ -82,13 +84,15 @@ export function getIssues(year) {
   };
 }
 
-export function getPages(year, issue) {
+export function getPages(year, issue, accessToken) {
   return async dispatch => {
     try {
       const path = join(config.dropboxRoot, year, issue);
       const sortBy = (a, b) => (a.name > b.name ? 1 : -1);
 
-      const { data } = await queue.add(() => filesListFolder({ path, sortBy }));
+      const { data } = await queue.add(() =>
+        filesListFolder({ path, sortBy, accessToken }),
+      );
       const pages = data.entries
         .filter(entry => entry['.tag'] === 'file')
         .map(entry => {

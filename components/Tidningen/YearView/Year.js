@@ -23,10 +23,12 @@ class Year extends Component {
     ).isRequired,
     translateTitle: PropTypes.number.isRequired,
     getIssues: PropTypes.func.isRequired,
+    dropboxAccessToken: PropTypes.string.isRequired,
   };
 
   componentDidMount() {
-    if (this.props.issues.length < 1) this.props.getIssues(this.props.year);
+    const { issues, year, dropboxAccessToken } = this.props;
+    if (issues.length < 1) this.props.getIssues(year, dropboxAccessToken);
   }
 
   onPageClick = issue => {
@@ -41,7 +43,8 @@ class Year extends Component {
   };
 
   render() {
-    const { year, issues, translateTitle } = this.props;
+    const { year, issues, translateTitle, dropboxAccessToken } = this.props;
+
     return (
       <section style={{ position: 'relative' }}>
         <SectionTitle translateTitle={translateTitle}>{year}</SectionTitle>
@@ -55,6 +58,7 @@ class Year extends Component {
                   alt={`Nummer ${issue.name}`}
                   description={`Nummer ${issue.name}`}
                   handleClick={() => this.onPageClick(issue.name)}
+                  dropboxAccessToken={dropboxAccessToken}
                 />
               ))
             : Array.from({ length: 11 }).map((_, i) => (
@@ -63,6 +67,7 @@ class Year extends Component {
                   src={''}
                   description="Laddar"
                   handleClick={() => undefined}
+                  dropboxAccessToken={dropboxAccessToken}
                 />
               ))}
         </PreviewsContainer>
@@ -72,10 +77,12 @@ class Year extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const { issues } = state.tidningen;
+  const { tidningen, auth } = state;
+  const { issues } = tidningen;
+  const { dropboxAccessToken } = auth.tokens;
 
-  if (!issues[props.year]) return { issues: [] };
-  return { issues: issues[props.year] };
+  if (!issues[props.year]) return { issues: [], dropboxAccessToken };
+  return { issues: issues[props.year], dropboxAccessToken };
 };
 
 const mapDispatchToProps = dispatch =>

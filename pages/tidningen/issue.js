@@ -8,11 +8,17 @@ import config from '../../config';
 class Issue extends Component<*, State> {
   static async getInitialProps({ query, store }) {
     const { year, issue } = query;
-    const { pages } = store.getState().tidningen;
+    const { tidningen, auth } = store.getState();
+    const { pages } = tidningen;
+    const { dropboxAccessToken } = auth.tokens;
 
     if (pages && pages.year === year && pages.issue === issue) return {};
 
-    await getPages(year, issue)(store.dispatch, store.getState);
+    await getPages(year, issue, dropboxAccessToken)(
+      store.dispatch,
+      store.getState,
+    );
+
     return { title: `Nummer ${issue}-${year} – ${config.name}` };
   }
 
