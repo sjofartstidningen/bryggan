@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
 import transition from '../../../styles/transitions';
+import Popover from '../../Popover';
 import Hidden from '../../Typography/Hidden';
 import ArrowRight from '../../Icons/ArrowRight';
 import ArrowLeft from '../../Icons/ArrowLeft';
@@ -167,6 +168,7 @@ export default class PdfControls extends Component {
           <Button disabled={isFirst} left onClick={onPrev}>
             <ArrowLeft />
           </Button>
+
           <Info>
             {page} av {total}
           </Info>
@@ -186,9 +188,11 @@ export default class PdfControls extends Component {
         </Group>
 
         <Group>
-          <CloseBtn onClick={onClose}>
-            <Hidden>Stäng</Hidden>
-          </CloseBtn>
+          <Popover popover={() => 'Esc'}>
+            <CloseBtn onClick={onClose}>
+              <Hidden>Stäng</Hidden>
+            </CloseBtn>
+          </Popover>
         </Group>
       </Container>
     );
