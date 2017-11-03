@@ -161,8 +161,7 @@ export const ProfileMenuLink = styled(Link)`
   }
 `;
 
-export const ProfileMenuInfo = styled.span`
-  display: block;
+export const ProfileMenuInfo = ProfileMenuLink.extend`
   margin-top: ${modularScale(1)};
   color: ${props => props.theme.color.grey};
   font-size: ${modularScale(-1)};

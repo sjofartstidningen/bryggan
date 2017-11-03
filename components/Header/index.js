@@ -107,7 +107,13 @@ class Header extends Component {
                   </ProfileMenuItem>
 
                   <ProfileMenuItem>
-                    <ProfileMenuInfo>Version {version}</ProfileMenuInfo>
+                    <ProfileMenuInfo
+                      href="https://github.com/sjofartstidningen/bryggan"
+                      rel="noopener"
+                      target="_blank"
+                    >
+                      Bryggan v{version}
+                    </ProfileMenuInfo>
                   </ProfileMenuItem>
                 </ProfileMenu>
               </ProfileContainer>
