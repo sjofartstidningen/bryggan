@@ -1,35 +1,30 @@
 import axios from 'axios';
 import URL from 'url';
 
-const accessToken = process.env.DROPBOX_ACCESS_TOKEN || '';
-
 const dbUrl = prefix => `https://${prefix}.dropboxapi.com/2`;
 
 const dropboxRPC = axios.create({
   baseURL: dbUrl('api'),
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 const dropboxContent = axios.create({
   baseURL: dbUrl('content'),
-  params: {
-    authorization: `Bearer ${accessToken}`,
-    reject_cors_preflight: true,
-  },
+  params: { reject_cors_preflight: true },
   headers: { 'Content-Type': 'text/plain; charset=dropbox-cors-hack' },
 });
 
 /**
  * filesListFolder
  */
-export const filesListFolder = ({ path, recursive = false, sortBy } = {}) =>
+export const filesListFolder = (
+  { path, recursive = false, sortBy, accessToken } = {},
+) =>
   dropboxRPC({
     method: 'post',
     url: '/files/list_folder',
     data: { path, recursive },
+    headers: { Authorization: `Bearer ${accessToken}` },
   }).then(res => {
     if (!sortBy) return res;
 
@@ -65,19 +60,20 @@ const determineSize = ({ width, height }) => {
 };
 
 export const filesGetThumbnail = (
-  { path, format = 'jpeg', dimensions = {} } = {},
+  { path, format = 'jpeg', dimensions = {}, accessToken } = {},
 ) =>
   dropboxContent({
     method: 'get',
     url: '/files/get_thumbnail',
     params: {
+      authorization: `Bearer ${accessToken}`,
       arg: JSON.stringify({ path, format, size: determineSize(dimensions) }),
     },
     responseType: 'blob',
   });
 
 export const filesGetThumbnailSrc = (
-  { path, format = 'jpeg', size = 'w64h64' } = {},
+  { path, format = 'jpeg', size = 'w64h64', accessToken } = {},
 ) =>
   URL.format({
     protocol: 'https:',
@@ -90,7 +86,7 @@ export const filesGetThumbnailSrc = (
     },
   });
 
-export const filesDownloadUrl = ({ path } = {}) =>
+export const filesDownloadUrl = ({ path, accessToken } = {}) =>
   URL.format({
     protocol: 'https:',
     hostname: 'content.dropboxapi.com',
