@@ -13,8 +13,11 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "auth0-lock": "^10.23.1",
     "axios": "^0.17.0",
     "express": "^4.16.2",
+    "js-cookie": "^2.2.0",
+    "jwt-decode": "^2.2.0",
     "next": "^4.1.4",
     "next-redux-wrapper": "^1.3.4",
     "nprogress": "^0.2.0",

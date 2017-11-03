@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import withRedux from 'next-redux-wrapper';
-import Layout from '../../components/Layout';
+import securePage from '../../hoc/securePage';
 import MainTitle from '../../components/Tidningen/components/MainTitle';
 import YearView from '../../components/Tidningen/YearView';
 
-import { initStore } from '../../store';
 import { getYears } from '../../store/tidningen/actions';
 
 class Tidningen extends Component<*, State> {
   static async getInitialProps({ store }) {
     const { tidningen } = store.getState();
-    if (tidningen.years.length > 0) return {};
+    if (tidningen.years.length < 1) {
+      await getYears()(store.dispatch, store.getState);
+    }
 
-    await getYears()(store.dispatch, store.getState);
-    return {};
+    return { title: 'Tidningen – Sjöfartstidningen' };
   }
 
   state = {
@@ -30,15 +29,13 @@ class Tidningen extends Component<*, State> {
   render() {
     const { titleWidth } = this.state;
 
-    return (
-      <Layout title="Bryggan - Tidningen">
-        <MainTitle>
-          <span ref={this.getTitleWidth}>Tidningen</span>
-        </MainTitle>
-        <YearView translateTitle={titleWidth} />
-      </Layout>
-    );
+    return [
+      <MainTitle key="title">
+        <span ref={this.getTitleWidth}>Tidningen</span>
+      </MainTitle>,
+      <YearView key="view" translateTitle={titleWidth} />,
+    ];
   }
 }
 
-export default withRedux(initStore)(Tidningen);
+export default securePage(Tidningen);

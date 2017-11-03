@@ -1,12 +1,15 @@
-import React from 'react';
-import withRedux from 'next-redux-wrapper';
-import { initStore } from '../store';
-import Layout from '../components/Layout';
+import React, { Component } from 'react';
+import securePage from '../hoc/securePage';
 
-const Index = () => (
-  <Layout user={{ name: 'Adam Bergman' }}>
-    <h1>Dashboard</h1>
-  </Layout>
-);
+class Index extends Component {
+  static async getInitialProps(ctx) {
+    const state = ctx.store.getState();
+    return { state };
+  }
 
-export default withRedux(initStore)(Index);
+  render() {
+    return <pre>{JSON.stringify(this.props, null, 2)}</pre>;
+  }
+}
+
+export default securePage(Index);

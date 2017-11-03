@@ -1,12 +1,6 @@
 import React from 'react';
-import withRedux from 'next-redux-wrapper';
-import { initStore } from '../../store';
-import Layout from '../../components/Layout';
+import securePage from '../../hoc/securePage';
 
-const Nyhetsbrevet = () => (
-  <Layout user={{ name: 'Adam Bergman' }}>
-    <h1>Nyhetsbrevet</h1>
-  </Layout>
-);
+const Nyhetsbrevet = () => <h1>Nyhetsbrevet</h1>;
 
-export default withRedux(initStore)(Nyhetsbrevet);
+export default securePage(Nyhetsbrevet);

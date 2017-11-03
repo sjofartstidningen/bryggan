@@ -1,5 +1,5 @@
 import Queue from '../../utils/p-queue';
-import { filesListFolder, filesGetThumbnailSrc } from '../../utils/api/dropbox';
+import { filesListFolder } from '../../utils/api/dropbox';
 import * as constants from './constants';
 
 export const addYears = payload => ({

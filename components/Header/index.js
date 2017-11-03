@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import raf from 'raf-schd';
+import { version } from '../../package.json';
 import Logotype from '../Logotype';
 import {
   HeaderContainer,
@@ -13,7 +14,14 @@ import {
   ProfileContainer,
   ProfileName,
   ProfileImage,
+  ProfileMenu,
+  ProfileMenuItem,
+  ProfileMenuLink,
+  ProfileMenuInfo,
 } from './components';
+import IsHovering from '../IsHovering';
+import Settings from '../Icons/Settings';
+import LogOut from '../Icons/LogOut';
 
 const links = [
   { href: '/', title: 'Dashboard' },
@@ -76,12 +84,41 @@ class Header extends Component {
         </NavContainer>
 
         {user && (
-          <ProfileContainer>
-            <ProfileName>{user.name}</ProfileName>
-            <ProfileImage>
-              {user.img && <img src={user.img} alt="" />}
-            </ProfileImage>
-          </ProfileContainer>
+          <IsHovering style={{ marginLeft: 'auto' }}>
+            {({ hovering }) => (
+              <ProfileContainer>
+                <ProfileName>{user.name}</ProfileName>
+
+                <ProfileImage>
+                  {user.img && <img src={user.img} alt="" />}
+                </ProfileImage>
+
+                <ProfileMenu hover={hovering}>
+                  <ProfileMenuItem>
+                    <ProfileMenuLink href="#">
+                      <Settings baseline /> Inställningar
+                    </ProfileMenuLink>
+                  </ProfileMenuItem>
+
+                  <ProfileMenuItem>
+                    <ProfileMenuLink href="/auth/sign-out" warning>
+                      <LogOut baseline /> Logga ut
+                    </ProfileMenuLink>
+                  </ProfileMenuItem>
+
+                  <ProfileMenuItem>
+                    <ProfileMenuInfo
+                      href="https://github.com/sjofartstidningen/bryggan"
+                      rel="noopener"
+                      target="_blank"
+                    >
+                      Bryggan v{version}
+                    </ProfileMenuInfo>
+                  </ProfileMenuItem>
+                </ProfileMenu>
+              </ProfileContainer>
+            )}
+          </IsHovering>
         )}
       </HeaderContainer>
     );
