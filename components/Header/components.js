@@ -1,15 +1,17 @@
-import styled from 'styled-components';
-import { modularScale } from 'polished';
+import styled, { css } from 'styled-components';
+import { modularScale, triangle } from 'polished';
 import transition from '../../styles/transitions';
 import Link from '../Link';
 
 export const HeaderContainer = styled.header`
+  position: relative;
   display: flex;
   align-items: center;
   width: 100vw;
   padding: ${modularScale(0)};
   font-size: ${modularScale(0)};
   font-family: ${props => props.theme.font.serif};
+  z-index: ${props => props.theme.zIndex.top};
 `;
 
 export const LogotypeContainer = styled.div`
@@ -93,10 +95,67 @@ export const ProfileImage = styled.div`
 
 export const ProfileMenu = styled.ul`
   position: absolute;
-  top: 120%;
+  top: 200%;
   left: 0;
-  width: 100%;
+  width: calc(100% + 2px);
   margin: 0;
-  padding: 0;
+  border: 1px solid ${props => props.theme.color.black};
+  border-radius: 4px;
+  padding: ${modularScale(-2)};
   list-style: none;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(50%);
+  ${transition('opacity', 'visibility', 'transform')};
+  transition-delay: 0.5s;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: calc(50% - 4px);
+    color: ${props => props.theme.color.black};
+    ${triangle({
+      pointingDirection: 'top',
+      width: 12,
+      height: 8,
+      foregroundColor: 'currentColor',
+    })};
+  }
+
+  &::after {
+    top: -7px;
+    color: ${props => props.theme.color.white};
+  }
+
+  ${props =>
+    props.hover &&
+    css`
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      transition-delay: 0s;
+    `};
+`;
+
+export const ProfileMenuItem = styled.li`
+  margin-bottom: ${modularScale(-2)};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+export const ProfileMenuLink = styled(Link)`
+  display: block;
+  font-size: ${modularScale(-1)};
+  color: ${props => props.theme.color.black};
+  text-decoration: none;
+  ${transition('color')};
+
+  &:hover {
+    color: ${props => props.theme.color.brand};
+  }
 `;

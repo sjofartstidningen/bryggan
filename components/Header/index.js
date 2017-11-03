@@ -14,8 +14,12 @@ import {
   ProfileName,
   ProfileImage,
   ProfileMenu,
+  ProfileMenuItem,
+  ProfileMenuLink,
 } from './components';
-import Link from '../Link';
+import IsHovering from '../IsHovering';
+import Settings from '../Icons/Settings';
+import LogOut from '../Icons/LogOut';
 
 const links = [
   { href: '/', title: 'Dashboard' },
@@ -78,20 +82,30 @@ class Header extends Component {
         </NavContainer>
 
         {user && (
-          <ProfileContainer>
-            <ProfileName>{user.name}</ProfileName>
-            <ProfileImage>
-              {user.img && <img src={user.img} alt="" />}
-            </ProfileImage>
-            <ProfileMenu>
-              <li>
-                <Link href="/settings">Inställningar</Link>
-              </li>
-              <li>
-                <Link href="/auth/sign-out">Logga ut</Link>
-              </li>
-            </ProfileMenu>
-          </ProfileContainer>
+          <IsHovering style={{ marginLeft: 'auto' }}>
+            {({ hovering }) => (
+              <ProfileContainer>
+                <ProfileName>{user.name}</ProfileName>
+
+                <ProfileImage>
+                  {user.img && <img src={user.img} alt="" />}
+                </ProfileImage>
+
+                <ProfileMenu hover={hovering}>
+                  <ProfileMenuItem>
+                    <ProfileMenuLink href="#">
+                      <Settings baseline /> Inställningar
+                    </ProfileMenuLink>
+                  </ProfileMenuItem>
+                  <ProfileMenuItem>
+                    <ProfileMenuLink href="/auth/sign-out">
+                      <LogOut baseline /> Logga ut
+                    </ProfileMenuLink>
+                  </ProfileMenuItem>
+                </ProfileMenu>
+              </ProfileContainer>
+            )}
+          </IsHovering>
         )}
       </HeaderContainer>
     );
