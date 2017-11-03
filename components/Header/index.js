@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import raf from 'raf-schd';
+import config from '../../config';
 import { version } from '../../package.json';
 import Logotype from '../Logotype';
 import {
@@ -22,12 +23,6 @@ import {
 import IsHovering from '../IsHovering';
 import Settings from '../Icons/Settings';
 import LogOut from '../Icons/LogOut';
-
-const links = [
-  { href: '/', title: 'Dashboard' },
-  { href: '/tidningen', title: 'Tidningen' },
-  { href: '/nyhetsbrevet', title: 'Nyhetsbrevet' },
-];
 
 class Header extends Component {
   state = { activeLink: null };
@@ -51,7 +46,7 @@ class Header extends Component {
     );
 
     const { pathname } = Router;
-    const currentPage = links.find(link => {
+    const currentPage = config.topLinks.find(link => {
       const { href } = link;
       if (href === pathname) return true;
       if (href !== '/' && pathname.includes(href)) return true;
@@ -73,7 +68,7 @@ class Header extends Component {
 
         <NavContainer>
           <Nav>
-            {links.map(link => (
+            {config.topLinks.map(link => (
               <NavItem key={link.href}>
                 <NavLink href={link.href} active={link.href === activeLink}>
                   {link.title}
@@ -108,11 +103,11 @@ class Header extends Component {
 
                   <ProfileMenuItem>
                     <ProfileMenuInfo
-                      href="https://github.com/sjofartstidningen/bryggan"
+                      href={config.repoUrl}
                       rel="noopener"
                       target="_blank"
                     >
-                      Bryggan v{version}
+                      {config.name} v{config.version}
                     </ProfileMenuInfo>
                   </ProfileMenuItem>
                 </ProfileMenu>

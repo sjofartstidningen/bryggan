@@ -1,6 +1,8 @@
 import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
+import config from '../config';
+import theme from '../styles/theme';
 
 export default class Doc extends Document {
   static async getInitialProps({ renderPage }) {
@@ -19,8 +21,16 @@ export default class Doc extends Document {
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
 
-          <title>Bryggan – Sjöfartstidningen</title>
+          <title>
+            {config.name} – {config.company}
+          </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+          <style>{`
+            :root {
+              --loader-color: ${theme.color.black};
+            }
+          `}</style>
 
           <link rel="preload" href="/static/assets/css/main.css" as="style" />
           <link rel="stylesheet" href="/static/assets/css/main.css" />

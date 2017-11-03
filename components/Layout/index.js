@@ -8,6 +8,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { modularScale } from 'polished';
 import theme from '../../styles/theme';
 import Header from '../Header';
+import config from '../../config';
 
 const Wrapper = styled.div`
   position: relative;
@@ -52,7 +53,7 @@ Layout.propTypes = {
 
 Layout.defaultProps = {
   user: null,
-  title: 'Bryggan - Sjöfartstidningen',
+  title: `${config.name} – ${config.company}`,
   error: null,
   children: null,
 };

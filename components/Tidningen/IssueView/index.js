@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { join } from 'path';
 import { connect } from 'react-redux';
 import { filesDownloadUrl } from '../../../utils/api/dropbox';
 import leftPad from '../../../utils/left-pad';
@@ -7,6 +8,7 @@ import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
 import PageView from '../PageView';
+import config from '../../../config';
 
 class IssueView extends Component {
   static propTypes = {
@@ -46,11 +48,12 @@ class IssueView extends Component {
 
   generatePdfUrl = page => {
     const { year, issue } = this.props;
-    const pdfPath = `/Bryggan/${year}/${issue}/${year}-${issue}-${leftPad(
-      page,
-      3,
-      0,
-    )}.pdf`;
+    const pdfPath = join(
+      config.dropboxRoot,
+      year,
+      issue,
+      `${year}-${issue}-${leftPad(page, 3, 0)}.pdf`,
+    );
 
     const url = filesDownloadUrl({ path: pdfPath });
     return url;

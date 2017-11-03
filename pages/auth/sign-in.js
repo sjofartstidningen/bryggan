@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 import standardPage from '../../hoc/standardPage';
 import AuthService from '../../utils/auth';
+import config from '../../config';
+
+const createAuth = () => new AuthService(config.auth0id, config.auth0domain);
 
 class SignIn extends Component {
   static async getInitialProps(ctx) {
-    const auth = new AuthService(
-      process.env.AUTH0_CLIENT_ID,
-      process.env.AUTH0_CLIENT_DOMAIN,
-    );
+    const auth = createAuth();
 
     if (auth.loggedIn(ctx.req)) {
       if (ctx.res) {
@@ -25,11 +25,7 @@ class SignIn extends Component {
   }
 
   setupAuthService = () => {
-    const auth = new AuthService(
-      process.env.AUTH0_CLIENT_ID,
-      process.env.AUTH0_CLIENT_DOMAIN,
-    );
-
+    const auth = createAuth();
     const loggedIn = auth.loggedIn();
 
     if (!loggedIn) {
