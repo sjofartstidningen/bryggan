@@ -33,12 +33,14 @@ export default class IsHovering extends Component {
 
   render() {
     const { hovering } = this.state;
+    const { children, ...props } = this.props;
     return (
       <div
+        {...props}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        {this.props.children({ hovering })}
+        {children({ hovering })}
       </div>
     );
   }
