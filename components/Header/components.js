@@ -142,6 +142,7 @@ export const ProfileMenu = styled.ul`
 
 export const ProfileMenuItem = styled.li`
   margin-bottom: ${modularScale(-2)};
+  font-size: ${modularScale(-1)};
 
   &:last-child {
     margin-bottom: 0;
@@ -150,12 +151,19 @@ export const ProfileMenuItem = styled.li`
 
 export const ProfileMenuLink = styled(Link)`
   display: block;
-  font-size: ${modularScale(-1)};
   color: ${props => props.theme.color.black};
   text-decoration: none;
   ${transition('color')};
 
   &:hover {
-    color: ${props => props.theme.color.brand};
+    color: ${props =>
+      props.warning ? props.theme.color.warning : props.theme.color.brand};
   }
+`;
+
+export const ProfileMenuInfo = styled.span`
+  display: block;
+  margin-top: ${modularScale(1)};
+  color: ${props => props.theme.color.grey};
+  font-size: ${modularScale(-1)};
 `;

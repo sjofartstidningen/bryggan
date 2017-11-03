@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import raf from 'raf-schd';
+import { version } from '../../package.json';
 import Logotype from '../Logotype';
 import {
   HeaderContainer,
@@ -16,6 +17,7 @@ import {
   ProfileMenu,
   ProfileMenuItem,
   ProfileMenuLink,
+  ProfileMenuInfo,
 } from './components';
 import IsHovering from '../IsHovering';
 import Settings from '../Icons/Settings';
@@ -97,10 +99,15 @@ class Header extends Component {
                       <Settings baseline /> Inställningar
                     </ProfileMenuLink>
                   </ProfileMenuItem>
+
                   <ProfileMenuItem>
-                    <ProfileMenuLink href="/auth/sign-out">
+                    <ProfileMenuLink href="/auth/sign-out" warning>
                       <LogOut baseline /> Logga ut
                     </ProfileMenuLink>
+                  </ProfileMenuItem>
+
+                  <ProfileMenuItem>
+                    <ProfileMenuInfo>Version {version}</ProfileMenuInfo>
                   </ProfileMenuItem>
                 </ProfileMenu>
               </ProfileContainer>
