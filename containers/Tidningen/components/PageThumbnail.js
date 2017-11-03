@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
 import raf from 'raf-schd';
 import transition from '../../../styles/transitions';
-import Loader from '../../Loader';
-import LazyImage from '../../LazyImage';
-import Eye from '../../Icons/Eye';
-import IsHovering from '../../IsHovering';
+import Loader from '../../../components/Loader';
+import LazyImage from '../../../components/LazyImage';
+import Eye from '../../../components/Icons/Eye';
+import IsHovering from '../../../components/IsHovering';
 
 const IssueContainer = styled.button`
   display: block;

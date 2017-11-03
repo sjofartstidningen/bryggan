@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
 import transition from '../../../styles/transitions';
-import Popover from '../../Popover';
-import Hidden from '../../Typography/Hidden';
-import ArrowRight from '../../Icons/ArrowRight';
-import ArrowLeft from '../../Icons/ArrowLeft';
-import Plus from '../../Icons/Plus';
-import Minus from '../../Icons/Minus';
+import Popover from '../../../components/Popover';
+import Hidden from '../../../components/Typography/Hidden';
+import ArrowRight from '../../../components/Icons/ArrowRight';
+import ArrowLeft from '../../../components/Icons/ArrowLeft';
+import Plus from '../../../components/Icons/Plus';
+import Minus from '../../../components/Icons/Minus';
 
 const Container = styled.div`
   display: flex;

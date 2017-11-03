@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
 import transition from '../../../styles/transitions';
-import StickyEvent from '../../StickyEvent';
-import { H1 } from '../../Typography/headings';
-import ChevronsRight from '../../Icons/ChevronsRight';
+import StickyEvent from '../../../components/StickyEvent';
+import { H1 } from '../../../components/Typography/headings';
+import ChevronsRight from '../../../components/Icons/ChevronsRight';
 
 const Title = H1.withComponent('h2').extend`
   background-color: ${props => props.theme.color.white};

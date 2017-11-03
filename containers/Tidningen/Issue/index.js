@@ -4,10 +4,11 @@ import { join } from 'path';
 import { connect } from 'react-redux';
 import { filesDownloadUrl } from '../../../utils/api/dropbox';
 import leftPad from '../../../utils/left-pad';
+import MainTitle from '../components/MainTitle';
 import SectionTitle from '../components/SectionTitle';
 import PreviewsContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
-import PageView from '../PageView';
+import Page from '../Page';
 import config from '../../../config';
 
 class IssueView extends Component {
@@ -24,12 +25,12 @@ class IssueView extends Component {
     ).isRequired,
     year: PropTypes.string.isRequired,
     issue: PropTypes.string.isRequired,
-    translateTitle: PropTypes.number.isRequired,
     dropboxAccessToken: PropTypes.string.isRequired,
   };
 
   state = {
     showPreview: null,
+    translateTitle: 0,
   };
 
   showPreview = page => {
@@ -63,48 +64,56 @@ class IssueView extends Component {
     return url;
   };
 
-  render() {
-    const {
-      pages,
-      year,
-      issue,
-      translateTitle,
-      dropboxAccessToken,
-    } = this.props;
-    const { showPreview } = this.state;
+  getTitleWidth = ref => {
+    if (ref) {
+      const { width } = ref.getBoundingClientRect();
+      this.setState(() => ({ translateTitle: width }));
+    }
+  };
 
-    return [
-      <section key="pages" style={{ position: 'relative' }}>
-        <SectionTitle translateTitle={translateTitle}>
-          {[year, issue]}
-        </SectionTitle>
-        <PreviewsContainer bind>
-          {pages &&
-            pages.length > 0 &&
-            pages.map((page, i) => (
-              <PageThumbnail
-                key={page.id}
-                src={page.coverSrc}
-                description={`${i + 1}`}
-                alt={`Preview of page ${i + 1}`}
-                handleClick={() => this.showPreview(i + 1)}
-                dropboxAccessToken={dropboxAccessToken}
-              />
-            ))}
-        </PreviewsContainer>
-      </section>,
-      showPreview && (
-        <PageView
-          key="preview"
-          pdfUrl={this.generatePdfUrl(showPreview)}
-          page={`${showPreview}`}
-          total={pages.length - 1}
-          onClose={this.handleClose}
-          onPrev={this.handleTraverse(false)}
-          onNext={this.handleTraverse(true)}
-        />
-      ),
-    ];
+  render() {
+    const { pages, year, issue, dropboxAccessToken } = this.props;
+    const { showPreview, translateTitle } = this.state;
+
+    return (
+      <div>
+        <MainTitle key="title">
+          <span ref={this.getTitleWidth}>Tidningen</span>
+        </MainTitle>
+
+        <section key="pages" style={{ position: 'relative' }}>
+          <SectionTitle translateTitle={translateTitle}>
+            {[year, issue]}
+          </SectionTitle>
+          <PreviewsContainer bind>
+            {pages &&
+              pages.length > 0 &&
+              pages.map((page, i) => (
+                <PageThumbnail
+                  key={page.id}
+                  src={page.coverSrc}
+                  description={`${i + 1}`}
+                  alt={`Preview of page ${i + 1}`}
+                  handleClick={() => this.showPreview(i + 1)}
+                  dropboxAccessToken={dropboxAccessToken}
+                />
+              ))}
+          </PreviewsContainer>
+        </section>
+
+        {showPreview && (
+          <Page
+            key="preview"
+            pdfUrl={this.generatePdfUrl(showPreview)}
+            page={`${showPreview}`}
+            total={pages.length - 1}
+            onClose={this.handleClose}
+            onPrev={this.handleTraverse(false)}
+            onNext={this.handleTraverse(true)}
+          />
+        )}
+      </div>
+    );
   }
 }
 

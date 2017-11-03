@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import securePage from '../../hoc/securePage';
-import MainTitle from '../../components/Tidningen/components/MainTitle';
-import YearView from '../../components/Tidningen/YearView';
+import Year from '../../containers/Tidningen/Year';
 import { getYears } from '../../store/tidningen/actions';
 import config from '../../config';
 
@@ -16,26 +15,9 @@ class Tidningen extends Component<*, State> {
     return { title: `Tidningen – ${config.name}` };
   }
 
-  state = {
-    titleWidth: 0,
-  };
-
-  getTitleWidth = ref => {
-    if (ref != null) {
-      const { width } = ref.getBoundingClientRect();
-      this.setState(() => ({ titleWidth: width }));
-    }
-  };
-
+  // eslint-disable-next-line
   render() {
-    const { titleWidth } = this.state;
-
-    return [
-      <MainTitle key="title">
-        <span ref={this.getTitleWidth}>Tidningen</span>
-      </MainTitle>,
-      <YearView key="view" translateTitle={titleWidth} />,
-    ];
+    return <Year />;
   }
 }
 

@@ -7,9 +7,9 @@ import { Document, Page } from 'react-pdf';
 import raf from 'raf-schd';
 import { slideInDown, slideOutUp } from '../../../styles/animations';
 import transitions from '../../../styles/transitions';
-import Logotype from '../../Logotype';
+import Logotype from '../../../components/Logotype';
 import PdfControls from './Controls';
-import Loader from '../../Loader';
+import Loader from '../../../components/Loader';
 import clamp from '../../../utils/clamp';
 
 const PreviewContainer = styled.div`
