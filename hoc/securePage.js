@@ -6,6 +6,15 @@ import { signIn, addToken, updateUser } from '../store/auth/actions';
 import callInitialProps from '../utils/call-initial-props';
 import config from '../config';
 
+const toCamel = str => {
+  const lower = str.toLowerCase();
+  const camel = lower.replace(/_\w/g, match =>
+    match.replace('_', '').toUpperCase(),
+  );
+
+  return camel;
+};
+
 export default Page => {
   class SecurePage extends Component {
     static async getInitialProps(ctx) {
@@ -36,7 +45,7 @@ export default Page => {
       const metadata = user.client_metadata;
       Object.keys(metadata).forEach(token => {
         const payload = {
-          token,
+          token: toCamel(token),
           value: metadata[token],
         };
         ctx.store.dispatch(addToken(payload));

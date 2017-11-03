@@ -36,6 +36,7 @@ export default class LazyImage extends Component {
     onLoad: PropTypes.func,
     onError: PropTypes.func,
     getRef: PropTypes.func,
+    dropboxAccessToken: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -57,10 +58,12 @@ export default class LazyImage extends Component {
 
   fetchImage = async () => {
     const { width, height } = this.ref.getBoundingClientRect();
-    const { src } = this.props;
+    const { src, dropboxAccessToken } = this.props;
+
     const { data, headers } = await filesGetThumbnail({
       path: src,
       dimensions: { width, height },
+      accessToken: dropboxAccessToken,
     });
 
     const metaData = JSON.parse(headers['dropbox-api-result']);

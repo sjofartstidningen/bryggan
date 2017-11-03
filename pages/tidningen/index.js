@@ -7,9 +7,10 @@ import config from '../../config';
 
 class Tidningen extends Component<*, State> {
   static async getInitialProps({ store }) {
-    const { tidningen } = store.getState();
+    const { tidningen, auth } = store.getState();
     if (tidningen.years.length < 1) {
-      await getYears()(store.dispatch, store.getState);
+      const { dropboxAccessToken } = auth.tokens;
+      await getYears(dropboxAccessToken)(store.dispatch, store.getState);
     }
 
     return { title: `Tidningen – ${config.name}` };
