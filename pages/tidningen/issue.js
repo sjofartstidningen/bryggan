@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import securePage from '../../hoc/securePage';
-import MainTitle from '../../components/Tidningen/components/MainTitle';
-import IssueView from '../../components/Tidningen/IssueView';
+import IssueView from '../../containers/Tidningen/Issue';
 import { getPages } from '../../store/tidningen/actions';
 import config from '../../config';
 
@@ -22,22 +21,9 @@ class Issue extends Component<*, State> {
     return { title: `Nummer ${issue}-${year} – ${config.name}` };
   }
 
-  state = { titleWidth: 0 };
-
-  getTitleWidth = ref => {
-    if (ref != null) {
-      const { width } = ref.getBoundingClientRect();
-      this.setState(() => ({ titleWidth: width }));
-    }
-  };
-
+  // eslint-disable-next-line
   render() {
-    return [
-      <MainTitle key="title">
-        <span ref={this.getTitleWidth}>Tidningen</span>
-      </MainTitle>,
-      <IssueView key="view" translateTitle={this.state.titleWidth} />,
-    ];
+    return <IssueView />;
   }
 }
 
