@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
 import transition from '../../styles/transitions';
+import Loader from '../../components/Loader';
 
 const InputGroup = styled.div`
   position: relative;
@@ -50,6 +51,7 @@ const TextInput = styled.input`
 `;
 
 const SubmitButton = styled.button`
+  position: relative;
   width: 100%;
   margin: 0;
   margin-top: ${modularScale(1)};
@@ -71,6 +73,15 @@ const SubmitButton = styled.button`
   &:disabled {
     background-color: ${props => props.theme.color.lightgrey};
   }
+
+  ${props =>
+    props.loading &&
+    css`
+      border-color: ${props.theme.color.black};
+      color: ${props.theme.color.black};
+      background-color: ${props.theme.color.white};
+      text-indent: -9999px;
+    `};
 `;
 
 function SignInForm({
@@ -78,6 +89,7 @@ function SignInForm({
   password,
   remember,
   error,
+  loading,
   onInputChange,
   onCheckboxChange,
   onSubmit,
@@ -126,9 +138,10 @@ function SignInForm({
       <InputGroup>
         <SubmitButton
           type="submit"
+          loading={loading}
           disabled={email.length === 0 || password.length === 0}
         >
-          Logga in
+          Logga in {loading && <Loader width="10%" />}
         </SubmitButton>
       </InputGroup>
     </form>
@@ -140,6 +153,7 @@ SignInForm.propTypes = {
   password: PropTypes.string.isRequired,
   remember: PropTypes.bool.isRequired,
   error: PropTypes.string,
+  loading: PropTypes.bool.isRequired,
   onInputChange: PropTypes.func.isRequired,
   onCheckboxChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
