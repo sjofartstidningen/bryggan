@@ -29,6 +29,15 @@ const authSignIn = ({ email, password, remember }) => async dispatch => {
   }
 };
 
+const authSignOut = () => async dispatch => {
+  try {
+    await firebase.signOut();
+    dispatch(authUnauthenticated());
+  } catch (err) {
+    dispatch(authError({ err }));
+  }
+};
+
 const authCheckInitialStatus = () => dispatch => {
   let unsubscribe;
   const timeout = window.setTimeout(() => {
@@ -51,6 +60,7 @@ export {
   authInProgress,
   authSuccess,
   authError,
+  authSignOut,
   authSignIn,
   authCheckInitialStatus,
 };
