@@ -2,6 +2,7 @@ const theme = {
   color: {
     black: 'rgba(0, 0, 0, 1)',
     grey: 'rgba(153, 153, 153, 1)',
+    lightgrey: 'rgba(205, 205, 205, 1)',
     white: 'rgba(255, 255, 255, 1)',
     brand: 'rgba(5, 153, 228, 1)',
     warning: 'rgba(204, 51, 0, 1)',

@@ -1,11 +1,12 @@
 import React from 'react';
-import secureComponent from './hoc/secureComponent';
+import { connect } from 'react-redux';
 import Year from './containers/Tidningen/Year';
 import Issue from './containers/Tidningen/Issue';
-import SignedIn from './containers/SignedIn';
 import SignIn from './containers/SignIn';
 
-const ShowProps = props => <pre>{JSON.stringify(props, null, 2)}</pre>;
+const ShowProps = connect(state => state)(props => (
+  <pre>{JSON.stringify(props, null, 2)}</pre>
+));
 
 const routes = [
   {
@@ -21,12 +22,12 @@ const routes = [
   {
     path: '/tidningen',
     exact: true,
-    component: secureComponent(Year),
+    component: Year,
   },
   {
     path: '/tidningen/:year/:issue',
     exact: true,
-    component: secureComponent(Issue),
+    component: Issue,
   },
   {
     path: '/nyhetsbrevet',
@@ -34,14 +35,9 @@ const routes = [
     component: ShowProps,
   },
   {
-    path: '/sign-in',
+    path: '/auth/sign-in',
     exact: true,
     component: SignIn,
-  },
-  {
-    path: '/signed-in',
-    exact: true,
-    component: SignedIn,
   },
 ];
 

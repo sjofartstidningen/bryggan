@@ -40,7 +40,7 @@ function Header({ user }) {
         </Nav>
       </NavContainer>
 
-      {user && (
+      {user ? (
         <IsHovering style={{ marginLeft: 'auto' }}>
           {({ hovering }) => (
             <ProfileContainer>
@@ -76,6 +76,12 @@ function Header({ user }) {
             </ProfileContainer>
           )}
         </IsHovering>
+      ) : (
+        <ProfileContainer>
+          <NavLink to="/auth/sign-in" activeClassName="active">
+            Logga in
+          </NavLink>
+        </ProfileContainer>
       )}
     </HeaderContainer>
   );
