@@ -29,10 +29,28 @@ const authSignIn = ({ email, password, remember }) => async dispatch => {
   }
 };
 
+const authCheckInitialStatus = () => dispatch => {
+  let unsubscribe;
+  const timeout = window.setTimeout(() => {
+    if (typeof unsubscribe === 'function') unsubscribe();
+  }, 5000);
+
+  unsubscribe = firebase.checkAuthStatus(fbUser => {
+    if (fbUser != null) {
+      const user = firebase.extractUserInfo(fbUser);
+      dispatch(authSuccess({ user }));
+    }
+
+    window.clearTimeout(timeout);
+    unsubscribe();
+  });
+};
+
 export {
   authUnauthenticated,
   authInProgress,
   authSuccess,
   authError,
   authSignIn,
+  authCheckInitialStatus,
 };
