@@ -10,7 +10,7 @@ import LazyImage from '../../../components/LazyImage';
 import Eye from '../../../components/Icons/Eye';
 import IsHovering from '../../../components/IsHovering';
 
-const IssueContainer = styled(Link)`
+const IssueContainer = styled(({ hover, ...rest }) => <Link {...rest} />)`
   display: block;
   width: 100%;
   border: none;

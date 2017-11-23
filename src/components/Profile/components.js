@@ -1,3 +1,4 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { modularScale, triangle } from 'polished';
 import { Link } from 'react-router-dom';
@@ -99,7 +100,9 @@ export const ProfileMenuItem = styled.li`
   }
 `;
 
-export const ProfileMenuLink = styled(Link)`
+export const ProfileMenuLink = styled(({ warning, ...rest }) => (
+  <Link {...rest} />
+))`
   display: block;
   color: ${props => props.theme.color.black};
   text-decoration: none;
