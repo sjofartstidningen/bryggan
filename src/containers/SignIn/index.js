@@ -7,7 +7,6 @@ import { authSignIn } from '../../store/user/actions';
 import * as constants from '../../store/user/constants';
 import SignInContainer from './SignInContainer';
 import SignInForm from './SignInForm';
-import Loader from '../../components/Loader';
 
 class SignIn extends Component {
   static propTypes = {
@@ -25,7 +24,7 @@ class SignIn extends Component {
   state = {
     email: '',
     password: '',
-    remember: true,
+    remember: process.env.NODE_ENV === 'production',
   };
 
   handleInputChange = e => {
@@ -46,24 +45,20 @@ class SignIn extends Component {
     const { authState, error } = this.props;
     const { email, password, remember } = this.state;
 
+    if (authState === constants.AUTH_SUCCESS) return <Redirect to="/" />;
+
     return (
       <SignInContainer>
-        {(authState === constants.AUTH_UNAUTHENTICATED ||
-          authState === constants.AUTH_ERROR) && (
-          <SignInForm
-            email={email}
-            password={password}
-            remember={remember}
-            error={error && error.message}
-            onInputChange={this.handleInputChange}
-            onCheckboxChange={this.handleCheckboxChange}
-            onSubmit={this.handleSubmit}
-          />
-        )}
-
-        {authState === constants.AUTH_IN_PROGRESS && <Loader />}
-
-        {authState === constants.AUTH_SUCCESS && <Redirect to="/" />}
+        <SignInForm
+          email={email}
+          password={password}
+          remember={remember}
+          error={error && error.message}
+          onInputChange={this.handleInputChange}
+          onCheckboxChange={this.handleCheckboxChange}
+          onSubmit={this.handleSubmit}
+          loading={authState === constants.AUTH_IN_PROGRESS}
+        />
       </SignInContainer>
     );
   }
