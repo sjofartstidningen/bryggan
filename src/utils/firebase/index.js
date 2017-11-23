@@ -42,7 +42,7 @@ const defaultKeys = [
   'email',
   'emailVerified',
   'phoneNumber',
-  'photoUrl',
+  'photoURL',
   'uid',
 ];
 const extractUserInfo = (user, keys = defaultKeys) =>
