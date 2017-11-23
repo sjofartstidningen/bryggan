@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { modularScale, triangle } from 'polished';
+import { Link } from 'react-router-dom';
 import transition from '../../styles/transitions';
 
 export const ProfileContainer = styled.div`
@@ -20,7 +21,8 @@ export const ProfileImage = styled.div`
   width: calc(${modularScale(1)} - 4px);
   height: calc(${modularScale(1)} - 4px);
   border-radius: 100%;
-  background-color: ${props => props.theme.color.grey};
+  background-color: ${props =>
+    props.loaded ? 'transparent' : props.theme.color.grey};
 
   &::before {
     content: '';
@@ -43,8 +45,9 @@ export const ProfileImage = styled.div`
 export const ProfileMenu = styled.ul`
   position: absolute;
   top: 200%;
-  left: 0;
+  right: 0;
   width: calc(100% + 2px);
+  max-width: 200px;
   margin: 0;
   border: 1px solid ${props => props.theme.color.black};
   border-radius: 4px;
@@ -112,4 +115,18 @@ export const ProfileMenuInfo = ProfileMenuLink.extend`
   margin-top: ${modularScale(1)};
   color: ${props => props.theme.color.grey};
   font-size: ${modularScale(-1)};
+`;
+
+export const NavLink = styled(Link)`
+  color: ${props => props.theme.color.grey};
+  text-decoration: none;
+  ${transition('color')};
+
+  &:hover {
+    color: ${props => props.theme.color.black};
+  }
+
+  &.active {
+    color: ${props => props.theme.color.black};
+  }
 `;
