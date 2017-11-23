@@ -13,6 +13,8 @@ firebase.initializeApp(config);
 
 const Auth = firebase.auth();
 
+const checkAuthStatus = fn => Auth.onAuthStateChanged(fn);
+
 const signIn = async ({ email, password, remember }) => {
   try {
     const persistance = remember
@@ -54,4 +56,4 @@ const extractUserInfo = (user, keys = defaultKeys) =>
     {},
   );
 
-export { signIn, signOut, extractUserInfo };
+export { checkAuthStatus, signIn, signOut, extractUserInfo };
