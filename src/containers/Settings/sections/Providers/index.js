@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale } from 'polished';
+import { Link } from 'react-router-dom';
 import SectionTitle from '../../../../components/Typography/SectionTitle';
 import { Description } from '../../../../components/Typography';
 import { ButtonPrimary } from '../../../../components/Button';
@@ -10,7 +11,7 @@ import mailchimpLogotype from './mailchimp.svg';
 
 const ProvidersContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(${props => props.children.length}, 1fr);
   grid-column-gap: ${modularScale(0)};
 `;
 
@@ -31,6 +32,8 @@ const ProviderImg = styled.img`
   margin-bottom: ${modularScale(2)};
 `;
 
+const ProviderButton = ButtonPrimary.withComponent(Link);
+
 function Providers({ translateTitle }) {
   return (
     <section>
@@ -44,12 +47,12 @@ function Providers({ translateTitle }) {
       <ProvidersContainer>
         <ProviderContainer>
           <ProviderImg src={dropboxLogotype} alt="Dropbox logotype" />
-          <ButtonPrimary>Länka Dropbox</ButtonPrimary>
+          <ProviderButton to="/">Länka Dropbox</ProviderButton>
         </ProviderContainer>
 
         <ProviderContainer>
           <ProviderImg src={mailchimpLogotype} alt="Mailchimp logotype" />
-          <ButtonPrimary>Länka Mailchimp</ButtonPrimary>
+          <ProviderButton to="/">Länka Mailchimp</ProviderButton>
         </ProviderContainer>
       </ProvidersContainer>
     </section>

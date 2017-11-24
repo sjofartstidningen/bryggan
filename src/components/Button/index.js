@@ -8,11 +8,14 @@ const Button = styled.button.attrs({
   hoverBgColor: props => darken(0.3, props.theme.color.grey),
 })`
   position: relative;
+  display: block;
   margin: 0;
   border: none;
   border-radius: 4px;
   padding: 0 ${modularScale(1)};
   font-size: ${modularScale(0)};
+  font-family: ${props => props.theme.font.serif};
+  text-decoration: none;
   line-height: 2;
   text-align: center;
   vertical-align: middle;
