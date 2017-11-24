@@ -10,7 +10,7 @@ import LazyImage from '../../../components/LazyImage';
 import Eye from '../../../components/Icons/Eye';
 import IsHovering from '../../../components/IsHovering';
 
-const IssueContainer = styled(Link)`
+const IssueContainer = styled(({ hover, ...rest }) => <Link {...rest} />)`
   display: block;
   width: 100%;
   border: none;
@@ -23,7 +23,7 @@ const IssueContainer = styled(Link)`
   z-index: ${props => props.theme.zIndex.zero};
 
   ${props =>
-    props.isHovering &&
+    props.hover &&
     css`
       z-index: ${props.theme.zIndex.middle};
       outline: none;
@@ -130,7 +130,7 @@ export default class PageThumbnail extends Component {
             onFocus={() => this.handleFocus(true)}
             onBlur={() => this.handleFocus(false)}
             disable={loading.toString()}
-            isHovering={hovering || focus}
+            hover={hovering || focus}
           >
             <ImgContainer aspectRatio={aspectRatio} hover={hovering || focus}>
               {src && (

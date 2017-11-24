@@ -2,10 +2,10 @@ import React, { Children } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
-import transition from '../../../styles/transitions';
-import StickyEvent from '../../../components/StyckEvent';
-import { H1 } from '../../../components/Typography/headings';
-import ChevronsRight from '../../../components/Icons/ChevronsRight';
+import transition from '../../styles/transitions';
+import StickyEvent from '../StyckEvent';
+import { H1 } from './headings';
+import ChevronsRight from '../Icons/ChevronsRight';
 
 const Title = H1.withComponent('h2').extend`
   background-color: ${props => props.theme.color.white};

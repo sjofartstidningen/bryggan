@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getPages } from '../../../store/tidningen/actions';
-import MainTitle from '../components/MainTitle';
-import SectionTitle from '../components/SectionTitle';
 import PreviewContainer from '../components/PreviewsContainer';
 import PageThumbnail from '../components/PageThumbnail';
+import Title from '../../../components/Typography/Title';
+import SectionTitle from '../../../components/Typography/SectionTitle';
 
 class Year extends Component {
   state = {
@@ -30,9 +30,9 @@ class Year extends Component {
 
     return (
       <div>
-        <MainTitle>
+        <Title to="/tidningen">
           <span ref={this.getTitleWidth}>Tidningen</span>
-        </MainTitle>
+        </Title>
 
         <section style={{ position: 'relative' }}>
           <SectionTitle translateTitle={translateTitle}>

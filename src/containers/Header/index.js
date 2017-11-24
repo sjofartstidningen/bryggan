@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import config from '../../config';
 import Logotype from '../../components/Logotype';
 import {
@@ -9,17 +10,8 @@ import {
   Nav,
   NavItem,
   NavLink,
-  ProfileContainer,
-  ProfileName,
-  ProfileImage,
-  ProfileMenu,
-  ProfileMenuItem,
-  ProfileMenuLink,
-  ProfileMenuInfo,
 } from './components';
-import IsHovering from '../../components/IsHovering';
-import Settings from '../../components/Icons/Settings';
-import LogOut from '../../components/Icons/LogOut';
+import Profile from '../../components/Profile';
 
 function Header({ user }) {
   return (
@@ -39,55 +31,23 @@ function Header({ user }) {
           ))}
         </Nav>
       </NavContainer>
-
-      {user && (
-        <IsHovering style={{ marginLeft: 'auto' }}>
-          {({ hovering }) => (
-            <ProfileContainer>
-              <ProfileName>{user.name}</ProfileName>
-
-              <ProfileImage>
-                {user.img && <img src={user.img} alt="" />}
-              </ProfileImage>
-
-              <ProfileMenu hover={hovering}>
-                <ProfileMenuItem>
-                  <ProfileMenuLink href="#">
-                    <Settings baseline /> Inställningar
-                  </ProfileMenuLink>
-                </ProfileMenuItem>
-
-                <ProfileMenuItem>
-                  <ProfileMenuLink href="/auth/sign-out" warning>
-                    <LogOut baseline /> Logga ut
-                  </ProfileMenuLink>
-                </ProfileMenuItem>
-
-                <ProfileMenuItem>
-                  <ProfileMenuInfo
-                    href={config.repoUrl}
-                    rel="noopener"
-                    target="_blank"
-                  >
-                    {config.name} v{config.version}
-                  </ProfileMenuInfo>
-                </ProfileMenuItem>
-              </ProfileMenu>
-            </ProfileContainer>
-          )}
-        </IsHovering>
-      )}
+      <Profile user={user} />
     </HeaderContainer>
   );
 }
 
 Header.propTypes = {
   user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    img: PropTypes.string,
+    displayName: PropTypes.string,
+    email: PropTypes.string.isRequired,
+    photoURL: PropTypes.string,
   }),
 };
 
 Header.defaultProps = { user: null };
 
-export default Header;
+const mapStateToProps = state => ({
+  user: state.user.user,
+});
+
+export default connect(mapStateToProps)(Header);
