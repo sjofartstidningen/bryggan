@@ -3,8 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale } from 'polished';
-import transition from '../../styles/transitions';
 import Loader from '../../components/Loader';
+import { ButtonPrimary } from '../../components/Button';
 
 const InputGroup = styled.div`
   position: relative;
@@ -13,7 +13,7 @@ const InputGroup = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: ${modularScale(0)};
+  margin-bottom: ${modularScale(1)};
 
   &:last-child {
     margin: 0;
@@ -50,40 +50,6 @@ const TextInput = styled.input`
   }
 `;
 
-const SubmitButton = styled.button`
-  position: relative;
-  width: 100%;
-  margin: 0;
-  margin-top: ${modularScale(1)};
-  border: 1px solid ${props => props.theme.color.white};
-  border-radius: 4px;
-  padding: ${modularScale(-1)};
-  font-size: ${modularScale(0)};
-  color: ${props => props.theme.color.white};
-  background-color: ${props => props.theme.color.black};
-  ${transition('background-color', 'border-color', 'color')};
-
-  &:not([disabled]):hover {
-    cursor: pointer;
-    border-color: ${props => props.theme.color.black};
-    color: ${props => props.theme.color.black};
-    background-color: ${props => props.theme.color.white};
-  }
-
-  &:disabled {
-    background-color: ${props => props.theme.color.lightgrey};
-  }
-
-  ${props =>
-    props.loading &&
-    css`
-      border-color: ${props.theme.color.black};
-      color: ${props.theme.color.black};
-      background-color: ${props.theme.color.white};
-      text-indent: -9999px;
-    `};
-`;
-
 function SignInForm({
   email,
   password,
@@ -96,6 +62,21 @@ function SignInForm({
 }) {
   return (
     <form onSubmit={onSubmit}>
+      {loading && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'white',
+            zIndex: 3,
+          }}
+        >
+          <Loader />
+        </div>
+      )}
       {error && (
         <InputGroup>
           <FormWarning>{error}</FormWarning>
@@ -109,6 +90,8 @@ function SignInForm({
           id="auth-email"
           name="email"
           value={email}
+          autoComplete="on"
+          autoCapitalize="off"
           onChange={onInputChange}
         />
       </InputGroup>
@@ -120,6 +103,8 @@ function SignInForm({
           id="auth-password"
           name="password"
           value={password}
+          autoComplete="off"
+          autoCapitalize="off"
           onChange={onInputChange}
         />
       </InputGroup>
@@ -136,13 +121,9 @@ function SignInForm({
       </InputGroup>
 
       <InputGroup>
-        <SubmitButton
-          type="submit"
-          loading={loading}
-          disabled={email.length === 0 || password.length === 0}
-        >
-          Logga in {loading && <Loader width="10%" />}
-        </SubmitButton>
+        <ButtonPrimary type="submit" loading={loading}>
+          Logga in
+        </ButtonPrimary>
       </InputGroup>
     </form>
   );
