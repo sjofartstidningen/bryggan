@@ -33,7 +33,7 @@ function Profile({ user }) {
 
           <ProfileMenu hover={hovering}>
             <ProfileMenuItem>
-              <ProfileMenuLink to="/">
+              <ProfileMenuLink to="/auth/settings">
                 <Settings baseline /> Inställningar
               </ProfileMenuLink>
             </ProfileMenuItem>

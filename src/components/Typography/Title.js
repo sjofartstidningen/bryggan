@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import transition from '../../../styles/transitions';
-import StickyEvent from '../../../components/StyckEvent';
-import { H1 } from '../../../components/Typography/headings';
+import transition from '../../styles/transitions';
+import StickyEvent from '..//StyckEvent';
+import { H1 } from './headings';
 
 const Title = styled(H1)`
   border-bottom: 1px solid transparent;
@@ -34,13 +34,13 @@ const TitleLink = styled(Link)`
   }
 `;
 
-function MainTitle({ children }) {
+function MainTitle({ to, children }) {
   return (
     <StickyEvent
       style={{ zIndex: 2 }}
       render={({ stuck }) => (
         <Title stuck={stuck}>
-          <TitleLink to="/tidningen">{children}</TitleLink>
+          <TitleLink to={to}>{children}</TitleLink>
         </Title>
       )}
     />
@@ -49,6 +49,7 @@ function MainTitle({ children }) {
 
 MainTitle.propTypes = {
   children: PropTypes.node.isRequired,
+  to: PropTypes.string.isRequired,
 };
 
 export { MainTitle as default };

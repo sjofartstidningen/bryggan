@@ -4,6 +4,7 @@ import Year from './containers/Tidningen/Year';
 import Issue from './containers/Tidningen/Issue';
 import SignIn from './containers/SignIn';
 import SignOut from './containers/SignOut';
+import Settings from './containers/Settings';
 
 const ShowProps = connect(state => state)(props => (
   <pre>{JSON.stringify(props, null, 2)}</pre>
@@ -44,6 +45,11 @@ const routes = [
     path: '/auth/sign-out',
     exact: true,
     component: SignOut,
+  },
+  {
+    path: '/auth/settings',
+    exact: true,
+    component: Settings,
   },
 ];
 

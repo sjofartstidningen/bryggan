@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getYears } from '../../../store/tidningen/actions';
-import MainTitle from '../components/MainTitle';
 import YearComp from './Year';
+import Title from '../../../components/Typography/Title';
 
 class Year extends Component {
   state = {
@@ -27,9 +27,9 @@ class Year extends Component {
 
     return (
       <div>
-        <MainTitle>
+        <Title to="/tidningen">
           <span ref={this.getTitleWidth}>Tidningen</span>
-        </MainTitle>
+        </Title>
 
         {years.length > 0 &&
           years.map(year => (
