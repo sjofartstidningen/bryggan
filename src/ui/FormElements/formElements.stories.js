@@ -17,7 +17,12 @@ storiesOf('Form Elements', module)
   .add('input', () => (
     <input.Fieldset>
       <input.Legend>Text inputs</input.Legend>
-      <input.Label>Input</input.Label>
-      <input.TextInput />
+      <input.Label htmlFor="input">Input</input.Label>
+      <input.TextInput id="input" />
+      <input.TextInputDescription>
+        Description for input
+      </input.TextInputDescription>
+      <input.Label htmlFor="input2">Input 2</input.Label>
+      <input.TextInput id="input2" />
     </input.Fieldset>
   ));
