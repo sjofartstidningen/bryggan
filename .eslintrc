@@ -1,0 +1,15 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "prettier"],
+  "env": {
+    "shared-node-browser": true,
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "rules": {
+    "react/jsx-filename-extension": 0,
+    "import/prefer-default-export": 0
+  }
+}
