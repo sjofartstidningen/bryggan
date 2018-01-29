@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 class LazyImage extends Component {
   static propTypes = {
@@ -23,9 +24,13 @@ class LazyImage extends Component {
   }
 
   fetchImage = async () => {
-    const res = await fetch(this.props.src);
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+    const res = await axios({
+      method: 'get',
+      url: this.props.src,
+      responseType: 'blob'
+    });
+
+    const url = URL.createObjectURL(res.data);
 
     this.setState(() => ({ url, loaded: true }));
   };
@@ -35,7 +40,9 @@ class LazyImage extends Component {
     const { url, loaded } = this.state;
 
     return (
-      <div>{loaded && <img className={className} src={url} alt={alt} />}</div>
+      <div>
+        {loaded && <img className={className} src={url} alt={alt} />}
+      </div>
     );
   }
 }
