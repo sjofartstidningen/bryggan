@@ -98,7 +98,7 @@ class IssueList extends Component {
             render={({ isHovering }) => (
               <Fragment>
                 <IssueCover
-                  src={`http://via.placeholder.com/224x293?text=${issue.name}`}
+                  src={issue.coverSrc}
                   alt={`Omslag till nummer ${issue.name}`}
                 />
                 <IssueDesc isHovering={isHovering}>

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { modularScale, lighten } from 'polished';
-import axios from 'axios';
 import IssueList from '../../components/IssueList';
+import { listFolder, getThumbUrl } from '../../utils/dropbox';
 
 const Main = styled.main`
   grid-area: main;
@@ -31,65 +31,51 @@ const SubTitle = styled.h2`
   background-color: white;
 `;
 
-const sortNameDesc = list => list.sort((a, b) => {
-  if (a.name < b.name) return 1;
-  if (a.name > b.name) return -1;
-  return 0;
-});
+const sortNameDesc = list =>
+  list.sort((a, b) => {
+    if (a.name < b.name) return 1;
+    if (a.name > b.name) return -1;
+    return 0;
+  });
 
 class Tidningen extends Component {
-  state = {
-    years: [],
-  };
+  state = { years: [] };
 
   componentDidMount() {
     this.fetchIssues();
   }
 
   fetchIssues = async () => {
-    const { data } = await axios({
-      url: '/files/list_folder',
-      method: 'post',
-      baseURL: 'https://api.dropboxapi.com/2',
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_DROPBOX_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      data: { path: '/bryggan' },
-    });
-
+    const { data } = await listFolder('', process.env.REACT_APP_DROPBOX_TOKEN);
     const { entries } = data;
 
     entries
       .filter(e => e['.tag'] === 'folder')
       .forEach(async ({ name, id }) => {
-        const { data: folderData } = await axios({
-          url: '/files/list_folder',
-          method: 'post',
-          baseURL: 'https://api.dropboxapi.com/2',
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_DROPBOX_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          data: { path: id },
-        });
+        const { data: folderData } = await listFolder(
+          name,
+          process.env.REACT_APP_DROPBOX_TOKEN,
+        );
 
         const year = {
           name,
           id,
-          issues: sortNameDesc(folderData.entries.map(e => ({
-            id: e.id,
-            name: e.name,
-            path: e.path_lower,
-            coverSrc: `https://content.dropboxapi.com/files/get_thumbnail?arg=${JSON.stringify({
-              path: `${e.path_lower}/${name}-${e.name}-001.pdf`,
-              format: 'png',
-              size: 'w480h320',
-            })}&authorization=${process.env.REACT_APP_DROPBOX_TOKEN}`
-          }))),
+          issues: sortNameDesc(
+            folderData.entries.map(e => ({
+              id: e.id,
+              name: e.name,
+              path: e.path_lower,
+              coverSrc: getThumbUrl(
+                `${name}/${e.name}/${name}-${e.name}-001.pdf`,
+                process.env.REACT_APP_DROPBOX_TOKEN,
+              ),
+            })),
+          ),
         };
 
-        this.setState(({ years }) => ({ years: sortNameDesc([...years, year]) }));
+        this.setState(({ years }) => ({
+          years: sortNameDesc([...years, year]),
+        }));
       });
   };
 
