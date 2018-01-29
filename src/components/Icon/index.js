@@ -67,4 +67,16 @@ function SignOut({ baseline, className }) {
 SignOut.propTypes = propTypes;
 SignOut.defaultProps = defaultProps;
 
-export { Icon as default, SignOut };
+function Eye({ baseline, className }) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </Icon>
+  );
+}
+
+Eye.propTypes = propTypes;
+Eye.defaultProps = defaultProps;
+
+export { Icon as default, SignOut, Eye };

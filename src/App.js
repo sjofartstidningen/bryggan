@@ -1,62 +1,19 @@
 import React, { Component } from 'react';
-import Header from './components/Header';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-const leadingZero = n => (n < 10 ? `0${n}` : `${n}`);
+import { Grid } from './components/MainGrid';
+import Header from './components/Header';
+import Tidningen from './Views/Tidningen';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <Header authorized />
-
-        <main>
-          <h1>Tidningen</h1>
-          <h2>2017</h2>
-          <div>
-            {Array.from({ length: 11 }, (x, i) => i + 1).map(n => (
-              <div>
-                <img
-                  src={`http://via.placeholder.com/210x275?text=Nummer ${leadingZero(
-                    n,
-                  )}`}
-                  alt={`Omslag nummer ${leadingZero(n)}`}
-                />
-                <p>Nummer {leadingZero(n)}</p>
-              </div>
-            ))}
-          </div>
-
-          <h2>2016</h2>
-          <div>
-            {Array.from({ length: 11 }, (x, i) => i + 1).map(n => (
-              <div>
-                <img
-                  src={`http://via.placeholder.com/210x275?text=Nummer ${leadingZero(
-                    n,
-                  )}`}
-                  alt={`Omslag nummer ${leadingZero(n)}`}
-                />
-                <p>Nummer {leadingZero(n)}</p>
-              </div>
-            ))}
-          </div>
-
-          <h2>2015</h2>
-          <div>
-            {Array.from({ length: 11 }, (x, i) => i + 1).map(n => (
-              <div>
-                <img
-                  src={`http://via.placeholder.com/210x275?text=Nummer ${leadingZero(
-                    n,
-                  )}`}
-                  alt={`Omslag nummer ${leadingZero(n)}`}
-                />
-                <p>Nummer {leadingZero(n)}</p>
-              </div>
-            ))}
-          </div>
-        </main>
-      </div>
+      <Router>
+        <Grid>
+          <Header user={{ name: 'Adam Bergman' }} />
+          <Route exact path="/" render={props => <Tidningen {...props} />} />
+        </Grid>
+      </Router>
     );
   }
 }

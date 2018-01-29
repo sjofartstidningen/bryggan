@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { modularScale, stripUnit, lighten } from 'polished';
+import { Link, NavLink } from 'react-router-dom';
 import Logotype from '../Logotype';
 import { SignOut } from '../Icon';
 
 const modularScaleRem = x => `${stripUnit(modularScale(x))}rem`;
 
 const Wrapper = styled.header`
+  grid-area: header;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: center;
-  width: 100vw;
-  height: auto;
   padding: ${modularScale(-1)};
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
@@ -60,17 +60,12 @@ const NavItem = styled.li`
   }
 `;
 
-const NavLink = styled.a`
+const NavItemLink = styled(NavLink)`
   color: ${lighten(0.5, '#1a1a1a')};
   text-decoration: none;
   transition: color 0.1s ease-in-out;
 
-  ${p =>
-    p.active &&
-    css`
-      color: #1a1a1a;
-    `};
-
+  &.active,
   &:hover {
     color: #1a1a1a;
   }
@@ -107,7 +102,11 @@ const ProfileSignOut = ProfileName.extend`
   font-weight: 400;
 `;
 
-const ProfileSignOutLink = NavLink.extend`
+const ProfileSignOutLink = styled(Link)`
+  color: ${lighten(0.5, '#1a1a1a')};
+  text-decoration: none;
+  transition: color 0.1s ease-in-out;
+  
   &:hover {
     color: red;
   }
@@ -115,11 +114,25 @@ const ProfileSignOutLink = NavLink.extend`
 
 class Header extends Component {
   static propTypes = {
-    authorized: PropTypes.bool.isRequired,
+    user: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      image: PropTypes.string,
+    }),
+  };
+
+  static defaultProps = {
+    user: null,
   };
 
   render() {
-    const { authorized } = this.props;
+    const { user } = this.props;
+    const initials =
+      user != null
+        ? user.name
+            .split(/\W/g)
+            .map(n => n[0].toUpperCase())
+            .join('')
+        : '';
 
     return (
       <Wrapper>
@@ -129,27 +142,29 @@ class Header extends Component {
         <nav>
           <NavList>
             <NavItem>
-              <NavLink href="/" active>
+              <NavItemLink exact to="/">
                 Tidningen
-              </NavLink>
+              </NavItemLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/">Inställningar</NavLink>
+              <NavItemLink to="/installningar">Inställningar</NavItemLink>
             </NavItem>
           </NavList>
         </nav>
 
-        {authorized && (
+        {user != null && (
           <ProfileSection>
             <ProfileImage
-              src="http://via.placeholder.com/28x28?text=AB"
+              src={
+                user.image || `http://via.placeholder.com/28?text=${initials}`
+              }
               alt=""
               width="28"
               height="28"
             />
-            <ProfileName>Adam Bergman</ProfileName>
+            <ProfileName>{user.name}</ProfileName>
             <ProfileSignOut>
-              <ProfileSignOutLink href="/">
+              <ProfileSignOutLink to="/">
                 Logga ut <SignOut baseline />
               </ProfileSignOutLink>
             </ProfileSignOut>
