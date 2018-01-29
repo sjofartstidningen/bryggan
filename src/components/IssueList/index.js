@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import { modularScale, lighten } from 'polished';
 import padStart from 'lodash.padstart';
 import IsHovering from '../IsHovering';
+import LazyImage from '../LazyImage';
 import { Eye } from '../Icon';
 
 const IssuesListWrapper = styled.div`
@@ -41,7 +42,7 @@ const IssueListItem = styled.button`
   }
 `;
 
-const IssueCover = styled.img`
+const IssueCover = styled(LazyImage)`
   display: block;
   width: 100%;
   height: auto;
@@ -93,7 +94,7 @@ class IssueList extends Component {
         {this.props.issues.map(issue => (
           <IsHovering
             el={IssueListItem}
-            key={issue.name}
+            key={issue.id}
             onClick={this.handleIssueClick(issue)}
             render={({ isHovering }) => (
               <Fragment>
