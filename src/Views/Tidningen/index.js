@@ -5,7 +5,7 @@ import { join } from 'path';
 import padStart from 'lodash.padstart';
 import { listFolder, getThumbUrl, getThumbnailSize } from '../../utils/dropbox';
 import IssueList from '../../components/IssueList';
-import Issue from '../Issue';
+import Issue from '../Issue'; // eslint-disable-line
 import { Main } from '../../components/MainGrid';
 import { Title, SubTitle } from '../../components/Typography';
 
@@ -88,6 +88,7 @@ class Tidningen extends Component {
         }}
       >
         <Title>Tidningen</Title>
+        
         <Route
           path={match.url}
           exact

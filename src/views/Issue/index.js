@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
 import { join } from 'path';
 import padStart from 'lodash.padstart';
 import { listFolder, getThumbnailSize, getThumbUrl } from '../../utils/dropbox';
+import Page from '../Page';
 import IssueList from '../../components/IssueList';
 import { SubTitle } from '../../components/Typography';
 import { ChevronsRight } from '../../components/Icon';
@@ -14,6 +16,9 @@ class Issue extends Component {
         year: PropTypes.string.isRequired,
         issue: PropTypes.string.isRequired,
       }).isRequired,
+    }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func,
     }).isRequired,
   };
 
@@ -47,15 +52,20 @@ class Issue extends Component {
 
     const withoutLast =
       newPages.length % 2 === 1 ? newPages.slice(0, -1) : newPages;
+
     this.setState(({ pages }) => ({ pages: [...pages, ...withoutLast] }));
   };
 
-  handleIssueClick = () => null;
+  handleIssueClick = ({ issue: page }) => {
+    const { match, history } = this.props;
+    history.push(join(match.url, page.name));
+  };
 
   render() {
     const { match } = this.props;
     const { year, issue } = match.params;
-    const padLength = `${this.state.pages.length}`.length;
+    const pageLength = this.state.pages.length;
+    const padLength = `${pageLength}`.length;
 
     return (
       <section
@@ -66,11 +76,24 @@ class Issue extends Component {
         <SubTitle>
           {year} <ChevronsRight baseline /> {issue}
         </SubTitle>
-        <IssueList
-          issues={this.state.pages}
-          caption={n => `${padStart(n, padLength, '0')}`}
-          keepPairs
-          onIssueClick={this.handleIssueClick}
+
+        <Route
+          path={match.url}
+          exact
+          render={() => (
+            <IssueList
+              issues={this.state.pages}
+              caption={n => `${padStart(n, padLength, '0')}`}
+              keepPairs
+              onIssueClick={this.handleIssueClick}
+            />
+          )}
+        />
+
+        <Route
+          path={join(match.path, ':page')}
+          exact
+          render={props => <Page {...props} totalPages={pageLength} />}
         />
       </section>
     );

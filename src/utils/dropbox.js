@@ -9,6 +9,13 @@ const dropboxApi = axios.create({
   },
 });
 
+const dropboxContent = axios.create({
+  baseURL: 'https://api.dropboxapi.com/2',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 function getThumbUrl(file, size = 'w640h480', token) {
   const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
   const params = {
@@ -17,10 +24,28 @@ function getThumbUrl(file, size = 'w640h480', token) {
       path: join('/bryggan', file),
       format: 'png',
       size,
+      mode: 'bestfit',
     }),
   };
 
   return `${baseURL}?${qs.stringify(params)}`;
+}
+
+function getDownloadUrl(file, token) {
+  const baseURL = 'https://content.dropboxapi.com/2/files/download';
+  const params = {
+    authorization: `Bearer ${token}`,
+    arg: JSON.stringify({ path: join('/bryggan', file) }),
+  };
+
+  return `${baseURL}?${qs.stringify(params)}`;
+}
+
+async function downloadFile(file, token) {
+  const url = getDownloadUrl(file, token);
+  const res = await dropboxContent.get(url, { responseType: 'blob' });
+  const src = URL.createObjectURL(res.data);
+  return { src, ...res };
 }
 
 function getThumbnailSize(width, dpi = window.devicePixelRatio || 1) {
@@ -66,4 +91,10 @@ function listFolder(folder, token, recursive = false) {
   });
 }
 
-export { getThumbUrl, listFolder, getThumbnailSize };
+export {
+  getThumbUrl,
+  listFolder,
+  getThumbnailSize,
+  getDownloadUrl,
+  downloadFile,
+};

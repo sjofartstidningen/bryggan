@@ -105,4 +105,63 @@ function ChevronsRight({ baseline, className }) {
 ChevronsRight.propTypes = propTypes;
 ChevronsRight.defaultProps = defaultProps;
 
-export { Icon as default, SignOut, Eye, CloudRain, ChevronsRight };
+function ChevronLeft({ baseline, className }) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <polyline points="15 18 9 12 15 6" />
+    </Icon>
+  );
+}
+
+ChevronLeft.propTypes = propTypes;
+ChevronLeft.defaultProps = defaultProps;
+
+function ChevronRight({ baseline, className }) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <polyline points="9 18 15 12 9 6" />
+    </Icon>
+  );
+}
+
+ChevronRight.propTypes = propTypes;
+ChevronRight.defaultProps = defaultProps;
+
+function ZoomIn({ baseline, className }) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <line x1="11" y1="8" x2="11" y2="14" />
+      <line x1="8" y1="11" x2="14" y2="11" />
+    </Icon>
+  );
+}
+
+ZoomIn.propTypes = propTypes;
+ZoomIn.defaultProps = defaultProps;
+
+function ZoomOut({ baseline, className }) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <line x1="8" y1="11" x2="14" y2="11" />
+    </Icon>
+  );
+}
+
+ZoomOut.propTypes = propTypes;
+ZoomOut.defaultProps = defaultProps;
+
+export {
+  Icon as default,
+  SignOut,
+  Eye,
+  CloudRain,
+  ChevronsRight,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
+};

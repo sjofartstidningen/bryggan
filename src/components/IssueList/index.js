@@ -108,6 +108,7 @@ class IssueList extends Component {
       <IssuesListWrapper>
         {this.props.issues.map(issue => (
           <IsHovering
+            id={`page-${issue.name}`}
             el={IssueListItem}
             key={issue.id}
             keepPairs={this.props.keepPairs}
