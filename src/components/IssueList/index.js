@@ -5,6 +5,7 @@ import { modularScale, lighten } from 'polished';
 import padStart from 'lodash.padstart';
 import IsHovering from '../IsHovering';
 import LazyImage from '../LazyImage';
+import Loader from '../Loader';
 import { Eye } from '../Icon';
 
 const IssuesListWrapper = styled.div`
@@ -42,7 +43,7 @@ const IssueListItem = styled.button`
   }
 `;
 
-const IssueCover = styled(LazyImage)`
+const IssueCover = styled.img`
   display: block;
   width: 100%;
   height: auto;
@@ -74,10 +75,13 @@ const IssueShowIcon = styled(Eye)`
 
 class IssueList extends Component {
   static propTypes = {
-    issues: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      coverSrc: PropTypes.string,
-    })).isRequired,
+    issues: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        coverSrc: PropTypes.string,
+      }),
+    ).isRequired,
     onIssueClick: PropTypes.func.isRequired,
   };
 
@@ -98,9 +102,20 @@ class IssueList extends Component {
             onClick={this.handleIssueClick(issue)}
             render={({ isHovering }) => (
               <Fragment>
-                <IssueCover
+                <LazyImage
                   src={issue.coverSrc}
-                  alt={`Omslag till nummer ${issue.name}`}
+                  render={({ loaded, src }) => (
+                    <Fragment>
+                      {loaded ? (
+                        <IssueCover
+                          src={src}
+                          alt={`Omslag till nummer ${issue.name}`}
+                        />
+                      ) : (
+                        <Loader ratio={480 / 372} />
+                      )}
+                    </Fragment>
+                  )}
                 />
                 <IssueDesc isHovering={isHovering}>
                   Nummer {padStart(issue.name, 2, '0')}{' '}

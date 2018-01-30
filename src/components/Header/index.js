@@ -142,7 +142,7 @@ class Header extends Component {
         <nav>
           <NavList>
             <NavItem>
-              <NavItemLink exact to="/">
+              <NavItemLink to="/">
                 Tidningen
               </NavItemLink>
             </NavItem>

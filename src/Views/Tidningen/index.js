@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale, lighten } from 'polished';
 import IssueList from '../../components/IssueList';
-import { listFolder, getThumbUrl } from '../../utils/dropbox';
+import { listFolder, getThumbUrl, getThumbnailSize } from '../../utils/dropbox';
 
 const Main = styled.main`
   grid-area: main;
@@ -39,7 +40,24 @@ const sortNameDesc = list =>
   });
 
 class Tidningen extends Component {
-  state = { years: [] };
+  static propTypes = {
+    history: PropTypes.shape({
+      action: PropTypes.oneOf(['PUSH', 'REPLACE', 'POP']),
+      block: PropTypes.func,
+      createHref: PropTypes.func,
+      go: PropTypes.func,
+      goBack: PropTypes.func,
+      goForward: PropTypes.func,
+      length: PropTypes.number,
+      listen: PropTypes.func,
+      push: PropTypes.func,
+      replace: PropTypes.func,
+    }).isRequired,
+  };
+
+  state = {
+    years: [],
+  };
 
   componentDidMount() {
     this.fetchIssues();
@@ -48,6 +66,9 @@ class Tidningen extends Component {
   fetchIssues = async () => {
     const { data } = await listFolder('', process.env.REACT_APP_DROPBOX_TOKEN);
     const { entries } = data;
+
+    const { width } = this.ref.getBoundingClientRect();
+    const thumbnailSize = getThumbnailSize(width / 4);
 
     entries
       .filter(e => e['.tag'] === 'folder')
@@ -67,6 +88,7 @@ class Tidningen extends Component {
               path: e.path_lower,
               coverSrc: getThumbUrl(
                 `${name}/${e.name}/${name}-${e.name}-001.pdf`,
+                thumbnailSize,
                 process.env.REACT_APP_DROPBOX_TOKEN,
               ),
             })),
@@ -79,20 +101,27 @@ class Tidningen extends Component {
       });
   };
 
-  handleIssueClick = () => null;
+  handleIssueClick = year => ({ issue }) => {
+    const { history } = this.props;
+    history.push(`/tidningen/${year}/${issue.name}`);
+  };
 
   render() {
     const { years } = this.state;
 
     return (
-      <Main>
+      <Main
+        innerRef={ref => {
+          this.ref = ref;
+        }}
+      >
         <Title>Tidningen</Title>
         {years.map(year => (
           <section key={year.id}>
             <SubTitle>{year.name}</SubTitle>
             <IssueList
               issues={year.issues}
-              onIssueClick={this.handleIssueClick}
+              onIssueClick={this.handleIssueClick(year.name)}
             />
           </section>
         ))}

@@ -1,47 +1,113 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
+import mitt from 'mitt';
+
+const emitter = mitt();
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) emitter.emit('intersect', entry);
+      else emitter.emit('non-intersect', entry);
+    });
+  },
+  {
+    root: null,
+    rootMargin: '100px',
+    thresholds: 0,
+  },
+);
 
 class LazyImage extends Component {
   static propTypes = {
     src: PropTypes.string.isRequired,
-    alt: PropTypes.string,
-    className: PropTypes.string,
+    render: PropTypes.func.isRequired,
+    onLoad: PropTypes.func,
+    onError: PropTypes.func,
   };
 
   static defaultProps = {
-    alt: '',
-    className: '',
+    onLoad: null,
+    onError: null,
   };
 
   state = {
+    src: null,
     loaded: false,
-    url: null,
+    error: null,
   };
 
   componentDidMount() {
-    this.fetchImage();
+    observer.observe(this.wrapper);
+    emitter.on('intersect', this.handleIntersect);
+    emitter.on('non-intersect', this.handleNonIntersect);
   }
 
+  componentWillUnmount() {
+    this.eventsOff();
+  }
+
+  handleIntersect = entry => {
+    if (entry.target === this.wrapper) this.fetchImage();
+  };
+
+  handleNonIntersect = entry => {
+    if (entry.target === this.wrapper && this.cancelToken) {
+      this.cancelToken.cancel('Component out of view');
+    }
+  };
+
+  handleLoaded = (src, res) => {
+    this.setState(() => ({ src, loaded: true }));
+    this.eventsOff();
+
+    if (this.props.onLoad != null) this.props.onLoad(res);
+  };
+
+  handleError = error => {
+    this.setState(() => ({ error }));
+    this.eventsOff();
+    if (this.props.onError != null) this.props.onError(error);
+  };
+
+  eventsOff = () => {
+    observer.unobserve(this.wrapper);
+    emitter.off('intersect', this.handleIntersect);
+    emitter.off('non-intersect', this.handleNonIntersect);
+    if (this.cancelToken) {
+      this.cancelToken.cancel('Stop listening for events');
+    }
+  };
+
   fetchImage = async () => {
-    const res = await axios({
-      method: 'get',
-      url: this.props.src,
-      responseType: 'blob'
-    });
+    try {
+      this.cancelToken = CancelToken.source();
+      const res = await axios({
+        method: 'get',
+        url: this.props.src,
+        responseType: 'blob',
+        cancelToken: this.cancelToken.token,
+      });
 
-    const url = URL.createObjectURL(res.data);
-
-    this.setState(() => ({ url, loaded: true }));
+      const src = URL.createObjectURL(res.data);
+      this.handleLoaded(src, res);
+    } catch (err) {
+      if (!axios.isCancel(err)) this.handleError(err);
+    }
   };
 
   render() {
-    const { alt, className } = this.props;
-    const { url, loaded } = this.state;
+    const { render } = this.props;
+    const { src, loaded, error } = this.state;
 
     return (
-      <div>
-        {loaded && <img className={className} src={url} alt={alt} />}
+      <div
+        ref={ref => {
+          this.wrapper = ref;
+        }}
+      >
+        {render({ src, loaded, error })}
       </div>
     );
   }
