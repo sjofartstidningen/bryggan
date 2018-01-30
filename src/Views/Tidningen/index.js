@@ -1,36 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { modularScale, lighten } from 'polished';
-import IssueList from '../../components/IssueList';
+import { Route } from 'react-router-dom';
+import { join } from 'path';
+import padStart from 'lodash.padstart';
 import { listFolder, getThumbUrl, getThumbnailSize } from '../../utils/dropbox';
-
-const Main = styled.main`
-  grid-area: main;
-  padding: ${modularScale(1)};
-  color: #1a1a1a;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-`;
-
-const Title = styled.h1`
-  margin: 0;
-  font-size: ${modularScale(4)};
-  font-weight: 400;
-  letter-spacing: 0.03em;
-  color: ${lighten(0.5, '#1a1a1a')};
-`;
-
-const SubTitle = styled.h2`
-  position: sticky;
-  top: 0;
-  margin: 0;
-  padding-top: 1rem;
-  padding-bottom: 0.5rem;
-  font-size: ${modularScale(1)};
-  font-weight: 700;
-  background-color: white;
-`;
+import IssueList from '../../components/IssueList';
+import Issue from '../Issue';
+import { Main } from '../../components/MainGrid';
+import { Title, SubTitle } from '../../components/Typography';
 
 const sortNameDesc = list =>
   list.sort((a, b) => {
@@ -41,17 +18,11 @@ const sortNameDesc = list =>
 
 class Tidningen extends Component {
   static propTypes = {
+    match: PropTypes.shape({
+      url: PropTypes.string,
+    }).isRequired,
     history: PropTypes.shape({
-      action: PropTypes.oneOf(['PUSH', 'REPLACE', 'POP']),
-      block: PropTypes.func,
-      createHref: PropTypes.func,
-      go: PropTypes.func,
-      goBack: PropTypes.func,
-      goForward: PropTypes.func,
-      length: PropTypes.number,
-      listen: PropTypes.func,
       push: PropTypes.func,
-      replace: PropTypes.func,
     }).isRequired,
   };
 
@@ -102,11 +73,12 @@ class Tidningen extends Component {
   };
 
   handleIssueClick = year => ({ issue }) => {
-    const { history } = this.props;
-    history.push(`/tidningen/${year}/${issue.name}`);
+    const { history, match } = this.props;
+    history.push(join(match.url, year, issue.name));
   };
 
   render() {
+    const { match } = this.props;
     const { years } = this.state;
 
     return (
@@ -116,15 +88,27 @@ class Tidningen extends Component {
         }}
       >
         <Title>Tidningen</Title>
-        {years.map(year => (
-          <section key={year.id}>
-            <SubTitle>{year.name}</SubTitle>
-            <IssueList
-              issues={year.issues}
-              onIssueClick={this.handleIssueClick(year.name)}
-            />
-          </section>
-        ))}
+        <Route
+          path={match.url}
+          exact
+          render={() =>
+            years.map(year => (
+              <section key={year.id}>
+                <SubTitle>{year.name}</SubTitle>
+                <IssueList
+                  issues={year.issues}
+                  caption={n => `Nummer ${padStart(n, 2, '0')}`}
+                  onIssueClick={this.handleIssueClick(year.name)}
+                />
+              </section>
+            ))
+          }
+        />
+
+        <Route
+          path={join(match.url, ':year', ':issue')}
+          render={props => <Issue {...props} />}
+        />
       </Main>
     );
   }

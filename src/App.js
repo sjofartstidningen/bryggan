@@ -11,7 +11,7 @@ class App extends Component {
       <Router>
         <Grid>
           <Header user={{ name: 'Adam Bergman' }} />
-          <Route exact path="/" render={props => <Tidningen {...props} />} />
+          <Route path="/" render={props => <Tidningen {...props} />} />
         </Grid>
       </Router>
     );

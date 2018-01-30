@@ -3,32 +3,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale, stripUnit, lighten } from 'polished';
 import { Link, NavLink } from 'react-router-dom';
+import { Header as Wrapper } from '../MainGrid';
 import Logotype from '../Logotype';
 import { SignOut } from '../Icon';
 
 const modularScaleRem = x => `${stripUnit(modularScale(x))}rem`;
-
-const Wrapper = styled.header`
-  grid-area: header;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  padding: ${modularScale(-1)};
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  color: #1a1a1a;
-  background-color: ${lighten(0.15, '#c5c5c5')};
-  box-shadow: 0px 0px 5px 0px ${lighten(0, '#c5c5c5')};
-
-  & > * {
-    margin-right: ${modularScaleRem(2)};
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
-`;
 
 const Logo = styled(Logotype)`
   width: auto;

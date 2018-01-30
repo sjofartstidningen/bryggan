@@ -93,4 +93,16 @@ function CloudRain({ baseline, className }) {
 CloudRain.propTypes = propTypes;
 CloudRain.defaultProps = defaultProps;
 
-export { Icon as default, SignOut, Eye, CloudRain };
+function ChevronsRight({ baseline, className }) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <polyline points="13 17 18 12 13 7" />
+      <polyline points="6 17 11 12 6 7" />
+    </Icon>
+  );
+}
+
+ChevronsRight.propTypes = propTypes;
+ChevronsRight.defaultProps = defaultProps;
+
+export { Icon as default, SignOut, Eye, CloudRain, ChevronsRight };

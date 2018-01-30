@@ -1,4 +1,4 @@
-import path from 'path';
+import { join } from 'path';
 import axios from 'axios';
 import qs from 'qs';
 
@@ -14,7 +14,7 @@ function getThumbUrl(file, size = 'w640h480', token) {
   const params = {
     authorization: `Bearer ${token}`,
     arg: JSON.stringify({
-      path: path.join('/bryggan', file),
+      path: join('/bryggan', file),
       format: 'png',
       size,
     }),
@@ -42,7 +42,7 @@ function getThumbnailSize(width, dpi = window.devicePixelRatio || 1) {
   let i = 0;
 
   while (i < keys.length) {
-    const key = keys[i]
+    const key = keys[i];
     const { w } = widths[key];
 
     if (w >= actualWidth) return key;
@@ -60,7 +60,7 @@ function listFolder(folder, token, recursive = false) {
       Authorization: `Bearer ${token}`,
     },
     data: {
-      path: path.join('/bryggan', folder),
+      path: join('/bryggan', folder),
       recursive,
     },
   });

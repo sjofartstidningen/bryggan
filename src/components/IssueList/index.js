@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale, lighten } from 'polished';
-import padStart from 'lodash.padstart';
 import IsHovering from '../IsHovering';
 import LazyImage from '../LazyImage';
 import Loader from '../Loader';
@@ -26,15 +25,20 @@ const IssueListItem = styled.button`
   ${p =>
     p.keepPairs &&
     css`
-      &:nth-child(odd) {
+      &:nth-child(even) {
         margin-right: 0;
         margin-left: 0.5rem;
       }
 
-      &:nth-child(even) {
+      &:nth-child(odd) {
         margin-right: 0.5rem;
         margin-left: 0;
         border-left-color: transparent;
+      }
+
+      &:first-child {
+        margin-left: calc(100% / 4);
+        border-left-color: ${lighten(0.8, '#1a1a1a')};
       }
     `};
 
@@ -83,6 +87,13 @@ class IssueList extends Component {
       }),
     ).isRequired,
     onIssueClick: PropTypes.func.isRequired,
+    caption: PropTypes.func,
+    keepPairs: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    caption: n => n,
+    keepPairs: false,
   };
 
   handleIssueClick = issue => e => {
@@ -99,6 +110,7 @@ class IssueList extends Component {
           <IsHovering
             el={IssueListItem}
             key={issue.id}
+            keepPairs={this.props.keepPairs}
             onClick={this.handleIssueClick(issue)}
             render={({ isHovering }) => (
               <Fragment>
@@ -118,7 +130,7 @@ class IssueList extends Component {
                   )}
                 />
                 <IssueDesc isHovering={isHovering}>
-                  Nummer {padStart(issue.name, 2, '0')}{' '}
+                  {this.props.caption(issue.name)}{' '}
                   <IssueShowIcon isHovering={isHovering} />
                 </IssueDesc>
               </Fragment>
