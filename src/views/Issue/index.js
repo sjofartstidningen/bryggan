@@ -45,7 +45,8 @@ class Issue extends Component {
       ),
     }));
 
-    const withoutLast = newPages.length % 2 === 1 ? newPages.slice(0, -1) : newPages;
+    const withoutLast =
+      newPages.length % 2 === 1 ? newPages.slice(0, -1) : newPages;
     this.setState(({ pages }) => ({ pages: [...pages, ...withoutLast] }));
   };
 

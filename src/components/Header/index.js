@@ -85,7 +85,7 @@ const ProfileSignOutLink = styled(Link)`
   color: ${lighten(0.5, '#1a1a1a')};
   text-decoration: none;
   transition: color 0.1s ease-in-out;
-  
+
   &:hover {
     color: red;
   }
@@ -121,9 +121,7 @@ class Header extends Component {
         <nav>
           <NavList>
             <NavItem>
-              <NavItemLink to="/">
-                Tidningen
-              </NavItemLink>
+              <NavItemLink to="/">Tidningen</NavItemLink>
             </NavItem>
             <NavItem>
               <NavItemLink to="/installningar">Inställningar</NavItemLink>

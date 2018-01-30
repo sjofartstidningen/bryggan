@@ -19,7 +19,7 @@
     "test:no-watch": "CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint src",
-    "format": "prettier src/** --write",
+    "format": "prettier 'src/**/*' --write",
     "precommit": "lint-staged"
   },
   "dependencies": {
