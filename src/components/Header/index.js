@@ -1,8 +1,9 @@
+/* eslint-disable no-nested-ternary */ 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale, stripUnit, lighten } from 'polished';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Header as Wrapper } from '../MainGrid';
 import Logotype from '../Logotype';
 import { SignOut } from '../Icon';
@@ -81,9 +82,14 @@ const ProfileSignOut = ProfileName.extend`
   font-weight: 400;
 `;
 
-const ProfileSignOutLink = styled(Link)`
-  color: ${lighten(0.5, '#1a1a1a')};
+const ProfileSignOutLink = styled.button`
+  border: none;
+  font-size: 1em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   text-decoration: none;
+  color: ${lighten(0.5, '#1a1a1a')};
+  background-color: transparent;
   transition: color 0.1s ease-in-out;
 
   &:hover {
@@ -94,24 +100,30 @@ const ProfileSignOutLink = styled(Link)`
 class Header extends Component {
   static propTypes = {
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      email: PropTypes.string.isRequired,
       image: PropTypes.string,
     }),
+    onSignOut: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     user: null,
   };
 
+  handleSignOut = () => this.props.onSignOut();
+
   render() {
     const { user } = this.props;
     const initials =
       user != null
-        ? user.name
-            .split(/\W/g)
-            .map(n => n[0].toUpperCase())
-            .join('')
-        : '';
+        ? user.name != null
+          ? user.name
+              .split(/\W/g)
+              .map(n => n[0].toUpperCase())
+              .join('')
+          : user.email[0].toUpperCase()
+        : null;
 
     return (
       <Wrapper>
@@ -121,7 +133,7 @@ class Header extends Component {
         <nav>
           <NavList>
             <NavItem>
-              <NavItemLink to="/">Tidningen</NavItemLink>
+              <NavItemLink to="/tidningen">Tidningen</NavItemLink>
             </NavItem>
             <NavItem>
               <NavItemLink to="/installningar">Inställningar</NavItemLink>
@@ -139,9 +151,9 @@ class Header extends Component {
               width="28"
               height="28"
             />
-            <ProfileName>{user.name}</ProfileName>
+            <ProfileName>{user.name || user.email}</ProfileName>
             <ProfileSignOut>
-              <ProfileSignOutLink to="/">
+              <ProfileSignOutLink onClick={this.handleSignOut}>
                 Logga ut <SignOut baseline />
               </ProfileSignOutLink>
             </ProfileSignOut>

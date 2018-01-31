@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "firebase": "^4.9.0",
     "lodash.padstart": "^4.6.1",
     "mitt": "^1.1.3",
     "normalize.css": "^7.0.0",
