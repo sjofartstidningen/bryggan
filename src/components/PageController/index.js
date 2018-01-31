@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale, lighten } from 'polished';
@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   border: 1px solid ${lighten(0.8, '#1a1a1a')};
   border-radius: 4px;
   padding: 0.5em;
+  color: #1a1a1a;
   background-color: #ffffff;
   transform: translateX(-50%);
 `;
@@ -32,7 +33,7 @@ const Button = styled.button`
   padding: 0.5em;
   font-size: ${modularScale(0)};
   line-height: 1em;
-  opacity: ${p => p.disabled ? 0.5 : 1};
+  opacity: ${p => (p.disabled ? 0.5 : 1)};
 `;
 
 const Hide = styled.span`
@@ -46,46 +47,81 @@ const Hide = styled.span`
   border: 0;
 `;
 
-function PageController({
-  currentPage,
-  totalPages,
-  onNextPage,
-  onPrevPage,
-  onZoomDecrease,
-  onZoomIncrease,
-}) {
-  const curr = Number.parseInt(currentPage, 10);
+class PageController extends Component {
+  static propTypes = {
+    currentPage: PropTypes.string.isRequired,
+    totalPages: PropTypes.number.isRequired,
+    onNextPage: PropTypes.func.isRequired,
+    onPrevPage: PropTypes.func.isRequired,
+    onZoomDecrease: PropTypes.func.isRequired,
+    onZoomIncrease: PropTypes.func.isRequired,
+    onZoomReset: PropTypes.func.isRequired,
+  };
 
-  return (
-    <Wrapper>
-      <PageIndicator order={3}>{curr} / {totalPages}</PageIndicator>
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress);
+  }
 
-      <Button order={2} onClick={onPrevPage} disabled={curr <= 1}>
-        <ChevronLeft baseline /> <Hide>Previous page</Hide>
-      </Button>
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress);
+  }
 
-      <Button order={4} onClick={onNextPage} disabled={curr >= totalPages}>
-        <ChevronRight baseline /> <Hide>Next page</Hide>
-      </Button>
+  handleKeyPress = ({ keyCode }) => {
+    switch (keyCode) {
+      case 37:
+        this.props.onPrevPage();
+        break;
+      case 39:
+        this.props.onNextPage();
+        break;
+      case 48:
+        this.props.onZoomReset();
+        break;
+      case 187:
+        this.props.onZoomIncrease();
+        break;
+      case 189:
+        this.props.onZoomDecrease();
+        break;
+      default:
+    }
+  };
 
-      <Button order={1} onClick={onZoomDecrease}>
-        <ZoomOut baseline /> <Hide>Decrease zoom</Hide>
-      </Button>
+  render() {
+    const {
+      currentPage,
+      totalPages,
+      onNextPage,
+      onPrevPage,
+      onZoomDecrease,
+      onZoomIncrease,
+    } = this.props;
+    const curr = Number.parseInt(currentPage, 10);
 
-      <Button order={5} onClick={onZoomIncrease}>
-        <ZoomIn baseline /> <Hide>Increase zoom</Hide>
-      </Button>
-    </Wrapper>
-  );
+    return (
+      <Wrapper>
+        <PageIndicator order={3}>
+          {curr} / {totalPages}
+        </PageIndicator>
+
+        <Button order={2} onClick={onPrevPage} disabled={curr <= 1}>
+          <ChevronLeft baseline /> <Hide>Previous page</Hide>
+        </Button>
+
+        <Button order={4} onClick={onNextPage} disabled={curr >= totalPages}>
+          <ChevronRight baseline /> <Hide>Next page</Hide>
+        </Button>
+
+        <Button order={1} onClick={onZoomDecrease}>
+          <ZoomOut baseline /> <Hide>Decrease zoom</Hide>
+        </Button>
+
+        <Button order={5} onClick={onZoomIncrease}>
+          <ZoomIn baseline /> <Hide>Increase zoom</Hide>
+        </Button>
+      </Wrapper>
+    );
+  }
 }
-
-PageController.propTypes = {
-  currentPage: PropTypes.string.isRequired,
-  totalPages: PropTypes.number.isRequired,
-  onNextPage: PropTypes.func.isRequired,
-  onPrevPage: PropTypes.func.isRequired,
-  onZoomDecrease: PropTypes.func.isRequired,
-  onZoomIncrease: PropTypes.func.isRequired,
-};
 
 export default PageController;

@@ -134,6 +134,10 @@ class IssuePage extends Component {
     this.setState(() => ({ zoom: nextZoom }));
   };
 
+  handleZoomReset = () => {
+    this.setState(() => ({ zoom: 1 }));
+  }
+
   render() {
     const { match, totalPages } = this.props;
     const { page } = match.params;
@@ -163,6 +167,7 @@ class IssuePage extends Component {
           onPrevPage={this.handlePageTransition(-1)}
           onZoomIncrease={this.handleZoom(0.2)}
           onZoomDecrease={this.handleZoom(-0.2)}
+          onZoomReset={this.handleZoomReset}
         />
       </Fragment>
     );
