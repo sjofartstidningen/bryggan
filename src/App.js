@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 
 import { Grid } from './components/MainGrid';
 import Header from './components/Header';
@@ -11,7 +11,8 @@ class App extends Component {
       <Router>
         <Grid>
           <Header user={{ name: 'Adam Bergman' }} />
-          <Route path="/" render={props => <Tidningen {...props} />} />
+          <Route path="/" exact render={() => <Redirect to="/tidningen" />} />
+          <Route path="/tidningen" render={props => <Tidningen {...props} />} />
         </Grid>
       </Router>
     );
