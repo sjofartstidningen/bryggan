@@ -6,7 +6,7 @@ import padStart from 'lodash.padstart';
 import { listFolder, getThumbnailSize, getThumbUrl } from '../../utils/dropbox';
 import Page from '../Page';
 import IssueList from '../../components/IssueList';
-import { SubTitle } from '../../components/Typography';
+import { SubTitle, SubTitleLink } from '../../components/Typography';
 import { ChevronsRight } from '../../components/Icon';
 
 class Issue extends Component {
@@ -74,7 +74,9 @@ class Issue extends Component {
         }}
       >
         <SubTitle>
-          {year} <ChevronsRight baseline /> {issue}
+          <SubTitleLink to={match.url.replace(/(\/\d+)+$/, '')}>{year}</SubTitleLink>
+          <ChevronsRight baseline />
+          <SubTitleLink to={match.url}>{issue}</SubTitleLink>
         </SubTitle>
 
         <Route
