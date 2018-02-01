@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios, { CancelToken } from 'axios';
+import { cacheAdapterEnhancer } from 'axios-extensions';
 import mitt from 'mitt';
 
 const emitter = mitt();
+
+const http = axios.create({
+  headers: {
+    'Cache-Control': 'no-cache',
+  },
+  adapter: cacheAdapterEnhancer(axios.defaults.adapter, true),
+});
 
 const observer = new IntersectionObserver(
   entries => {
@@ -83,7 +91,7 @@ class LazyImage extends Component {
   fetchImage = async () => {
     try {
       this.cancelToken = CancelToken.source();
-      const res = await axios({
+      const res = await http({
         method: 'get',
         url: this.props.src,
         responseType: 'blob',
