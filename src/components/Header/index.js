@@ -1,4 +1,5 @@
-/* eslint-disable no-nested-ternary */ 
+/* eslint-disable no-nested-ternary */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -6,6 +7,7 @@ import { modularScale, stripUnit, lighten } from 'polished';
 import { NavLink } from 'react-router-dom';
 import { Header as Wrapper } from '../MainGrid';
 import Logotype from '../Logotype';
+import Gravatar from '../Gravatar';
 import { SignOut } from '../Icon';
 
 const modularScaleRem = x => `${stripUnit(modularScale(x))}rem`;
@@ -65,10 +67,27 @@ const ProfileSection = styled.div`
   }
 `;
 
-const ProfileImage = styled.img`
+const ProfileImageContainer = styled.div`
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    height: calc(100% + 6px);
+    width: calc(100% + 6px);
+    border: 1px solid #1a1a1a;
+    border-radius: 100%;
+  }
+`;
+
+const ProfileImage = styled(Gravatar)`
+  display: block;
   width: ${modularScale(2)};
   height: ${modularScale(2)};
   border-radius: 100%;
+  background-color: white;
 `;
 
 const ProfileName = styled.p`
@@ -115,15 +134,6 @@ class Header extends Component {
 
   render() {
     const { user } = this.props;
-    const initials =
-      user != null
-        ? user.name != null
-          ? user.name
-              .split(/\W/g)
-              .map(n => n[0].toUpperCase())
-              .join('')
-          : user.email[0].toUpperCase()
-        : null;
 
     return (
       <Wrapper>
@@ -143,14 +153,9 @@ class Header extends Component {
 
         {user != null && (
           <ProfileSection>
-            <ProfileImage
-              src={
-                user.image || `http://via.placeholder.com/28?text=${initials}`
-              }
-              alt=""
-              width="28"
-              height="28"
-            />
+            <ProfileImageContainer>
+              <ProfileImage email={user.email} alt="" width="28" height="28" />
+            </ProfileImageContainer>
             <ProfileName>{user.name || user.email}</ProfileName>
             <ProfileSignOut>
               <ProfileSignOutLink onClick={this.handleSignOut}>
