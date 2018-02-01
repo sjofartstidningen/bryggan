@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { modularScale, lighten, stripUnit } from 'polished';
+import { ax } from '../../styles';
 
 const modularScaleRem = x => `${stripUnit(modularScale(x))}rem`;
 
@@ -17,9 +18,8 @@ const Grid = styled.div`
 const Main = styled.main`
   grid-area: main;
   padding: ${modularScale(1)};
-  color: #1a1a1a;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  color: ${ax('color.black')};
+  font-family: ${ax('font.sansSerif')};
 `;
 
 const Header = styled.header`
@@ -28,12 +28,11 @@ const Header = styled.header`
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: center;
-  border-bottom: 1px solid ${lighten(0, '#c5c5c5')};
+  border-bottom: 1px solid ${p => lighten(0, ax('color.grey')(p))};
   padding: ${modularScale(-1)};
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  color: #1a1a1a;
-  background-color: ${lighten(0.15, '#c5c5c5')};
+  font-family: ${ax('font.sansSerif')};
+  color: ${ax('color.black')};
+  background-color: ${p => lighten(0.15, ax('color.grey')(p))};
 
   & > * {
     margin-right: ${modularScaleRem(2)};

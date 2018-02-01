@@ -8,6 +8,7 @@ import axios, { CancelToken } from 'axios';
 import { downloadFile } from '../../utils/dropbox';
 import Loader from '../../components/Loader';
 import PageController from '../../components/PageController';
+import { ax } from '../../styles';
 
 const DocumentWrapper = styled.div`
   display: flex;
@@ -16,7 +17,7 @@ const DocumentWrapper = styled.div`
   width: calc(44rem * ${p => p.zoom});
   max-width: 100%;
   margin: 0 auto;
-  border: 1px solid ${lighten(0.8, '#1a1a1a')};
+  border: 1px solid ${p => lighten(0.8, ax('color.black')(p))};
   padding: 1em;
 `;
 

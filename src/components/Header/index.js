@@ -9,6 +9,7 @@ import { Header as Wrapper } from '../MainGrid';
 import Logotype from '../Logotype';
 import Gravatar from '../Gravatar';
 import { SignOut } from '../Icon';
+import { ax } from '../../styles';
 
 const modularScaleRem = x => `${stripUnit(modularScale(x))}rem`;
 
@@ -22,7 +23,7 @@ const SiteTitle = styled.h1`
   margin-top: 0;
   margin-bottom: 0;
   font-size: ${modularScale(1)};
-  font-weight: 700;
+  font-weight: ${ax('fontWeight.bold')};
   letter-spacing: 0.05em;
 `;
 
@@ -43,13 +44,13 @@ const NavItem = styled.li`
 `;
 
 const NavItemLink = styled(NavLink)`
-  color: ${lighten(0.5, '#1a1a1a')};
+  color: ${p => lighten(0.5, ax('color.black')(p))};
   text-decoration: none;
   transition: color 0.1s ease-in-out;
 
   &.active,
   &:hover {
-    color: #1a1a1a;
+    color: ${ax('color.black')};
   }
 `;
 
@@ -77,7 +78,7 @@ const ProfileImageContainer = styled.div`
     left: -3px;
     height: calc(100% + 6px);
     width: calc(100% + 6px);
-    border: 1px solid #1a1a1a;
+    border: 1px solid ${ax('color.black')};
     border-radius: 100%;
   }
 `;
@@ -93,26 +94,25 @@ const ProfileImage = styled(Gravatar)`
 const ProfileName = styled.p`
   margin-top: 0;
   margin-bottom: 0;
-  font-weight: 500;
+  font-weight: ${ax('fontWeight.normal')};
 `;
 
 const ProfileSignOut = ProfileName.extend`
   font-size: ${modularScale(-1)};
-  font-weight: 400;
+  font-weight: ${ax('fontWeight.normal')};
 `;
 
 const ProfileSignOutLink = styled.button`
   border: none;
   font-size: 1em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-family: ${ax('font.sansSerif')}
   text-decoration: none;
-  color: ${lighten(0.5, '#1a1a1a')};
+  color: ${p => lighten(0.5, ax('color.black')(p))};
   background-color: transparent;
   transition: color 0.1s ease-in-out;
 
   &:hover {
-    color: red;
+    color: ${ax('color.warning')};
   }
 `;
 

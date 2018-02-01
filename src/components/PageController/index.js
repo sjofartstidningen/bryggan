@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { modularScale, lighten } from 'polished';
 import padStart from 'lodash.padstart'
 import { ChevronLeft, ChevronRight, ZoomOut, ZoomIn } from '../Icon';
+import { ax } from '../../styles';
 
 const Wrapper = styled.div`
   position: fixed;
@@ -12,12 +13,13 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row nowrap;
   align-items: baseline;
-  border: 1px solid ${lighten(0.8, '#1a1a1a')};
+  border: 1px solid ${p => lighten(0.8, ax('color.black')(p))};
   border-radius: 4px;
   padding: 0.5em;
-  color: #1a1a1a;
-  background-color: #ffffff;
+  color: ${ax('color.black')};
+  background-color: ${ax('color.white')};
   transform: translateX(-50%);
+  user-select: none;
 `;
 
 const PageIndicator = styled.p`
@@ -35,6 +37,7 @@ const Button = styled.button`
   font-size: ${modularScale(0)};
   line-height: 1em;
   opacity: ${p => (p.disabled ? 0.5 : 1)};
+  cursor: pointer;
 `;
 
 const Hide = styled.span`

@@ -6,7 +6,9 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
 import { auth, signIn, signOut, getAppData } from './utils/firebase';
+import { theme } from './styles';
 
 import InitialLoadingScreent from './components/InitialLoadingScreen';
 import { Grid } from './components/MainGrid';
@@ -85,51 +87,53 @@ class App extends Component {
     const { user, authenticated, loading, appData } = this.state;
 
     return (
-      <Router>
-        <Fragment>
-          {loading ? (
-            <InitialLoadingScreent />
-          ) : (
-            <Switch>
-              <Route
-                path="/sign-in"
-                render={props =>
-                  authenticated ? (
-                    <Redirect to="/" />
-                  ) : (
-                    <SignIn {...props} onSubmit={this.handleSignIn} />
-                  )
-                }
-              />
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Fragment>
+            {loading ? (
+              <InitialLoadingScreent />
+            ) : (
+              <Switch>
+                <Route
+                  path="/sign-in"
+                  render={props =>
+                    authenticated ? (
+                      <Redirect to="/" />
+                    ) : (
+                      <SignIn {...props} onSubmit={this.handleSignIn} />
+                    )
+                  }
+                />
 
-              <Route
-                render={() => (
-                  <Grid>
-                    <Header user={user} onSignOut={this.handleSignOut} />
+                <Route
+                  render={() => (
+                    <Grid>
+                      <Header user={user} onSignOut={this.handleSignOut} />
 
-                    <SecureRoute
-                      authenticated={authenticated}
-                      redirect="/sign-in"
-                      path="/"
-                      exact
-                      render={() => <Redirect to="/tidningen" />}
-                    />
+                      <SecureRoute
+                        authenticated={authenticated}
+                        redirect="/sign-in"
+                        path="/"
+                        exact
+                        render={() => <Redirect to="/tidningen" />}
+                      />
 
-                    <SecureRoute
-                      authenticated={authenticated}
-                      redirect="/sign-in"
-                      path="/tidningen"
-                      render={props => (
-                        <Tidningen {...props} appData={appData} />
-                      )}
-                    />
-                  </Grid>
-                )}
-              />
-            </Switch>
-          )}
-        </Fragment>
-      </Router>
+                      <SecureRoute
+                        authenticated={authenticated}
+                        redirect="/sign-in"
+                        path="/tidningen"
+                        render={props => (
+                          <Tidningen {...props} appData={appData} />
+                        )}
+                      />
+                    </Grid>
+                  )}
+                />
+              </Switch>
+            )}
+          </Fragment>
+        </Router>
+      </ThemeProvider>
     );
   }
 }

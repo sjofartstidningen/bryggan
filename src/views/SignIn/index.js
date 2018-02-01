@@ -4,14 +4,14 @@ import styled from 'styled-components';
 import { modularScale, darken } from 'polished';
 import { Formik } from 'formik';
 import Logotype from '../../components/Logotype';
+import { ax } from '../../styles';
 
 const SignInGrid = styled.div`
   width: 25rem;
   height: 100vh;
   margin: 0 auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  color: #1a1a1a;
+  font-family: ${ax('font.sansSerif')};
+  color: ${ax('color.black')};
 `;
 
 const SignInSection = styled.div`
@@ -68,40 +68,39 @@ const TextInput = styled.input`
   min-width: 3.125em;
   width: 100%;
   max-width: 35em;
-  border: 2px solid ${p => (p.valid ? '#c5c5c5' : '#f8d0c8')};
+  border: 2px solid
+    ${p => (p.valid ? ax('color.grey')(p) : ax('color.warning')(p))};
   border-radius: 4px;
   padding: 0 1em;
   font-size: 1em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-family: ${ax('font.sansSerif')};
   line-height: 2;
   transition: border-color 0.2s ease-in-out;
   user-select: none;
 
   &:focus {
     outline: none;
-    border-color: #0599e4;
+    border-color: ${ax('color.brand')};
   }
 `;
 
 const SubmitButton = styled.button`
   display: block;
   width: 100%;
-  border: 2px solid ${darken(0.05, '#0599e4')};
+  border: 2px solid ${p => darken(0.05, ax('color.brand')(p))};
   border-radius: 4px;
   padding: 0 1em;
   font-size: 1em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-family: ${ax('font.sansSerif')};
   line-height: 2;
   color: white;
-  background-color: #0599e4;
+  background-color: ${ax('color.brand')};
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   user-select: none;
 
   &:hover {
-    background-color: ${darken(0.05, '#0599e4')};
+    background-color: ${p => darken(0.05, ax('color.brand')(p))};
   }
 `;
 
@@ -186,7 +185,12 @@ class SignIn extends Component {
               handleSubmit,
               isSubmitting,
             }) => (
-              <Form id="sign-in-form" onSubmit={handleSubmit} noValidate>
+              <Form
+                id="sign-in-form"
+                onSubmit={handleSubmit}
+                noValidate
+                autoComplete="on"
+              >
                 <LogotypeContainer>
                   <Logotype />
                 </LogotypeContainer>

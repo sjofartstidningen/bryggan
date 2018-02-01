@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 import { lighten } from 'polished';
 import { CloudRain } from '../Icon';
+import { ax } from '../../styles';
 
 const Wrapper = styled.div`
   position: relative;
@@ -10,7 +11,7 @@ const Wrapper = styled.div`
   height: 0;
   padding-top: calc(100% * ${p => p.ratio});
   font-size: 2em;
-  color: ${lighten(0.5, '#1a1a1a')};
+  color: ${p => lighten(0.5, ax('color.black')(p))};
 `;
 
 const raindrops = keyframes`
