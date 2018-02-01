@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale, lighten } from 'polished';
+import padStart from 'lodash.padstart'
 import { ChevronLeft, ChevronRight, ZoomOut, ZoomIn } from '../Icon';
 
 const Wrapper = styled.div`
@@ -96,7 +97,7 @@ class PageController extends Component {
       onZoomDecrease,
       onZoomIncrease,
     } = this.props;
-    const curr = Number.parseInt(currentPage, 10);
+    const curr = padStart(Number.parseInt(currentPage, 10), String(totalPages).length, '0');
 
     return (
       <Wrapper>
@@ -104,11 +105,11 @@ class PageController extends Component {
           {curr} / {totalPages}
         </PageIndicator>
 
-        <Button order={2} onClick={onPrevPage} disabled={curr <= 1}>
+        <Button order={2} onClick={onPrevPage}>
           <ChevronLeft baseline /> <Hide>Previous page</Hide>
         </Button>
 
-        <Button order={4} onClick={onNextPage} disabled={curr >= totalPages}>
+        <Button order={4} onClick={onNextPage}>
           <ChevronRight baseline /> <Hide>Next page</Hide>
         </Button>
 

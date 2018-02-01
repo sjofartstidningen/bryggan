@@ -123,9 +123,13 @@ class IssuePage extends Component {
     const { year, issue, page } = match.params;
 
     const currentPage = Number.parseInt(page, 10);
-    const nextPage = currentPage + add;
+    let nextPage = currentPage + add;
 
-    if (nextPage < 1 || nextPage > totalPages) return;
+    if (nextPage < 1) {
+      nextPage = totalPages;
+    } else if (nextPage > totalPages) {
+      nextPage = 1;
+    }
 
     const nextUrl = path
       .replace(':year', year)
