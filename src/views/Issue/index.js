@@ -8,6 +8,7 @@ import Page from '../Page';
 import IssueList from '../../components/IssueList';
 import { SubTitle, SubTitleLink } from '../../components/Typography';
 import { ChevronsRight } from '../../components/Icon';
+import { sortByName } from '../../utils';
 
 class Issue extends Component {
   static propTypes = {
@@ -41,7 +42,7 @@ class Issue extends Component {
     const { width } = this.ref.getBoundingClientRect();
     const thumbnailSize = getThumbnailSize(width / 4);
 
-    const newPages = data.entries.map((entry, i) => ({
+    const newPages = data.entries.sort(sortByName).map((entry, i) => ({
       id: entry.id,
       name: `${i + 1}`,
       coverSrc: getThumbUrl(

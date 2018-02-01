@@ -8,13 +8,9 @@ import IssueList from '../../components/IssueList';
 import Issue from '../Issue'; // eslint-disable-line
 import { Main } from '../../components/MainGrid';
 import { Title, SubTitle } from '../../components/Typography';
+import { sortByName } from '../../utils';
 
-const sortNameDesc = list =>
-  list.sort((a, b) => {
-    if (a.name < b.name) return 1;
-    if (a.name > b.name) return -1;
-    return 0;
-  });
+const sortNameDesc = list => list.sort((a, b) => -sortByName(a, b));
 
 class Tidningen extends Component {
   static propTypes = {
