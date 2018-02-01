@@ -1,6 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from 'react-router-dom';
 import { auth, signIn, signOut } from './utils/firebase';
 
 import InitialLoadingScreent from './components/InitialLoadingScreen';
@@ -31,19 +36,20 @@ class App extends Component {
     loading: true,
     authenticated: false,
     user: null,
-    authMessage: null,
   };
 
   componentDidMount() {
     this.unsub = auth.onAuthStateChanged(user => {
-      this.setState(
-        () => ({
-          loading: false,
-          authenticated: user != null,
-          user,
-        }),
-        () => this.unsub(),
-      );
+      window.setTimeout(() => {
+        this.setState(
+          () => ({
+            loading: false,
+            authenticated: user != null,
+            user,
+          }),
+          () => this.unsub(),
+        );
+      }, 2000);
     });
   }
 
@@ -51,26 +57,15 @@ class App extends Component {
     if (this.unsub != null) this.unsub();
   }
 
-  handleSignIn = async (email, password) => {
+  handleSignIn = async (values) => {
     try {
-      const user = await signIn(email, password);
-      this.setState(() => ({ user, authenticated: true }));
+      const user = await signIn(values);
+      this.setState(() => ({
+        user,
+        authenticated: true,
+      }));
     } catch (err) {
-      const authMessage = (() => {
-        switch (err.code) {
-          case 'auth/invalid-email':
-          case 'auth/user-not-found':
-            return 'Felaktig e-postadress';
-          case 'auth/wrong-password':
-            return 'Felaktigt lösenord';
-          case 'auth/user-disabled':
-            return 'Användaren har deaktiverats';
-          default:
-            return null;
-        }
-      })();
-
-      this.setState(() => ({ authenticated: false, user: null, authMessage }));
+      throw err;
     }
   };
 
@@ -80,43 +75,51 @@ class App extends Component {
   };
 
   render() {
-    const { user, authMessage, authenticated, loading } = this.state;
+    const { user, authenticated, loading } = this.state;
 
     return (
       <Router>
-        <Grid>
-          {loading && <InitialLoadingScreent />}
-          <Header user={user} onSignOut={this.handleSignOut} />
-          <SecureRoute
-            authenticated={authenticated}
-            redirect="/sign-in"
-            path="/"
-            exact
-            render={() => <Redirect to="/tidningen" />}
-          />
+        <Fragment>
+          {loading ? (
+            <InitialLoadingScreent />
+          ) : (
+            <Switch>
+              <Route
+                path="/sign-in"
+                render={props =>
+                  authenticated ? (
+                    <Redirect to="/" />
+                  ) : (
+                    <SignIn {...props} onSubmit={this.handleSignIn} />
+                  )
+                }
+              />
 
-          <SecureRoute
-            authenticated={authenticated}
-            redirect="/sign-in"
-            path="/tidningen"
-            render={props => <Tidningen {...props} />}
-          />
+              <Route
+                render={() => (
+                  <Grid>
+                    <Header user={user} onSignOut={this.handleSignOut} />
 
-          <Route
-            path="/sign-in"
-            render={props =>
-              authenticated ? (
-                <Redirect to="/" />
-              ) : (
-                <SignIn
-                  {...props}
-                  message={authMessage}
-                  onSubmit={this.handleSignIn}
-                />
-              )
-            }
-          />
-        </Grid>
+                    <SecureRoute
+                      authenticated={authenticated}
+                      redirect="/sign-in"
+                      path="/"
+                      exact
+                      render={() => <Redirect to="/tidningen" />}
+                    />
+
+                    <SecureRoute
+                      authenticated={authenticated}
+                      redirect="/sign-in"
+                      path="/tidningen"
+                      render={props => <Tidningen {...props} />}
+                    />
+                  </Grid>
+                )}
+              />
+            </Switch>
+          )}
+        </Fragment>
       </Router>
     );
   }

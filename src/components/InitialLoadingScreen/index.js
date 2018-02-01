@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: white;
+  z-index: 1;
 `;
 
 const LoaderContainer = styled.div`

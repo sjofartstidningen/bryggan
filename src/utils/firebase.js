@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import firebase from 'firebase';
 
 const config = {
@@ -15,11 +16,13 @@ const auth = firebase.auth();
 
 const getUser = () => auth.currentUser;
 
-const signIn = async (email, password) => {
+const signIn = async ({ email, password, remember }) => {
   try {
-    if (process.env.NODE_ENV !== 'production') {
-      await auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
-    }
+    const persistance = remember
+      ? 'LOCAL'
+      : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
+
+    await auth.setPersistence(firebase.auth.Auth.Persistence[persistance]);
 
     const user = await auth.signInWithEmailAndPassword(email, password);
     return user;
