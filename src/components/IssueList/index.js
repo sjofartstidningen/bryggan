@@ -117,12 +117,13 @@ class IssueList extends Component {
               <Fragment>
                 <LazyImage
                   src={issue.coverSrc}
-                  render={({ loaded, src }) => (
+                  render={({ loaded, src, revokeObjectURL }) => (
                     <Fragment>
                       {loaded ? (
                         <IssueCover
                           src={src}
                           alt={`Omslag till nummer ${issue.name}`}
+                          onLoad={revokeObjectURL}
                         />
                       ) : (
                         <Loader ratio={480 / 372} />

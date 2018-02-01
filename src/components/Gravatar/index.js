@@ -8,15 +8,15 @@ class Gravatar extends Component {
     email: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
     className: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     className: '',
-  }
+  };
 
   state = {
     src: null,
-  }
+  };
 
   componentDidMount() {
     this.getGravatar();
@@ -43,12 +43,20 @@ class Gravatar extends Component {
     this.setState(() => ({ src }));
   };
 
+  revokeObjectURL = ({ target }) => URL.revokeObjectURL(target.src);
+
   render() {
     const { alt, className, ...rest } = this.props;
     const { src } = this.state;
 
     return src ? (
-      <img {...rest} src={src} alt={alt} className={className} />
+      <img
+        {...rest}
+        src={src}
+        alt={alt}
+        className={className}
+        onLoad={this.revokeObjectURL}
+      />
     ) : null;
   }
 }

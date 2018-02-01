@@ -149,6 +149,11 @@ class IssuePage extends Component {
     this.setState(() => ({ zoom: 1 }));
   };
 
+  revokeObjectURL = () => {
+    const { src } = this.state;
+    URL.revokeObjectURL(src);
+  };
+
   render() {
     const { match, totalPages } = this.props;
     const { page } = match.params;
@@ -166,7 +171,11 @@ class IssuePage extends Component {
             <Loader ratio={480 / 372} />
           ) : (
             <this.Document file={src}>
-              <this.Page pageNumber={1} width={width * zoom} />
+              <this.Page
+                pageNumber={1}
+                width={width * zoom}
+                onRenderSuccess={this.revokeObjectURL}
+              />
             </this.Document>
           )}
         </DocumentWrapper>

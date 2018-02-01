@@ -13,11 +13,16 @@ const http = axios.create({
   adapter: cacheAdapterEnhancer(axios.defaults.adapter, true),
 });
 
+const events = {
+  IN_VIEW: 'in-view',
+  OUT_OF_VIEW: 'out-out-view',
+};
+
 const observer = new IntersectionObserver(
   entries => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) emitter.emit('intersect', entry);
-      else emitter.emit('non-intersect', entry);
+      if (entry.isIntersecting) emitter.emit(events.IN_VIEW, entry);
+      else emitter.emit(events.OUT_OF_VIEW, entry);
     });
   },
   {
@@ -48,47 +53,15 @@ class LazyImage extends Component {
 
   componentDidMount() {
     observer.observe(this.wrapper);
-    emitter.on('intersect', this.handleIntersect);
-    emitter.on('non-intersect', this.handleNonIntersect);
+    emitter.on(events.IN_VIEW, this.handleIntersect);
+    emitter.on(events.OUT_OF_VIEW, this.handleNonIntersect);
   }
 
   componentWillUnmount() {
-    this.eventsOff();
+    this.unmountListeners();
   }
 
-  handleIntersect = entry => {
-    if (entry.target === this.wrapper) this.fetchImage();
-  };
-
-  handleNonIntersect = entry => {
-    if (entry.target === this.wrapper && this.cancelToken) {
-      this.cancelToken.cancel('Component out of view');
-    }
-  };
-
-  handleLoaded = (src, res) => {
-    this.setState(() => ({ src, loaded: true }));
-    this.eventsOff();
-
-    if (this.props.onLoad != null) this.props.onLoad(res);
-  };
-
-  handleError = error => {
-    this.setState(() => ({ error }));
-    this.eventsOff();
-    if (this.props.onError != null) this.props.onError(error);
-  };
-
-  eventsOff = () => {
-    observer.unobserve(this.wrapper);
-    emitter.off('intersect', this.handleIntersect);
-    emitter.off('non-intersect', this.handleNonIntersect);
-    if (this.cancelToken) {
-      this.cancelToken.cancel('Stop listening for events');
-    }
-  };
-
-  fetchImage = async () => {
+  getImage = async () => {
     try {
       this.cancelToken = CancelToken.source();
       const res = await http({
@@ -99,10 +72,40 @@ class LazyImage extends Component {
       });
 
       const src = URL.createObjectURL(res.data);
-      this.handleLoaded(src, res);
+      this.setState(() => ({ src, loaded: true }));
+      this.unmountListeners();
+
+      if (this.props.onLoad != null) this.props.onLoad(res);
     } catch (err) {
       if (!axios.isCancel(err)) this.handleError(err);
     }
+  };
+
+  unmountListeners = () => {
+    observer.unobserve(this.wrapper);
+    emitter.off(events.IN_VIEW, this.handleIntersect);
+    emitter.off(events.OUT_OF_VIEW, this.handleNonIntersect);
+    if (this.cancelToken) {
+      this.cancelToken.cancel('Stop listening for events');
+    }
+  };
+
+  revokeObjectURL = ({ target }) => URL.revokeObjectURL(target.src);
+
+  handleIntersect = entry => {
+    if (entry.target === this.wrapper) this.getImage();
+  };
+
+  handleNonIntersect = entry => {
+    if (entry.target === this.wrapper && this.cancelToken) {
+      this.cancelToken.cancel('Component out of view');
+    }
+  };
+
+  handleError = error => {
+    this.setState(() => ({ error }));
+    this.unmountListeners();
+    if (this.props.onError != null) this.props.onError(error);
   };
 
   render() {
@@ -115,7 +118,7 @@ class LazyImage extends Component {
           this.wrapper = ref;
         }}
       >
-        {render({ src, loaded, error })}
+        {render({ src, loaded, error, revokeObjectURL: this.revokeObjectURL })}
       </div>
     );
   }
