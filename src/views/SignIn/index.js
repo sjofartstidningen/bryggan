@@ -118,7 +118,6 @@ const CheckboxInput = styled.input`
 
 const CheckboxLabelText = styled.span``;
 
-
 class SignIn extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
@@ -243,6 +242,8 @@ class SignIn extends Component {
                         type="checkbox"
                         name="remember"
                         id="remember"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                         aria-checked={values.remember}
                         value={values.remember}
                       />{' '}

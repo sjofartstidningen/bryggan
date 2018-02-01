@@ -40,13 +40,16 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.unsub = auth.onAuthStateChanged(user => {
+    this.unsub = auth.onAuthStateChanged(async user => {
+      const appData = user ? await getAppData() : {};
+
       window.setTimeout(() => {
         this.setState(
           () => ({
             loading: false,
             authenticated: user != null,
             user,
+            appData,
           }),
           () => this.unsub(),
         );
