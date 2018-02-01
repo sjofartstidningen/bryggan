@@ -33,6 +33,9 @@ class IssuePage extends Component {
     history: PropTypes.shape({
       replace: PropTypes.func.isRequired,
     }).isRequired,
+    appData: PropTypes.shape({
+      dropbox_token: PropTypes.string.isRequired,
+    }).isRequired,
   };
 
   state = {
@@ -69,6 +72,8 @@ class IssuePage extends Component {
   getPdf = async () => {
     this.setState(() => ({ loading: true }));
     const { year, issue, page } = this.props.match.params;
+    const dropboxToken = this.props.appData.dropbox_token;
+
     const file = join(
       year,
       issue,
@@ -76,7 +81,7 @@ class IssuePage extends Component {
     );
 
     this.cancelToken = CancelToken.source();
-    const url = getDownloadUrl(file, process.env.REACT_APP_DROPBOX_TOKEN);
+    const url = getDownloadUrl(file, dropboxToken);
 
     try {
       const { data } = await axios.get(url, {

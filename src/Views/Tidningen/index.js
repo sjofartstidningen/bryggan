@@ -24,6 +24,9 @@ class Tidningen extends Component {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
+    appData: PropTypes.shape({
+      dropbox_token: PropTypes.string.isRequired,
+    }).isRequired,
   };
 
   state = {
@@ -35,7 +38,8 @@ class Tidningen extends Component {
   }
 
   fetchIssues = async () => {
-    const { data } = await listFolder('', process.env.REACT_APP_DROPBOX_TOKEN);
+    const dropboxToken = this.props.appData.dropbox_token;
+    const { data } = await listFolder('', dropboxToken);
     const { entries } = data;
 
     const { width } = this.ref.getBoundingClientRect();
@@ -44,10 +48,7 @@ class Tidningen extends Component {
     entries
       .filter(e => e['.tag'] === 'folder')
       .forEach(async ({ name, id }) => {
-        const { data: folderData } = await listFolder(
-          name,
-          process.env.REACT_APP_DROPBOX_TOKEN,
-        );
+        const { data: folderData } = await listFolder(name, dropboxToken);
 
         const year = {
           name,
@@ -60,7 +61,7 @@ class Tidningen extends Component {
               coverSrc: getThumbUrl(
                 `${name}/${e.name}/${name}-${e.name}-001.pdf`,
                 thumbnailSize,
-                process.env.REACT_APP_DROPBOX_TOKEN,
+                dropboxToken,
               ),
             })),
           ),
@@ -78,7 +79,7 @@ class Tidningen extends Component {
   };
 
   render() {
-    const { match } = this.props;
+    const { match, appData } = this.props;
     const { years } = this.state;
 
     return (
@@ -88,7 +89,7 @@ class Tidningen extends Component {
         }}
       >
         <Title>Tidningen</Title>
-        
+
         <Route
           path={match.url}
           exact
@@ -108,7 +109,7 @@ class Tidningen extends Component {
 
         <Route
           path={join(match.url, ':year', ':issue')}
-          render={props => <Issue {...props} />}
+          render={props => <Issue {...props} appData={appData} />}
         />
       </Main>
     );

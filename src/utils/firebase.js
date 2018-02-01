@@ -13,8 +13,7 @@ const config = {
 firebase.initializeApp(config);
 
 const auth = firebase.auth();
-
-const getUser = () => auth.currentUser;
+const database = firebase.database();
 
 const signIn = async ({ email, password, remember }) => {
   try {
@@ -33,4 +32,20 @@ const signIn = async ({ email, password, remember }) => {
 
 const signOut = () => auth.signOut();
 
-export { firebase as default, auth, getUser, signIn, signOut };
+const getUser = () => auth.currentUser;
+
+const getAppData = async () => {
+  const snapshot = await database.ref('data').once('value');
+  const data = snapshot.val();
+  return data;
+};
+
+export {
+  firebase as default,
+  auth,
+  database,
+  signIn,
+  signOut,
+  getUser,
+  getAppData,
+};

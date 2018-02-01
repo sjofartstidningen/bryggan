@@ -6,7 +6,7 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
-import { auth, signIn, signOut } from './utils/firebase';
+import { auth, signIn, signOut, getAppData } from './utils/firebase';
 
 import InitialLoadingScreent from './components/InitialLoadingScreen';
 import { Grid } from './components/MainGrid';
@@ -36,6 +36,7 @@ class App extends Component {
     loading: true,
     authenticated: false,
     user: null,
+    appData: {},
   };
 
   componentDidMount() {
@@ -57,12 +58,15 @@ class App extends Component {
     if (this.unsub != null) this.unsub();
   }
 
-  handleSignIn = async (values) => {
+  handleSignIn = async values => {
     try {
       const user = await signIn(values);
+      const appData = await getAppData();
+
       this.setState(() => ({
         user,
         authenticated: true,
+        appData,
       }));
     } catch (err) {
       throw err;
@@ -75,7 +79,7 @@ class App extends Component {
   };
 
   render() {
-    const { user, authenticated, loading } = this.state;
+    const { user, authenticated, loading, appData } = this.state;
 
     return (
       <Router>
@@ -112,7 +116,9 @@ class App extends Component {
                       authenticated={authenticated}
                       redirect="/sign-in"
                       path="/tidningen"
-                      render={props => <Tidningen {...props} />}
+                      render={props => (
+                        <Tidningen {...props} appData={appData} />
+                      )}
                     />
                   </Grid>
                 )}

@@ -20,6 +20,9 @@ class Issue extends Component {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
+    appData: PropTypes.shape({
+      dropbox_token: PropTypes.string.isRequired,
+    }).isRequired,
   };
 
   state = {
@@ -31,11 +34,9 @@ class Issue extends Component {
   }
 
   fetchPages = async () => {
+    const dropboxToken = this.props.appData.dropbox_token;
     const { year, issue } = this.props.match.params;
-    const { data } = await listFolder(
-      join(year, issue),
-      process.env.REACT_APP_DROPBOX_TOKEN,
-    );
+    const { data } = await listFolder(join(year, issue), dropboxToken);
 
     const { width } = this.ref.getBoundingClientRect();
     const thumbnailSize = getThumbnailSize(width / 4);
@@ -46,7 +47,7 @@ class Issue extends Component {
       coverSrc: getThumbUrl(
         entry.path_lower.replace('/bryggan', ''),
         thumbnailSize,
-        process.env.REACT_APP_DROPBOX_TOKEN,
+        dropboxToken,
       ),
     }));
 
@@ -62,7 +63,7 @@ class Issue extends Component {
   };
 
   render() {
-    const { match } = this.props;
+    const { match, appData } = this.props;
     const { year, issue } = match.params;
     const pageLength = this.state.pages.length;
     const padLength = `${pageLength}`.length;
@@ -74,7 +75,9 @@ class Issue extends Component {
         }}
       >
         <SubTitle>
-          <SubTitleLink to={match.url.replace(/(\/\d+)+$/, '')}>{year}</SubTitleLink>
+          <SubTitleLink to={match.url.replace(/(\/\d+)+$/, '')}>
+            {year}
+          </SubTitleLink>
           <ChevronsRight baseline />
           <SubTitleLink to={match.url}>{issue}</SubTitleLink>
         </SubTitle>
@@ -95,7 +98,9 @@ class Issue extends Component {
         <Route
           path={join(match.path, ':page')}
           exact
-          render={props => <Page {...props} totalPages={pageLength} />}
+          render={props => (
+            <Page {...props} totalPages={pageLength} appData={appData} />
+          )}
         />
       </section>
     );
