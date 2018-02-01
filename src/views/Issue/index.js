@@ -31,10 +31,10 @@ class Issue extends Component {
   };
 
   componentDidMount() {
-    this.fetchPages();
+    this.getPages();
   }
 
-  fetchPages = async () => {
+  getPages = async () => {
     const dropboxToken = this.props.appData.dropbox_token;
     const { year, issue } = this.props.match.params;
     const { data } = await listFolder(join(year, issue), dropboxToken);
@@ -58,9 +58,9 @@ class Issue extends Component {
     this.setState(({ pages }) => ({ pages: [...pages, ...withoutLast] }));
   };
 
-  handleIssueClick = ({ issue: page }) => {
-    const { match, history } = this.props;
-    history.push(join(match.url, page.name));
+  getIssueLink = page => {
+    const { match } = this.props;
+    return join(match.url, page.name);
   };
 
   render() {
@@ -91,7 +91,7 @@ class Issue extends Component {
               issues={this.state.pages}
               caption={n => `${padStart(n, padLength, '0')}`}
               keepPairs
-              onIssueClick={this.handleIssueClick}
+              getIssueLink={this.getIssueLink}
             />
           )}
         />

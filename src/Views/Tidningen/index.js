@@ -30,10 +30,10 @@ class Tidningen extends Component {
   };
 
   componentDidMount() {
-    this.fetchIssues();
+    this.getIssues();
   }
 
-  fetchIssues = async () => {
+  getIssues = async () => {
     const dropboxToken = this.props.appData.dropbox_token;
     const { data } = await listFolder('', dropboxToken);
     const { entries } = data;
@@ -69,9 +69,9 @@ class Tidningen extends Component {
       });
   };
 
-  handleIssueClick = year => ({ issue }) => {
-    const { history, match } = this.props;
-    history.push(join(match.url, year, issue.name));
+  getIssueLink = year => issue => {
+    const { match } = this.props;
+    return join(match.url, year.name, issue.name);
   };
 
   render() {
@@ -96,7 +96,7 @@ class Tidningen extends Component {
                 <IssueList
                   issues={year.issues}
                   caption={n => `Nummer ${padStart(n, 2, '0')}`}
-                  onIssueClick={this.handleIssueClick(year.name)}
+                  getIssueLink={this.getIssueLink(year)}
                 />
               </section>
             ))

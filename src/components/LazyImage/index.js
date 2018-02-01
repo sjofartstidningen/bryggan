@@ -61,7 +61,7 @@ class LazyImage extends Component {
     this.unmountListeners();
   }
 
-  getImage = async () => {
+  getImage = async ({ cache = true } = {}) => {
     try {
       this.cancelToken = CancelToken.source();
       const res = await http({
@@ -69,6 +69,7 @@ class LazyImage extends Component {
         url: this.props.src,
         responseType: 'blob',
         cancelToken: this.cancelToken.token,
+        cache,
       });
 
       const src = URL.createObjectURL(res.data);
@@ -108,6 +109,13 @@ class LazyImage extends Component {
     if (this.props.onError != null) this.props.onError(error);
   };
 
+  handleReload = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ loaded: false });
+    this.getImage({ cache: false });
+  };
+
   render() {
     const { render } = this.props;
     const { src, loaded, error } = this.state;
@@ -118,7 +126,13 @@ class LazyImage extends Component {
           this.wrapper = ref;
         }}
       >
-        {render({ src, loaded, error, revokeObjectURL: this.revokeObjectURL })}
+        {render({
+          src,
+          loaded,
+          error,
+          revokeObjectURL: this.revokeObjectURL,
+          reload: this.handleReload,
+        })}
       </div>
     );
   }

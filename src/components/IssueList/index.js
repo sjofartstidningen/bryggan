@@ -1,11 +1,13 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { modularScale, lighten } from 'polished';
+import { Link } from 'react-router-dom';
 import IsHovering from '../IsHovering';
 import LazyImage from '../LazyImage';
 import Loader from '../Loader';
-import { Eye } from '../Icon';
+import { Eye, Refresh } from '../Icon';
 import { ax } from '../../styles';
 
 const IssuesListWrapper = styled.div`
@@ -14,7 +16,7 @@ const IssuesListWrapper = styled.div`
   margin-top: ${modularScale(1)};
 `;
 
-const IssueListItem = styled.button`
+const IssueListItem = styled.div`
   width: calc(100% / 4 - ${p => (p.keepPairs ? 0.5 : 1)}rem);
   margin: 0 0.5rem 1rem;
   border: 1px solid ${p => lighten(0.8, ax('color.black')(p))};
@@ -54,10 +56,16 @@ const IssueCover = styled.img`
   height: auto;
 `;
 
-const IssueDesc = styled.p`
+const IssueDesc = styled(({ className, to, children }) => (
+  <Link to={to} className={className}>
+    {children}
+  </Link>
+))`
+  display: block;
   margin: 0;
   margin-top: 0.5rem;
   font-size: ${modularScale(-1)};
+  text-decoration: none;
   text-align: center;
   color: ${p =>
     p.isHovering ? ax('color.brand')(p) : lighten(0.5, ax('color.black')(p))};
@@ -79,6 +87,31 @@ const IssueShowIcon = styled(Eye)`
     `}  
 `;
 
+const IssueReloadButton = styled.button`
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  border: none;
+  font-size: 1em;
+  color: ${ax('color.black')};
+  background-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  transition opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  &:hover {
+    color: ${ax('color.brand')};
+  }
+
+  ${p =>
+    p.isHovering &&
+    css`
+      opacity: 1;
+      visibility: visible;
+    `}
+`;
+
 class IssueList extends Component {
   static propTypes = {
     issues: PropTypes.arrayOf(
@@ -88,7 +121,7 @@ class IssueList extends Component {
         coverSrc: PropTypes.string,
       }),
     ).isRequired,
-    onIssueClick: PropTypes.func.isRequired,
+    getIssueLink: PropTypes.func.isRequired,
     caption: PropTypes.func,
     keepPairs: PropTypes.bool,
   };
@@ -98,14 +131,9 @@ class IssueList extends Component {
     keepPairs: false,
   };
 
-  handleIssueClick = issue => e => {
-    this.props.onIssueClick({
-      ...e,
-      issue,
-    });
-  };
-
   render() {
+    const { getIssueLink } = this.props;
+
     return (
       <IssuesListWrapper>
         {this.props.issues.map(issue => (
@@ -114,26 +142,33 @@ class IssueList extends Component {
             el={IssueListItem}
             key={issue.id}
             keepPairs={this.props.keepPairs}
-            onClick={this.handleIssueClick(issue)}
             render={({ isHovering }) => (
               <Fragment>
                 <LazyImage
                   src={issue.coverSrc}
-                  render={({ loaded, src, revokeObjectURL }) => (
-                    <Fragment>
-                      {loaded ? (
-                        <IssueCover
-                          src={src}
-                          alt={`Omslag till nummer ${issue.name}`}
-                          onLoad={revokeObjectURL}
-                        />
-                      ) : (
-                        <Loader ratio={480 / 372} />
-                      )}
-                    </Fragment>
-                  )}
+                  render={({ loaded, src, revokeObjectURL, reload }) =>
+                    loaded ? (
+                      <div style={{ position: 'relative' }}>
+                        <Link to={getIssueLink(issue)}>
+                          <IssueCover
+                            src={src}
+                            alt={`Omslag till nummer ${issue.name}`}
+                            onLoad={revokeObjectURL}
+                          />
+                        </Link>
+                        <IssueReloadButton
+                          isHovering={isHovering}
+                          onClick={reload}
+                        >
+                          <Refresh />
+                        </IssueReloadButton>
+                      </div>
+                    ) : (
+                      <Loader ratio={480 / 372} />
+                    )
+                  }
                 />
-                <IssueDesc isHovering={isHovering}>
+                <IssueDesc isHovering={isHovering} to={getIssueLink(issue)}>
                   {this.props.caption(issue.name)}{' '}
                   <IssueShowIcon isHovering={isHovering} />
                 </IssueDesc>
