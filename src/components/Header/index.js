@@ -119,7 +119,7 @@ const ProfileSignOutLink = styled.button`
 class Header extends Component {
   static propTypes = {
     user: PropTypes.shape({
-      name: PropTypes.string,
+      displayName: PropTypes.string,
       email: PropTypes.string.isRequired,
       image: PropTypes.string,
     }),
@@ -156,7 +156,7 @@ class Header extends Component {
             <ProfileImageContainer>
               <ProfileImage email={user.email} alt="" width="28" height="28" />
             </ProfileImageContainer>
-            <ProfileName>{user.name || user.email}</ProfileName>
+            <ProfileName>{user.displayName || user.email}</ProfileName>
             <ProfileSignOut>
               <ProfileSignOutLink onClick={this.handleSignOut}>
                 Logga ut <SignOut baseline />

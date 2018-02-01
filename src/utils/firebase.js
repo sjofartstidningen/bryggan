@@ -40,6 +40,12 @@ const getAppData = async () => {
   return data;
 };
 
+const updateUserData = async data => {
+  const user = getUser();
+  await user.updateProfile(data);
+  return getUser();
+};
+
 export {
   firebase as default,
   auth,
@@ -48,4 +54,5 @@ export {
   signOut,
   getUser,
   getAppData,
+  updateUserData,
 };

@@ -13,8 +13,9 @@ import { theme } from './styles';
 import InitialLoadingScreent from './components/InitialLoadingScreen';
 import { Grid } from './components/MainGrid';
 import Header from './components/Header';
-import Tidningen from './views/Tidningen';
 import SignIn from './views/SignIn';
+import Tidningen from './views/Tidningen';
+import Settings from './views/Settings';
 
 function SecureRoute({ authenticated, redirect, render, ...rest }) {
   return (
@@ -44,7 +45,6 @@ class App extends Component {
   componentDidMount() {
     this.unsub = auth.onAuthStateChanged(async user => {
       const appData = user ? await getAppData() : {};
-
       window.setTimeout(() => {
         this.setState(
           () => ({
@@ -55,7 +55,7 @@ class App extends Component {
           }),
           () => this.unsub(),
         );
-      }, 2000);
+      }, process.env.NODE_ENV === 'production' ? 2000 : 0);
     });
   }
 
@@ -81,6 +81,10 @@ class App extends Component {
   handleSignOut = async () => {
     this.setState(() => ({ authenticated: false, user: null }));
     await signOut();
+  };
+
+  handleUserUpdatet = user => {
+    this.setState(() => ({ user }));
   };
 
   render() {
@@ -124,6 +128,19 @@ class App extends Component {
                         path="/tidningen"
                         render={props => (
                           <Tidningen {...props} appData={appData} />
+                        )}
+                      />
+
+                      <SecureRoute
+                        authenticated={authenticated}
+                        redirect="/sign-in"
+                        path="/installningar"
+                        render={props => (
+                          <Settings
+                            {...props}
+                            user={user}
+                            onUserUpdated={this.handleUserUpdatet}
+                          />
                         )}
                       />
                     </Grid>
