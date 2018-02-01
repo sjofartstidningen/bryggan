@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import { join } from 'path';
 import padStart from 'lodash.padstart';
-import { listFolder, getThumbnailSize, getThumbUrl } from '../../utils/dropbox';
+import { listFolder, getThumbnailSize, getThumbUrl, dropboxRootFolder } from '../../utils/dropbox';
 import Page from '../Page';
 import IssueList from '../../components/IssueList';
 import { SubTitle, SubTitleLink } from '../../components/Typography';
@@ -46,7 +46,7 @@ class Issue extends Component {
       id: entry.id,
       name: `${i + 1}`,
       coverSrc: getThumbUrl(
-        entry.path_lower.replace('/bryggan', ''),
+        entry.path_lower.replace(dropboxRootFolder, ''),
         thumbnailSize,
         dropboxToken,
       ),

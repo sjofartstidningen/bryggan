@@ -18,12 +18,14 @@ const dropboxContent = axios.create({
   adapter: cacheAdapterEnhancer(axios.defaults.adapter, true),
 });
 
+const dropboxRootFolder = '/bryggan';
+
 async function downloadFile(file, token, cancelToken) {
   const res = await dropboxContent.get('/files/download', {
     responseType: 'blob',
     params: {
       authorization: `Bearer ${token}`,
-      arg: JSON.stringify({ path: join('/bryggan', file) }),
+      arg: JSON.stringify({ path: join(dropboxRootFolder, file) }),
     },
     cancelToken,
   });
@@ -65,7 +67,7 @@ function getThumbUrl(file, size = 'w640h480', token) {
   const params = {
     authorization: `Bearer ${token}`,
     arg: JSON.stringify({
-      path: join('/bryggan', file),
+      path: join(dropboxRootFolder, file),
       format: 'png',
       size,
       mode: 'bestfit',
@@ -76,15 +78,17 @@ function getThumbUrl(file, size = 'w640h480', token) {
 }
 
 function listFolder(folder, token, recursive = false) {
+  const path = join(dropboxRootFolder, folder);
+
   return dropboxApi({
     url: '/files/list_folder',
     method: 'post',
     headers: { Authorization: `Bearer ${token}` },
     data: {
-      path: join('/bryggan', folder),
+      path: path === '/' ? '' : path,
       recursive,
     },
   });
 }
 
-export { getThumbUrl, listFolder, getThumbnailSize, downloadFile };
+export { getThumbUrl, listFolder, getThumbnailSize, downloadFile, dropboxRootFolder };

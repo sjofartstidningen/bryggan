@@ -43,19 +43,19 @@ class Tidningen extends Component {
 
     entries
       .filter(e => e['.tag'] === 'folder')
-      .forEach(async ({ name, id }) => {
-        const { data: folderData } = await listFolder(name, dropboxToken);
+      .forEach(async (year) => {
+        const { data: folderData } = await listFolder(year.name, dropboxToken);
 
-        const year = {
-          name,
-          id,
+        const mappedYear = {
+          name: year.name,
+          id: year.id,
           issues: sortNameDesc(
-            folderData.entries.map(e => ({
-              id: e.id,
-              name: e.name,
-              path: e.path_lower,
+            folderData.entries.map(issue => ({
+              id: issue.id,
+              name: issue.name,
+              path: issue.path_lower,
               coverSrc: getThumbUrl(
-                `${name}/${e.name}/${name}-${e.name}-001.pdf`,
+                `${year.name}/${issue.name}/${year.name}-${issue.name}-001.pdf`,
                 thumbnailSize,
                 dropboxToken,
               ),
@@ -64,7 +64,7 @@ class Tidningen extends Component {
         };
 
         this.setState(({ years }) => ({
-          years: sortNameDesc([...years, year]),
+          years: sortNameDesc([...years, mappedYear]),
         }));
       });
   };
