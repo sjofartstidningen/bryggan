@@ -1,5 +1,6 @@
 import { join } from 'path';
 import axios from 'axios';
+import { cacheAdapterEnhancer } from 'axios-extensions';
 import qs from 'qs';
 
 const dropboxApi = axios.create({
@@ -10,40 +11,22 @@ const dropboxApi = axios.create({
 });
 
 const dropboxContent = axios.create({
-  baseURL: 'https://api.dropboxapi.com/2',
+  baseURL: 'https://content.dropboxapi.com/2',
   headers: {
-    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache',
   },
+  adapter: cacheAdapterEnhancer(axios.defaults.adapter, true),
 });
 
-function getThumbUrl(file, size = 'w640h480', token) {
-  const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
-  const params = {
-    authorization: `Bearer ${token}`,
-    arg: JSON.stringify({
-      path: join('/bryggan', file),
-      format: 'png',
-      size,
-      mode: 'bestfit',
-    }),
-  };
-
-  return `${baseURL}?${qs.stringify(params)}`;
-}
-
-function getDownloadUrl(file, token) {
-  const baseURL = 'https://content.dropboxapi.com/2/files/download';
-  const params = {
-    authorization: `Bearer ${token}`,
-    arg: JSON.stringify({ path: join('/bryggan', file) }),
-  };
-
-  return `${baseURL}?${qs.stringify(params)}`;
-}
-
-async function downloadFile(file, token) {
-  const url = getDownloadUrl(file, token);
-  const res = await dropboxContent.get(url, { responseType: 'blob' });
+async function downloadFile(file, token, cancelToken) {
+  const res = await dropboxContent.get('/files/download', {
+    responseType: 'blob',
+    params: {
+      authorization: `Bearer ${token}`,
+      arg: JSON.stringify({ path: join('/bryggan', file) }),
+    },
+    cancelToken,
+  });
   const src = URL.createObjectURL(res.data);
   return { src, ...res };
 }
@@ -77,13 +60,26 @@ function getThumbnailSize(width, dpi = window.devicePixelRatio || 1) {
   return keys[keys.length - 1];
 }
 
+function getThumbUrl(file, size = 'w640h480', token) {
+  const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
+  const params = {
+    authorization: `Bearer ${token}`,
+    arg: JSON.stringify({
+      path: join('/bryggan', file),
+      format: 'png',
+      size,
+      mode: 'bestfit',
+    }),
+  };
+
+  return `${baseURL}?${qs.stringify(params)}`;
+}
+
 function listFolder(folder, token, recursive = false) {
   return dropboxApi({
     url: '/files/list_folder',
     method: 'post',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
     data: {
       path: join('/bryggan', folder),
       recursive,
@@ -91,10 +87,4 @@ function listFolder(folder, token, recursive = false) {
   });
 }
 
-export {
-  getThumbUrl,
-  listFolder,
-  getThumbnailSize,
-  getDownloadUrl,
-  downloadFile,
-};
+export { getThumbUrl, listFolder, getThumbnailSize, downloadFile };

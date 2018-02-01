@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { lighten } from 'polished';
 import padStart from 'lodash.padstart';
 import axios, { CancelToken } from 'axios';
-import { getDownloadUrl } from '../../utils/dropbox';
+import { downloadFile } from '../../utils/dropbox';
 import Loader from '../../components/Loader';
 import PageController from '../../components/PageController';
 
@@ -62,6 +62,10 @@ class IssuePage extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.cancelToken.cancel('Leaving preview');
+  }
+
   getWrapperWidth = () => {
     if (this.ref) {
       const { width } = this.ref.getBoundingClientRect();
@@ -81,15 +85,13 @@ class IssuePage extends Component {
     );
 
     this.cancelToken = CancelToken.source();
-    const url = getDownloadUrl(file, dropboxToken);
-
     try {
-      const { data } = await axios.get(url, {
-        responseType: 'blob',
-        cancelToken: this.cancelToken.token,
-      });
+      const { src } = await downloadFile(
+        file,
+        dropboxToken,
+        this.cancelToken.token,
+      );
 
-      const src = URL.createObjectURL(data);
       this.setState(() => ({ src, loading: false }));
     } catch (err) {
       if (!axios.isCancel(err)) console.error(err); // eslint-disable-line
@@ -141,7 +143,7 @@ class IssuePage extends Component {
 
   handleZoomReset = () => {
     this.setState(() => ({ zoom: 1 }));
-  }
+  };
 
   render() {
     const { match, totalPages } = this.props;
