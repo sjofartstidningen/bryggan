@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Component.Header should render child component if user is defined 1`] = `
+exports[`Component.Header should render user component if user is defined 1`] = `
 <styled.header>
   <Styled(Logotype) />
   <styled.h1>

@@ -28,4 +28,50 @@ const WithContexts = ({ children }) => (
   </BrowserRouter>
 );
 
-export { shallowWithTheme, mountWithTheme, WithContexts };
+function setupIntersectionObserver() {
+  const original = window.IntersectionObserver;
+
+  class IntersectionObserver {
+    constructor(callback) {
+      this.callback = callback;
+    }
+
+    entries = [];
+
+    observe = el => {
+      this.entries.push(el);
+    };
+
+    unobserve = el => {
+      this.entries = this.entries.filter(x => x !== el);
+    };
+
+    simulateIntersectionEvent = (data = {}) => {
+      const els = this.entries.map(entry => ({
+        target: entry,
+        ...data,
+      }));
+
+      this.callback(els);
+    };
+  }
+
+  window.IntersectionObserver = IntersectionObserver;
+
+  return () => {
+    window.IntersectionObserver = original;
+  };
+}
+
+const sleep = (ms = 0) =>
+  new Promise(resolve => {
+    window.setTimeout(resolve, ms);
+  });
+
+export {
+  shallowWithTheme,
+  mountWithTheme,
+  WithContexts,
+  setupIntersectionObserver,
+  sleep,
+};

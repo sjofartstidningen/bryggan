@@ -4,8 +4,6 @@ import axios, { CancelToken } from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
 import mitt from 'mitt';
 
-const emitter = mitt();
-
 const http = axios.create({
   headers: {
     'Cache-Control': 'no-cache',
@@ -13,24 +11,32 @@ const http = axios.create({
   adapter: cacheAdapterEnhancer(axios.defaults.adapter, true),
 });
 
+const emitter = mitt();
 const events = {
   IN_VIEW: 'in-view',
   OUT_OF_VIEW: 'out-out-view',
 };
 
-const observer = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) emitter.emit(events.IN_VIEW, entry);
-      else emitter.emit(events.OUT_OF_VIEW, entry);
-    });
-  },
-  {
-    root: null,
-    rootMargin: '100px',
-    thresholds: 0,
-  },
-);
+const getObserver = (() => {
+  let observer;
+
+  return () => {
+    if (observer != null) return observer;
+    return new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) emitter.emit(events.IN_VIEW, entry);
+          else emitter.emit(events.OUT_OF_VIEW, entry);
+        });
+      },
+      {
+        root: null,
+        rootMargin: '100px',
+        thresholds: 0,
+      },
+    );
+  };
+})();
 
 class LazyImage extends Component {
   static propTypes = {
@@ -45,6 +51,11 @@ class LazyImage extends Component {
     onError: null,
   };
 
+  constructor(props) {
+    super(props);
+    this.observer = getObserver();
+  }
+
   state = {
     src: null,
     loaded: false,
@@ -52,7 +63,7 @@ class LazyImage extends Component {
   };
 
   componentDidMount() {
-    observer.observe(this.wrapper);
+    this.observer.observe(this.wrapper);
     emitter.on(events.IN_VIEW, this.handleIntersect);
     emitter.on(events.OUT_OF_VIEW, this.handleNonIntersect);
   }
@@ -75,7 +86,7 @@ class LazyImage extends Component {
       const src = URL.createObjectURL(res.data);
       this.setState(() => ({ src, loaded: true }));
       this.unmountListeners();
-
+      
       if (this.props.onLoad != null) this.props.onLoad(res);
     } catch (err) {
       if (!axios.isCancel(err)) this.handleError(err);
@@ -83,7 +94,7 @@ class LazyImage extends Component {
   };
 
   unmountListeners = () => {
-    observer.unobserve(this.wrapper);
+    this.observer.unobserve(this.wrapper);
     emitter.off(events.IN_VIEW, this.handleIntersect);
     emitter.off(events.OUT_OF_VIEW, this.handleNonIntersect);
     if (this.cancelToken) {

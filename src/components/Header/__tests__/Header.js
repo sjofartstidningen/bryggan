@@ -9,7 +9,7 @@ describe('Component.Header', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  test('should render child component if user is defined', () => {
+  test('should render user component if user is defined', () => {
     const user = { email: 'adam@fransvilhelm.com' };
     const wrapper = shallow(<Header user={user} />);
 

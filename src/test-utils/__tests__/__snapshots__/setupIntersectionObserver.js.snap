@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testUtil.IntersectionObserver should mock the IntersectionObserver API 1`] = `
+Array [
+  Array [
+    Object {
+      "isIntersecting": true,
+      "target": <img />,
+    },
+  ],
+]
+`;
+
+exports[`testUtil.IntersectionObserver should mock the IntersectionObserver API 2`] = `
+Array [
+  Array [
+    Array [
+      Object {
+        "isIntersecting": true,
+        "target": <img />,
+      },
+    ],
+  ],
+  Array [
+    Array [
+      Object {
+        "isIntersecting": true,
+        "target": <img />,
+      },
+      Object {
+        "isIntersecting": true,
+        "target": <button />,
+      },
+    ],
+  ],
+]
+`;
+
+exports[`testUtil.IntersectionObserver should mock the IntersectionObserver API 3`] = `
+Array [
+  Array [
+    Array [
+      Object {
+        "isIntersecting": true,
+        "target": <img />,
+      },
+    ],
+  ],
+  Array [
+    Array [
+      Object {
+        "isIntersecting": true,
+        "target": <img />,
+      },
+      Object {
+        "isIntersecting": true,
+        "target": <button />,
+      },
+    ],
+  ],
+  Array [
+    Array [
+      Object {
+        "isIntersecting": true,
+        "target": <button />,
+      },
+    ],
+  ],
+]
+`;
