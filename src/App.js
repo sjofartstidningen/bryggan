@@ -86,7 +86,7 @@ class App extends Component {
     await signOut();
   };
 
-  handleUserUpdatet = user => {
+  handleUserUpdated = user => {
     this.setState(() => ({ user }));
   };
 
@@ -140,7 +140,7 @@ class App extends Component {
                           <Settings
                             {...props}
                             user={user}
-                            onUserUpdated={this.handleUserUpdatet}
+                            onUserUpdated={this.handleUserUpdated}
                           />
                         )}
                       />
