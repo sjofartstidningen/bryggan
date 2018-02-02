@@ -1,0 +1,19 @@
+language: node_js
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+notifications:
+  email: false
+
+node_js:
+  - '8'
+
+script: yarn run validate
+
+branches:
+  only:
+    - master
+    - develop
