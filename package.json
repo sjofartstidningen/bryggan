@@ -20,7 +20,9 @@
     "eject": "react-scripts eject",
     "lint": "eslint src",
     "format": "prettier 'src/**/*' --write",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "validate":
+      "eslint src && react-scripts test --env=jsdom && react-scripts build"
   },
   "dependencies": {
     "axios": "^0.17.1",
