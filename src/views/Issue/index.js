@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import { join } from 'path';
 import padStart from 'lodash.padstart';
-import { listFolder, getThumbnailSize, getThumbUrl, dropboxRootFolder } from '../../utils/dropbox';
+import dropbox from '../../api/dropbox';
 import Page from '../Page';
 import IssueList from '../../components/IssueList';
 import { SubTitle, SubTitleLink } from '../../components/Typography';
@@ -21,9 +21,6 @@ class Issue extends Component {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
-    appData: PropTypes.shape({
-      dropbox_token: PropTypes.string.isRequired,
-    }).isRequired,
   };
 
   state = {
@@ -35,21 +32,21 @@ class Issue extends Component {
   }
 
   getPages = async () => {
-    const dropboxToken = this.props.appData.dropbox_token;
     const { year, issue } = this.props.match.params;
-    const { data } = await listFolder(join(year, issue), dropboxToken);
+    const { data } = await dropbox.filesListFolder({
+      folder: join(year, issue),
+    });
 
     const { width } = this.ref.getBoundingClientRect();
-    const thumbnailSize = getThumbnailSize(width / 4);
+    const thumbnailSize = dropbox.getThumbnailSize(width / 4);
 
     const newPages = data.entries.sort(sortByName).map((entry, i) => ({
       id: entry.id,
       name: `${i + 1}`,
-      coverSrc: getThumbUrl(
-        entry.path_lower.replace(dropboxRootFolder, ''),
-        thumbnailSize,
-        dropboxToken,
-      ),
+      coverSrc: dropbox.getThumbUrl({
+        file: entry.path_lower.replace(dropbox.rootFolder, ''),
+        size: thumbnailSize,
+      }),
     }));
 
     const withoutLast =
@@ -64,7 +61,7 @@ class Issue extends Component {
   };
 
   render() {
-    const { match, appData } = this.props;
+    const { match } = this.props;
     const { year, issue } = match.params;
     const pageLength = this.state.pages.length;
     const padLength = `${pageLength}`.length;
@@ -99,9 +96,7 @@ class Issue extends Component {
         <Route
           path={join(match.path, ':page')}
           exact
-          render={props => (
-            <Page {...props} totalPages={pageLength} appData={appData} />
-          )}
+          render={props => <Page {...props} totalPages={pageLength} />}
         />
       </section>
     );

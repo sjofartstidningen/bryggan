@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import { join } from 'path';
 import padStart from 'lodash.padstart';
-import { listFolder, getThumbUrl, getThumbnailSize } from '../../utils/dropbox';
+import dropbox from '../../api/dropbox';
 import IssueList from '../../components/IssueList';
 import Issue from '../Issue'; // eslint-disable-line
 import { Main } from '../../components/MainGrid';
@@ -20,9 +20,6 @@ class Tidningen extends Component {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
-    appData: PropTypes.shape({
-      dropbox_token: PropTypes.string.isRequired,
-    }).isRequired,
   };
 
   state = {
@@ -34,39 +31,39 @@ class Tidningen extends Component {
   }
 
   getIssues = async () => {
-    const dropboxToken = this.props.appData.dropbox_token;
-    const { data } = await listFolder('', dropboxToken);
+    const { data } = await dropbox.filesListFolder({ folder: '' });
     const { entries } = data;
 
     const { width } = this.ref.getBoundingClientRect();
-    const thumbnailSize = getThumbnailSize(width / 4);
+    const thumbnailSize = dropbox.getThumbnailSize(width / 4);
 
-    entries
-      .filter(e => e['.tag'] === 'folder')
-      .forEach(async (year) => {
-        const { data: folderData } = await listFolder(year.name, dropboxToken);
-
-        const mappedYear = {
-          name: year.name,
-          id: year.id,
-          issues: sortNameDesc(
-            folderData.entries.map(issue => ({
-              id: issue.id,
-              name: issue.name,
-              path: issue.path_lower,
-              coverSrc: getThumbUrl(
-                `${year.name}/${issue.name}/${year.name}-${issue.name}-001.pdf`,
-                thumbnailSize,
-                dropboxToken,
-              ),
-            })),
-          ),
-        };
-
-        this.setState(({ years }) => ({
-          years: sortNameDesc([...years, mappedYear]),
-        }));
+    entries.filter(e => e['.tag'] === 'folder').forEach(async year => {
+      const { data: folderData } = await dropbox.filesListFolder({
+        folder: year.name,
       });
+
+      const mappedYear = {
+        name: year.name,
+        id: year.id,
+        issues: sortNameDesc(
+          folderData.entries.map(issue => ({
+            id: issue.id,
+            name: issue.name,
+            path: issue.path_lower,
+            coverSrc: dropbox.getThumbUrl({
+              file: `${year.name}/${issue.name}/${year.name}-${
+                issue.name
+              }-001.pdf`,
+              size: thumbnailSize,
+            }),
+          })),
+        ),
+      };
+
+      this.setState(({ years }) => ({
+        years: sortNameDesc([...years, mappedYear]),
+      }));
+    });
   };
 
   getIssueLink = year => issue => {
@@ -75,7 +72,7 @@ class Tidningen extends Component {
   };
 
   render() {
-    const { match, appData } = this.props;
+    const { match } = this.props;
     const { years } = this.state;
 
     return (
@@ -105,7 +102,7 @@ class Tidningen extends Component {
 
         <Route
           path={join(match.url, ':year', ':issue')}
-          render={props => <Issue {...props} appData={appData} />}
+          render={props => <Issue {...props} />}
         />
       </Main>
     );

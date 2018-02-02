@@ -7,6 +7,7 @@ import {
   Switch,
 } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+import dropbox from './api/dropbox';
 import { auth, signIn, signOut, getAppData } from './utils/firebase';
 import { theme } from './styles';
 
@@ -39,19 +40,20 @@ class App extends Component {
     loading: true,
     authenticated: false,
     user: null,
-    appData: {},
   };
 
   componentDidMount() {
     this.unsub = auth.onAuthStateChanged(async user => {
       const appData = user ? await getAppData() : {};
+      dropbox.updateAccessToken(appData.dropbox_token);
+      dropbox.updateRootFolder(appData.dropbox_root);
+
       window.setTimeout(() => {
         this.setState(
           () => ({
             loading: false,
             authenticated: user != null,
             user,
-            appData,
           }),
           () => this.unsub(),
         );
@@ -67,11 +69,12 @@ class App extends Component {
     try {
       const user = await signIn(values);
       const appData = await getAppData();
+      dropbox.updateAccessToken(appData.dropbox_token);
+      dropbox.updateRootFolder(appData.dropbox_root);
 
       this.setState(() => ({
         user,
         authenticated: true,
-        appData,
       }));
     } catch (err) {
       throw err;
@@ -88,7 +91,7 @@ class App extends Component {
   };
 
   render() {
-    const { user, authenticated, loading, appData } = this.state;
+    const { user, authenticated, loading } = this.state;
 
     return (
       <ThemeProvider theme={theme}>
@@ -126,9 +129,7 @@ class App extends Component {
                         authenticated={authenticated}
                         redirect="/sign-in"
                         path="/tidningen"
-                        render={props => (
-                          <Tidningen {...props} appData={appData} />
-                        )}
+                        render={props => <Tidningen {...props} />}
                       />
 
                       <SecureRoute

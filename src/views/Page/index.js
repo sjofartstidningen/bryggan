@@ -4,8 +4,8 @@ import { join } from 'path';
 import styled from 'styled-components';
 import { lighten } from 'polished';
 import padStart from 'lodash.padstart';
-import axios, { CancelToken } from 'axios';
-import { downloadFile } from '../../utils/dropbox';
+import { CancelToken } from 'axios';
+import dropbox from '../../api/dropbox';
 import Loader from '../../components/Loader';
 import PageController from '../../components/PageController';
 import { ax } from '../../styles';
@@ -33,9 +33,6 @@ class IssuePage extends Component {
     }).isRequired,
     history: PropTypes.shape({
       replace: PropTypes.func.isRequired,
-    }).isRequired,
-    appData: PropTypes.shape({
-      dropbox_token: PropTypes.string.isRequired,
     }).isRequired,
   };
 
@@ -77,7 +74,6 @@ class IssuePage extends Component {
   getPdf = async () => {
     this.setState(() => ({ loading: true }));
     const { year, issue, page } = this.props.match.params;
-    const dropboxToken = this.props.appData.dropbox_token;
 
     const file = join(
       year,
@@ -87,15 +83,18 @@ class IssuePage extends Component {
 
     this.cancelToken = CancelToken.source();
     try {
-      const { src } = await downloadFile(
+      const { data } = await dropbox.filesDownload({
         file,
-        dropboxToken,
-        this.cancelToken.token,
-      );
+        cancelToken: this.cancelToken.token,
+      });
+
+      const src = URL.createObjectURL(data);
 
       this.setState(() => ({ src, loading: false }));
     } catch (err) {
-      if (!axios.isCancel(err)) console.error(err); // eslint-disable-line
+      if (!err.cancelled) {
+        console.error(err); // eslint-disable-line
+      }
     }
   };
 
