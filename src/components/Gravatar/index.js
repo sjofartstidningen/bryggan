@@ -1,64 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import md5 from 'md5';
 
-class Gravatar extends Component {
-  static propTypes = {
-    email: PropTypes.string.isRequired,
-    alt: PropTypes.string.isRequired,
-    className: PropTypes.string,
-  };
+function Gravatar({ email, alt, className, onLoad, onError }) {
+  const hash = md5(email);
+  const src = `https://www.gravatar.com/avatar/${hash}`;
 
-  static defaultProps = {
-    className: '',
-  };
-
-  state = {
-    src: null,
-  };
-
-  componentDidMount() {
-    this.getGravatar();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.email !== prevProps.email) {
-      this.getGravatar();
-    }
-  }
-
-  getGravatar = async () => {
-    const baseURL = 'https://www.gravatar.com/avatar';
-    const hash = md5(this.props.email);
-
-    const { data: blob } = await axios({
-      url: hash,
-      method: 'get',
-      baseURL,
-      responseType: 'blob',
-    });
-
-    const src = URL.createObjectURL(blob);
-    this.setState(() => ({ src }));
-  };
-
-  revokeObjectURL = ({ target }) => URL.revokeObjectURL(target.src);
-
-  render() {
-    const { alt, className, ...rest } = this.props;
-    const { src } = this.state;
-
-    return src ? (
-      <img
-        {...rest}
-        src={src}
-        alt={alt}
-        className={className}
-        onLoad={this.revokeObjectURL}
-      />
-    ) : null;
-  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onLoad={onLoad}
+      onError={onError}
+    />
+  );
 }
+
+Gravatar.propTypes = {
+  email: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  onLoad: PropTypes.func,
+  onError: PropTypes.func,
+};
+
+Gravatar.defaultProps = {
+  className: undefined,
+  onLoad: undefined,
+  onError: undefined,
+};
 
 export default Gravatar;

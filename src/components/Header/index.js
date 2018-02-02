@@ -121,13 +121,13 @@ class Header extends Component {
     user: PropTypes.shape({
       displayName: PropTypes.string,
       email: PropTypes.string.isRequired,
-      image: PropTypes.string,
     }),
-    onSignOut: PropTypes.func.isRequired,
+    onSignOut: PropTypes.func,
   };
 
   static defaultProps = {
     user: null,
+    onSignOut: null,
   };
 
   handleSignOut = () => this.props.onSignOut();

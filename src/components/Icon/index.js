@@ -28,7 +28,7 @@ const IconSvg = styled.svg`
 `;
 
 const propTypes = { baseline: PropTypes.bool, className: PropTypes.string };
-const defaultProps = { baseline: false, className: '' };
+const defaultProps = { baseline: false, className: undefined };
 
 function Icon({ baseline, className, children }) {
   return (
@@ -169,6 +169,7 @@ Refresh.defaultProps = defaultProps;
 
 export {
   Icon as default,
+  IconSvg,
   SignOut,
   Eye,
   CloudRain,
