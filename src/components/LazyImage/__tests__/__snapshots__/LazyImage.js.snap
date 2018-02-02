@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Component.LazyImage should download image once el is in view 1`] = `
+Array [
+  Array [
+    Object {
+      "error": null,
+      "loaded": false,
+      "reload": [Function],
+      "revokeObjectURL": [Function],
+      "src": null,
+    },
+  ],
+]
+`;
+
+exports[`Component.LazyImage should download image once el is in view 2`] = `
+Array [
+  Array [
+    Object {
+      "error": null,
+      "loaded": false,
+      "reload": [Function],
+      "revokeObjectURL": [Function],
+      "src": null,
+    },
+  ],
+  Array [
+    Object {
+      "error": null,
+      "loaded": true,
+      "reload": [Function],
+      "revokeObjectURL": [Function],
+      "src": "src-string",
+    },
+  ],
+]
+`;

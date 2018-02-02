@@ -1,0 +1,21 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "prettier"],
+  "env": {
+    "shared-node-browser": true,
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "rules": {
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+
+    "react/jsx-filename-extension": 0,
+    "react/prefer-stateless-function": 0,
+    "react/jsx-indent": 0,
+    "react/jsx-indent-props": 0,
+    
+    "import/prefer-default-export": 0
+  }
+}
