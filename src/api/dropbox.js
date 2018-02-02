@@ -118,38 +118,30 @@ class Dropbox {
   }
 
   async filesListFolder({ folder, recursive, cancelToken }) {
-    try {
-      const path = join(this.rootFolder, folder);
+    const path = join(this.rootFolder, folder);
 
-      const response = await this.rpc({
-        url: '/files/list_folder',
-        data: {
-          path: path === '/' ? '' : path,
-          recursive,
-        },
-        cancelToken,
-      });
+    const response = await this.rpc({
+      url: '/files/list_folder',
+      data: {
+        path: path === '/' ? '' : path,
+        recursive,
+      },
+      cancelToken,
+    });
 
-      return response;
-    } catch (err) {
-      return this.handleError(err);
-    }
+    return response;
   }
 
   async filesDownload({ file, cancelToken }) {
-    try {
-      const path = join(this.rootFolder, file);
+    const path = join(this.rootFolder, file);
 
-      const response = await this.content({
-        url: '/files/download',
-        params: { arg: JSON.stringify({ path }) },
-        cancelToken,
-      });
+    const response = await this.content({
+      url: '/files/download',
+      params: { arg: JSON.stringify({ path }) },
+      cancelToken,
+    });
 
-      return response;
-    } catch (err) {
-      return this.handleError(err);
-    }
+    return response;
   }
 
   handleError = error => {
