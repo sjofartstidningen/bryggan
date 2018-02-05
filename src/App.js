@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
@@ -11,22 +11,15 @@ import dropbox from './api/dropbox';
 import { auth, signIn, signOut, getAppData } from './utils/firebase';
 import { theme } from './styles';
 
-import InitialLoadingScreent from './components/InitialLoadingScreen';
+import InitialLoadingScreen from './components/InitialLoadingScreen';
 import { Grid } from './components/MainGrid';
 import Header from './components/Header';
 import SignIn from './views/SignIn';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
 
-function SecureRoute({ authenticated, redirect, render, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        authenticated ? render(props) : <Redirect to={redirect} />
-      }
-    />
-  );
+function SecureRoute({ authenticated, ...rest }) {
+  return authenticated ? <Route {...rest} /> : <Redirect to="/sign-in" />;
 }
 
 SecureRoute.propTypes = {
@@ -96,60 +89,55 @@ class App extends Component {
     return (
       <ThemeProvider theme={theme}>
         <Router>
-          <Fragment>
-            {loading ? (
-              <InitialLoadingScreent />
-            ) : (
-              <Switch>
-                <Route
-                  path="/sign-in"
-                  render={props =>
-                    authenticated ? (
-                      <Redirect to="/" />
-                    ) : (
-                      <SignIn {...props} onSubmit={this.handleSignIn} />
-                    )
-                  }
-                />
+          {loading ? (
+            <InitialLoadingScreen />
+          ) : (
+            <Switch>
+              <Route
+                path="/sign-in"
+                render={props =>
+                  authenticated ? (
+                    <Redirect to="/" />
+                  ) : (
+                    <SignIn {...props} onSubmit={this.handleSignIn} />
+                  )
+                }
+              />
 
-                <Route
-                  render={() => (
-                    <Grid>
-                      <Header user={user} onSignOut={this.handleSignOut} />
+              <Route
+                render={() => (
+                  <Grid>
+                    <Header user={user} onSignOut={this.handleSignOut} />
 
-                      <SecureRoute
-                        authenticated={authenticated}
-                        redirect="/sign-in"
-                        path="/"
-                        exact
-                        render={() => <Redirect to="/tidningen" />}
-                      />
+                    <SecureRoute
+                      authenticated={authenticated}
+                      path="/"
+                      exact
+                      render={() => <Redirect to="/tidningen" />}
+                    />
 
-                      <SecureRoute
-                        authenticated={authenticated}
-                        redirect="/sign-in"
-                        path="/tidningen"
-                        render={props => <Tidningen {...props} />}
-                      />
+                    <SecureRoute
+                      authenticated={authenticated}
+                      path="/tidningen"
+                      render={props => <Tidningen {...props} />}
+                    />
 
-                      <SecureRoute
-                        authenticated={authenticated}
-                        redirect="/sign-in"
-                        path="/installningar"
-                        render={props => (
-                          <Settings
-                            {...props}
-                            user={user}
-                            onUserUpdated={this.handleUserUpdated}
-                          />
-                        )}
-                      />
-                    </Grid>
-                  )}
-                />
-              </Switch>
-            )}
-          </Fragment>
+                    <SecureRoute
+                      authenticated={authenticated}
+                      path="/installningar"
+                      render={props => (
+                        <Settings
+                          {...props}
+                          user={user}
+                          onUserUpdated={this.handleUserUpdated}
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
+              />
+            </Switch>
+          )}
         </Router>
       </ThemeProvider>
     );
