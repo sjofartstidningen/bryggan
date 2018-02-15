@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { modularScale, lighten, darken } from 'polished';
 import { Formik } from 'formik';
-import { Main } from '../../components/MainGrid';
+import { AreaMain } from '../../components/MainGrid';
 import { Title, SubTitle } from '../../components/Typography';
 import { ax } from '../../styles';
 import { updateUserData } from '../../utils/firebase';
@@ -105,7 +105,7 @@ class Settings extends Component {
     const { displayName } = this.props.user;
 
     return (
-      <Main>
+      <AreaMain>
         <Title>Inställningar</Title>
 
         <div>
@@ -154,7 +154,7 @@ class Settings extends Component {
             )}
           />
         </div>
-      </Main>
+      </AreaMain>
     );
   }
 }

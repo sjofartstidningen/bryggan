@@ -6,7 +6,7 @@ import padStart from 'lodash.padstart';
 import dropbox from '../../api/dropbox';
 import IssueList from '../../components/IssueList';
 import Issue from '../Issue';
-import { Main } from '../../components/MainGrid';
+import { AreaMain } from '../../components/MainGrid';
 import { Title, SubTitle } from '../../components/Typography';
 import { sortByName } from '../../utils';
 
@@ -76,7 +76,7 @@ class Tidningen extends Component {
     const { years } = this.state;
 
     return (
-      <Main
+      <AreaMain
         innerRef={ref => {
           this.ref = ref;
         }}
@@ -104,7 +104,7 @@ class Tidningen extends Component {
           path={join(match.url, ':year', ':issue')}
           render={props => <Issue {...props} />}
         />
-      </Main>
+      </AreaMain>
     );
   }
 }

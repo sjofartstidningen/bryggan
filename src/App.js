@@ -17,8 +17,9 @@ import {
 import { theme } from './styles';
 import SecureRoute from './components/SecureRoute';
 import InitialLoadingScreen from './components/InitialLoadingScreen';
-import { Grid } from './components/MainGrid';
+import { Grid, AreaSidebar } from './components/MainGrid';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import SignIn from './views/SignIn';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
@@ -117,6 +118,8 @@ class App extends Component<*, State> {
                 render={() => (
                   <Grid>
                     <Header user={user} onSignOut={this.handleSignOut} />
+
+                    <AreaSidebar><Sidebar /></AreaSidebar>
 
                     <SecureRoute
                       authenticated={authenticated}

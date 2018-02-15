@@ -18,6 +18,14 @@
     "react/jsx-indent-props": 0,
     "react/sort-comp": 0,
 
-    "import/prefer-default-export": 0
+    "import/prefer-default-export": 0,
+
+    "jsx-a11y/anchor-is-valid": [
+      "error",
+      {
+        "components": ["Link", "NavLink"],
+        "specialLink": ["to"]
+      }
+    ]
   }
 }

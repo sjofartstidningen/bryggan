@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 // @flow
 import React, { Component } from 'react';
-import { Header as Wrapper } from '../MainGrid';
+import { AreaHeader as Wrapper } from '../MainGrid';
 import { SignOut } from '../Icon';
 import {
   Logo,

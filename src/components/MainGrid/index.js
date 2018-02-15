@@ -8,23 +8,23 @@ const modularScaleRem = (x: number): string =>
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 16rem repeat(3, 1fr);
   grid-template-areas:
-    'header header header header'
-    'main main main main'
-    'footer footer footer footer';
+    'sidebar header header header'
+    'sidebar main main main'
+    'sidebar footer footer footer';
   width: 100vw;
   height: auto;
 `;
 
-const Main = styled.main`
+const AreaMain = styled.main`
   grid-area: main;
   padding: ${modularScale(1)};
   color: ${ax('color.black')};
   font-family: ${ax('font.sansSerif')};
 `;
 
-const Header = styled.header`
+const AreaHeader = styled.header`
   grid-area: header;
   display: flex;
   flex-flow: row nowrap;
@@ -45,4 +45,9 @@ const Header = styled.header`
   }
 `;
 
-export { Grid, Main, Header };
+const AreaSidebar = styled.div`
+  position: relative;
+  grid-area: sidebar;
+`;
+
+export { Grid, AreaMain, AreaHeader, AreaSidebar };
