@@ -1,4 +1,8 @@
 // @flow
+export type AppData = {
+  dropbox_root: string,
+  dropbox_token: string,
+}
 
 export type Issue = {
   id: string,

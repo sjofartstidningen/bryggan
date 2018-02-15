@@ -2,7 +2,7 @@
 // @flow
 import firebase from 'firebase';
 import { getEnv } from '../utils';
-import type { User, UserProfile } from '../types';
+import type { User, UserProfile, AppData } from '../types';
 
 const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
@@ -32,12 +32,12 @@ const signIn = async ({
 }: SignInProps): Promise<User> => {
   try {
     const persistence = remember
-    ? 'LOCAL'
-    : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
-    
+      ? 'LOCAL'
+      : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
+
     // $FlowFixMe
     await auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);
-    
+
     const user = await auth.signInWithEmailAndPassword(email, password);
     return user;
   } catch (err) {
@@ -49,9 +49,9 @@ const signOut = (): Promise<void> => auth.signOut();
 
 const getUser = (): User => auth.currentUser;
 
-const getAppData = async () => {
+const getAppData = async (): Promise<AppData> => {
   const snapshot = await database.ref('data').once('value');
-  const data = snapshot.val();
+  const data: AppData = snapshot.val();
   return data;
 };
 

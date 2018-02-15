@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
@@ -21,9 +22,17 @@ import Header from './components/Header';
 import SignIn from './views/SignIn';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
+import type { User } from './types';
 
+type State = {
+  loading: boolean,
+  authenticated: boolean,
+  user: ?User,
+};
 
-class App extends Component {
+class App extends Component<*, State> {
+  unsubscribe: () => void;
+
   state = {
     loading: true,
     authenticated: false,
@@ -31,18 +40,8 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.unsubscribe = awaitInitialAuthCheckEvent(async user => {
-      const appData = user ? await getAppData() : {};
-      dropbox.updateAccessToken(appData.dropbox_token);
-      dropbox.updateRootFolder(appData.dropbox_root);
-
-      this.setState(() => ({
-        loading: false,
-        authenticated: !!user,
-        user,
-      }));
-
-      this.unsubscribe();
+    this.unsubscribe = awaitInitialAuthCheckEvent(user => {
+      this.handleInitialAuthCheck(user);
     });
   }
 
@@ -50,7 +49,25 @@ class App extends Component {
     if (typeof this.unsubscribe === 'function') this.unsubscribe();
   }
 
-  handleSignIn = async values => {
+  handleInitialAuthCheck = async (user: ?User) => {
+    const appData = user ? await getAppData() : {};
+    dropbox.updateAccessToken(appData.dropbox_token);
+    dropbox.updateRootFolder(appData.dropbox_root);
+
+    this.setState(() => ({
+      loading: false,
+      authenticated: !!user,
+      user,
+    }));
+
+    this.unsubscribe();
+  };
+
+  handleSignIn = async (values: {
+    email: string,
+    password: string,
+    remember?: boolean,
+  }) => {
     try {
       const user = await signIn(values);
       const appData = await getAppData();
@@ -71,7 +88,7 @@ class App extends Component {
     await signOut();
   };
 
-  handleUserUpdated = user => {
+  handleUserUpdated = (user: User) => {
     this.setState(() => ({ user }));
   };
 

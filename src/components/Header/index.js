@@ -19,16 +19,11 @@ import {
 import type { User } from '../../types';
 
 type Props = {
-  user?: User,
-  onSignOut?: () => void,
+  user: ?User,
+  onSignOut: () => Promise<void>,
 };
 
 class Header extends Component<Props, *> {
-  static defaultProps = {
-    user: null,
-    onSignOut: null,
-  };
-
   handleSignOut = () => {
     if (typeof this.props.onSignOut === 'function') this.props.onSignOut();
   };
