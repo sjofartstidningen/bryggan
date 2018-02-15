@@ -23,12 +23,14 @@ import Sidebar from './components/Sidebar';
 import SignIn from './views/SignIn';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
-import type { User } from './types';
+import { Book, Sliders } from './components/Icon';
+import type { User, LinkItem } from './types';
 
 type State = {
   loading: boolean,
   authenticated: boolean,
   user: ?User,
+  links: Array<LinkItem>,
 };
 
 class App extends Component<*, State> {
@@ -38,6 +40,15 @@ class App extends Component<*, State> {
     loading: true,
     authenticated: false,
     user: null,
+    links: [
+      {
+        to: '/tidningen',
+        title: 'Tidningen',
+        icon: Book,
+        links: [],
+      },
+      { to: '/installningar', title: 'Inställningar', icon: Sliders },
+    ],
   };
 
   componentDidMount() {
@@ -94,7 +105,7 @@ class App extends Component<*, State> {
   };
 
   render() {
-    const { user, authenticated, loading } = this.state;
+    const { user, authenticated, loading, links } = this.state;
 
     return (
       <ThemeProvider theme={theme}>
@@ -119,7 +130,9 @@ class App extends Component<*, State> {
                   <Grid>
                     <Header user={user} onSignOut={this.handleSignOut} />
 
-                    <AreaSidebar><Sidebar /></AreaSidebar>
+                    <AreaSidebar>
+                      <Sidebar links={links} />
+                    </AreaSidebar>
 
                     <SecureRoute
                       authenticated={authenticated}

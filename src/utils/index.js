@@ -18,4 +18,28 @@ const getEnv = (key: string): string => {
   throw new Error(`Env variable`);
 };
 
-export { sortByName, getEnv };
+const adjust = <T>(i: number, fn: (x: T) => T, list: Array<T>): Array<T> => {
+  const arrLength = list.length;
+  if (i >= arrLength || i < -arrLength) return list;
+
+  const arr = list.slice(0);
+
+  const idx = i < 0 ? arrLength + i : i;
+  const newArr = [...arr];
+  newArr[idx] = fn(newArr[idx]);
+
+  return newArr;
+};
+
+const adjustWhere = <T>(
+  updateFn: (x: T) => T,
+  predicateFn: (x: T) => boolean,
+  list: Array<T>,
+): Array<T> => {
+  const index = list.findIndex(predicateFn);
+  if (index < 0) return list;
+
+  return adjust(index, updateFn, list);
+};
+
+export { sortByName, getEnv, adjust, adjustWhere };

@@ -1,7 +1,5 @@
 // @flow
-import React, { PureComponent } from 'react';
-import { withRouter } from 'react-router-dom';
-import type { ContextRouter } from 'react-router-dom';
+import React, { Component } from 'react';
 import NavigationSection from './NavigationSection';
 import UserSection from './UserSection';
 import {
@@ -11,27 +9,13 @@ import {
   Logo,
   TitleLink,
 } from './components';
-import { Book, Sliders } from '../Icon';
+import type { LinkItem } from '../../types';
 
-type Props = ContextRouter & {};
+type Props = { links: Array<LinkItem> };
 type State = {};
 
-class Sidebar extends PureComponent<Props, State> {
+class Sidebar extends Component<Props, State> {
   handleSignOut = () => {};
-
-  links = [
-    {
-      to: '/tidningen',
-      title: 'Tidningen',
-      icon: Book,
-      links: [
-        { to: '/tidningen/2017', title: '2017' },
-        { to: '/tidningen/2016', title: '2016' },
-        { to: '/tidningen/2015', title: '2015' },
-      ],
-    },
-    { to: '/installningar', title: 'Inställningar', icon: Sliders },
-  ];
 
   render() {
     return (
@@ -44,7 +28,7 @@ class Sidebar extends PureComponent<Props, State> {
         </SidebarSection>
 
         <SidebarSection>
-          <NavigationSection links={this.links} />
+          <NavigationSection links={this.props.links} />
         </SidebarSection>
 
         <SidebarSection style={{ marginTop: 'auto' }}>
@@ -59,4 +43,4 @@ class Sidebar extends PureComponent<Props, State> {
   }
 }
 
-export default withRouter(Sidebar);
+export default Sidebar;

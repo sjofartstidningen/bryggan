@@ -1,16 +1,9 @@
 // @flow
 import React from 'react';
-import type { ComponentType } from 'react';
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { getTypeScale, getColor, transition } from '../../styles';
-
-type LinkItem = {
-  to: string,
-  title: string,
-  icon?: ComponentType<*>,
-  links?: Array<LinkItem>,
-};
+import type { LinkItem } from '../../types';
 
 type Props = {
   links: Array<LinkItem>,
