@@ -35,7 +35,6 @@ const signIn = async ({
       ? 'LOCAL'
       : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
 
-    // $FlowFixMe
     await auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);
 
     const user = await auth.signInWithEmailAndPassword(email, password);

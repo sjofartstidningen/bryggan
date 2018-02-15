@@ -1,21 +1,21 @@
 // @flow
 
-interface SortByNameObj {
-  name: string;
-}
-
-const sortByName = (a: SortByNameObj, b: SortByNameObj): number => {
-  if (a.name > b.name) return 1;
-  if (a.name < b.name) return -1;
+const compareBy = (prop: string) => (a: Object, b: Object): number => {
+  if (a[prop] > b[prop]) return 1;
+  if (a[prop] < b[prop]) return -1;
   return 0;
 };
+
+const sortByName = compareBy('name');
 
 const getEnv = (key: string): string => {
   const generatedKey = key.includes('REACT_APP') ? key : `REACT_APP_${key}`;
   const value = process.env[generatedKey];
 
   if (value) return value;
-  throw new Error(`Env variable`);
+  throw new Error(
+    `Env variable ${generatedKey} is note defined on process.env`,
+  );
 };
 
 const adjust = <T>(i: number, fn: (x: T) => T, list: Array<T>): Array<T> => {
@@ -42,4 +42,4 @@ const adjustWhere = <T>(
   return adjust(index, updateFn, list);
 };
 
-export { sortByName, getEnv, adjust, adjustWhere };
+export { compareBy, sortByName, getEnv, adjust, adjustWhere };

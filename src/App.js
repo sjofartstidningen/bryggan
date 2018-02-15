@@ -144,7 +144,7 @@ class App extends Component<*, State> {
                     <SecureRoute
                       authenticated={authenticated}
                       path="/tidningen"
-                      render={props => <Tidningen {...props} />}
+                      render={({ match }) => <Tidningen match={match} />}
                     />
 
                     <SecureRoute

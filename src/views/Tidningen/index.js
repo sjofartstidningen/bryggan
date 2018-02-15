@@ -1,6 +1,7 @@
+// @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
+import type { Match } from 'react-router-dom';
 import { join } from 'path';
 import padStart from 'lodash.padstart';
 import dropbox from '../../api/dropbox';
@@ -8,19 +9,19 @@ import IssueList from '../../components/IssueList';
 import Issue from '../Issue';
 import { AreaMain } from '../../components/MainGrid';
 import { Title, SubTitle } from '../../components/Typography';
-import { sortByName } from '../../utils';
+import { compareBy } from '../../utils';
+import type { Year, Issue as IssueType } from '../../types';
 
-const sortNameDesc = list => list.sort((a, b) => -sortByName(a, b));
+type Props = {
+  match: Match,
+};
 
-class Tidningen extends Component {
-  static propTypes = {
-    match: PropTypes.shape({
-      url: PropTypes.string,
-    }).isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func,
-    }).isRequired,
-  };
+type State = {
+  years: Array<Year>,
+};
+
+class Tidningen extends Component<Props, State> {
+  ref: ?HTMLDivElement;
 
   state = {
     years: [],
@@ -34,7 +35,7 @@ class Tidningen extends Component {
     const { data } = await dropbox.filesListFolder({ folder: '' });
     const { entries } = data;
 
-    const { width } = this.ref.getBoundingClientRect();
+    const { width } = this.ref ? this.ref.getBoundingClientRect() : {};
     const thumbnailSize = dropbox.getThumbnailSize(width / 4);
 
     entries.filter(e => e['.tag'] === 'folder').forEach(async year => {
@@ -42,11 +43,11 @@ class Tidningen extends Component {
         folder: year.name,
       });
 
-      const mappedYear = {
+      const mappedYear: Year = {
         name: year.name,
         id: year.id,
-        issues: sortNameDesc(
-          folderData.entries.map(issue => ({
+        issues: folderData.entries
+          .map(issue => ({
             id: issue.id,
             name: issue.name,
             path: issue.path_lower,
@@ -56,17 +57,17 @@ class Tidningen extends Component {
               }-001.pdf`,
               size: thumbnailSize,
             }),
-          })),
-        ),
+          }))
+          .sort((a, b) => -compareBy('name')(a, b)),
       };
 
       this.setState(({ years }) => ({
-        years: sortNameDesc([...years, mappedYear]),
+        years: [...years, mappedYear].sort((a, b) => -compareBy('name')(a, b)),
       }));
     });
   };
 
-  getIssueLink = year => issue => {
+  getIssueLink = (year: Year) => (issue: IssueType) => {
     const { match } = this.props;
     return join(match.url, year.name, issue.name);
   };
