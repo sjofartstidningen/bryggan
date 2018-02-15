@@ -1,5 +1,5 @@
+// @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 import { lighten } from 'polished';
 import { CloudRain } from '../Icon';
@@ -60,20 +60,12 @@ const Icon = styled(CloudRain)`
   }
 `;
 
-function Loader({ ratio }) {
+function Loader({ ratio = 1 }: { ratio?: number } = {}) {
   return (
     <Wrapper ratio={ratio}>
       <Icon />
     </Wrapper>
   );
 }
-
-Loader.propTypes = {
-  ratio: PropTypes.number,
-};
-
-Loader.defaultProps = {
-  ratio: 1,
-};
 
 export default Loader;

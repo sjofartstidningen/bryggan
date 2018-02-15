@@ -1,3 +1,4 @@
+// @flow
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { modularScale, lighten } from 'polished';

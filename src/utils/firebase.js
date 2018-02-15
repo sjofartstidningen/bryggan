@@ -2,6 +2,7 @@
 // @flow
 import firebase from 'firebase';
 import { getEnv } from '../utils';
+import type { User, UserProfile } from '../types';
 
 const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
@@ -31,12 +32,12 @@ const signIn = async ({
 }: SignInProps): Promise<User> => {
   try {
     const persistence = remember
-      ? 'LOCAL'
-      : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
-
+    ? 'LOCAL'
+    : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
+    
     // $FlowFixMe
-    await auth.setPersistence(bryggan.auth.Auth.Persistence[persistence]);
-
+    await auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);
+    
     const user = await auth.signInWithEmailAndPassword(email, password);
     return user;
   } catch (err) {

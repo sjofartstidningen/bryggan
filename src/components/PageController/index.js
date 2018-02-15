@@ -1,20 +1,20 @@
+// @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import padStart from 'lodash.padstart';
 import { ChevronLeft, ChevronRight, ZoomOut, ZoomIn } from '../Icon';
 import { Wrapper, PageIndicator, Button, Hide } from './components';
 
-class PageController extends Component {
-  static propTypes = {
-    currentPage: PropTypes.string.isRequired,
-    totalPages: PropTypes.number.isRequired,
-    onNextPage: PropTypes.func.isRequired,
-    onPrevPage: PropTypes.func.isRequired,
-    onZoomDecrease: PropTypes.func.isRequired,
-    onZoomIncrease: PropTypes.func.isRequired,
-    onZoomReset: PropTypes.func.isRequired,
-  };
+type Props = {
+  currentPage: string,
+  totalPages: number,
+  onNextPage: () => void,
+  onPrevPage: () => void,
+  onZoomDecrease: () => void,
+  onZoomIncrease: () => void,
+  onZoomReset: () => void,
+};
 
+class PageController extends Component<Props, *> {
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
   }
@@ -23,7 +23,7 @@ class PageController extends Component {
     document.removeEventListener('keydown', this.handleKeyPress);
   }
 
-  handleKeyPress = ({ keyCode }) => {
+  handleKeyPress = ({ keyCode }: KeyboardEvent) => {
     switch (keyCode) {
       case 37:
         this.props.onPrevPage();
@@ -53,6 +53,7 @@ class PageController extends Component {
       onZoomDecrease,
       onZoomIncrease,
     } = this.props;
+    
     const curr = padStart(
       Number.parseInt(currentPage, 10),
       String(totalPages).length,

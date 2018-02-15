@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+// @flow
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import IsHovering from '../IsHovering';
 import LazyImage from '../LazyImage';
@@ -14,28 +14,18 @@ import {
   IssueShowIcon,
   IssueReloadButton,
 } from './components';
+import type { Issue } from '../../types';
 
-class IssueList extends Component {
-  static propTypes = {
-    issues: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        coverSrc: PropTypes.string,
-      }),
-    ).isRequired,
-    getIssueLink: PropTypes.func.isRequired,
-    caption: PropTypes.func,
-    keepPairs: PropTypes.bool,
-  };
+type Props = {
+  issues: Array<Issue>,
+  getIssueLink: (issue: Issue) => string,
+  caption: (issueName: string) => string,
+  keepPairs?: boolean,
+};
 
-  static defaultProps = {
-    caption: n => n,
-    keepPairs: false,
-  };
-
+class IssueList extends Component<Props, *> {
   render() {
-    const { getIssueLink } = this.props;
+    const { getIssueLink, caption } = this.props;
 
     return (
       <IssuesListWrapper>
@@ -72,7 +62,7 @@ class IssueList extends Component {
                   }
                 />
                 <IssueDesc isHovering={isHovering} to={getIssueLink(issue)}>
-                  {this.props.caption(issue.name)}{' '}
+                  {caption(issue.name)}{' '}
                   <IssueShowIcon isHovering={isHovering} />
                 </IssueDesc>
               </Fragment>

@@ -1,8 +1,10 @@
+// @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import axios, { CancelToken } from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
 import mitt from 'mitt';
+import type { Node } from 'react';
+import type { $AxiosXHR, CancelTokenSource } from 'axios';
 
 const http = axios.create({
   headers: {
@@ -18,11 +20,11 @@ const events = {
 };
 
 const getObserver = (() => {
-  let observer;
+  let observer: ?IntersectionObserver;
 
-  return () => {
+  return (): IntersectionObserver => {
     if (observer != null) return observer;
-    return new IntersectionObserver(
+    observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) emitter.emit(events.IN_VIEW, entry);
@@ -35,26 +37,36 @@ const getObserver = (() => {
         thresholds: 0,
       },
     );
+
+    return observer;
   };
 })();
 
-class LazyImage extends Component {
-  static propTypes = {
-    src: PropTypes.string.isRequired,
-    render: PropTypes.func.isRequired,
-    onLoad: PropTypes.func,
-    onError: PropTypes.func,
-  };
+type RenderProps = {
+  src: ?string,
+  loaded: boolean,
+  error: ?Error,
+  revokeObjectURL: (SyntheticEvent<HTMLImageElement>) => void,
+  reload: (SyntheticMouseEvent<HTMLButtonElement>) => void,
+};
 
-  static defaultProps = {
-    onLoad: null,
-    onError: null,
-  };
+type Props = {
+  src: string,
+  render: (props: RenderProps) => Node,
+  onLoad?: (event: $AxiosXHR<Blob>) => void,
+  onError?: Error => void,
+};
 
-  constructor(props) {
-    super(props);
-    this.observer = getObserver();
-  }
+type State = {
+  src: ?string,
+  loaded: boolean,
+  error: ?Error,
+};
+
+class LazyImage extends Component<Props, State> {
+  wrapper: HTMLDivElement;
+  cancelToken: CancelTokenSource;
+  observer: IntersectionObserver = getObserver();
 
   state = {
     src: null,
@@ -72,10 +84,10 @@ class LazyImage extends Component {
     this.unmountListeners();
   }
 
-  getImage = async ({ cache = true } = {}) => {
+  getImage = async ({ cache = true }: { cache: boolean } = {}) => {
     try {
       this.cancelToken = CancelToken.source();
-      const res = await http({
+      const res: $AxiosXHR<Blob> = await http({
         method: 'get',
         url: this.props.src,
         responseType: 'blob',
@@ -86,7 +98,7 @@ class LazyImage extends Component {
       const src = URL.createObjectURL(res.data);
       this.setState(() => ({ src, loaded: true }));
       this.unmountListeners();
-      
+
       if (this.props.onLoad != null) this.props.onLoad(res);
     } catch (err) {
       if (!axios.isCancel(err)) this.handleError(err);
@@ -102,29 +114,34 @@ class LazyImage extends Component {
     }
   };
 
-  revokeObjectURL = ({ target }) => URL.revokeObjectURL(target.src);
+  revokeObjectURL = ({ currentTarget }: SyntheticEvent<HTMLImageElement>) =>
+    URL.revokeObjectURL(currentTarget.src);
 
-  handleIntersect = entry => {
+  handleIntersect = (entry: IntersectionObserverEntry) => {
     if (entry.target === this.wrapper) this.getImage();
   };
 
-  handleNonIntersect = entry => {
+  handleNonIntersect = (entry: IntersectionObserverEntry) => {
     if (entry.target === this.wrapper && this.cancelToken) {
       this.cancelToken.cancel('Component out of view');
     }
   };
 
-  handleError = error => {
+  handleError = (error: Error) => {
     this.setState(() => ({ error }));
     this.unmountListeners();
     if (this.props.onError != null) this.props.onError(error);
   };
 
-  handleReload = e => {
+  handleReload = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ loaded: false });
     this.getImage({ cache: false });
+  };
+
+  handleRef = (ref: ?HTMLDivElement) => {
+    if (ref) this.wrapper = ref;
   };
 
   render() {
@@ -132,11 +149,7 @@ class LazyImage extends Component {
     const { src, loaded, error } = this.state;
 
     return (
-      <div
-        ref={ref => {
-          this.wrapper = ref;
-        }}
-      >
+      <div ref={this.handleRef}>
         {render({
           src,
           loaded,

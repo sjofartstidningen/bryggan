@@ -1,8 +1,10 @@
+// @flow
 import styled from 'styled-components';
 import { modularScale, lighten, stripUnit } from 'polished';
 import { ax } from '../../styles';
 
-const modularScaleRem = x => `${stripUnit(modularScale(x))}rem`;
+const modularScaleRem = (x: number): string =>
+  `${stripUnit(modularScale(x))}rem`;
 
 const Grid = styled.div`
   display: grid;

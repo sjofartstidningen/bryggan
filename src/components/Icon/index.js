@@ -1,6 +1,7 @@
+// @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import type { Node } from 'react';
 
 const IconWrapper = styled.span`
   position: relative;
@@ -27,10 +28,18 @@ const IconSvg = styled.svg`
     `};
 `;
 
-const propTypes = { baseline: PropTypes.bool, className: PropTypes.string };
-const defaultProps = { baseline: false, className: undefined };
+type IconProps = {
+  baseline?: boolean,
+  className?: string,
+};
 
-function Icon({ baseline, className, children }) {
+type BaseIconProps = IconProps & {
+  children: Node,
+};
+
+const defaultProps = { baseline: false, className: '' };
+
+function Icon({ baseline, className, children }: BaseIconProps) {
   return (
     <IconWrapper className={className}>
       <IconSvg
@@ -46,15 +55,7 @@ function Icon({ baseline, className, children }) {
   );
 }
 
-Icon.propTypes = {
-  className: PropTypes.string,
-  baseline: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-};
-
-Icon.defaultProps = defaultProps;
-
-function SignOut({ baseline, className }) {
+function SignOut({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -64,10 +65,7 @@ function SignOut({ baseline, className }) {
   );
 }
 
-SignOut.propTypes = propTypes;
-SignOut.defaultProps = defaultProps;
-
-function Eye({ baseline, className }) {
+function Eye({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -76,10 +74,7 @@ function Eye({ baseline, className }) {
   );
 }
 
-Eye.propTypes = propTypes;
-Eye.defaultProps = defaultProps;
-
-function CloudRain({ baseline, className }) {
+function CloudRain({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <line x1="16" y1="13" x2="16" y2="21" />
@@ -90,10 +85,7 @@ function CloudRain({ baseline, className }) {
   );
 }
 
-CloudRain.propTypes = propTypes;
-CloudRain.defaultProps = defaultProps;
-
-function ChevronsRight({ baseline, className }) {
+function ChevronsRight({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <polyline points="13 17 18 12 13 7" />
@@ -102,10 +94,7 @@ function ChevronsRight({ baseline, className }) {
   );
 }
 
-ChevronsRight.propTypes = propTypes;
-ChevronsRight.defaultProps = defaultProps;
-
-function ChevronLeft({ baseline, className }) {
+function ChevronLeft({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <polyline points="15 18 9 12 15 6" />
@@ -113,10 +102,7 @@ function ChevronLeft({ baseline, className }) {
   );
 }
 
-ChevronLeft.propTypes = propTypes;
-ChevronLeft.defaultProps = defaultProps;
-
-function ChevronRight({ baseline, className }) {
+function ChevronRight({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <polyline points="9 18 15 12 9 6" />
@@ -124,10 +110,7 @@ function ChevronRight({ baseline, className }) {
   );
 }
 
-ChevronRight.propTypes = propTypes;
-ChevronRight.defaultProps = defaultProps;
-
-function ZoomIn({ baseline, className }) {
+function ZoomIn({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <circle cx="11" cy="11" r="8" />
@@ -138,10 +121,7 @@ function ZoomIn({ baseline, className }) {
   );
 }
 
-ZoomIn.propTypes = propTypes;
-ZoomIn.defaultProps = defaultProps;
-
-function ZoomOut({ baseline, className }) {
+function ZoomOut({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <circle cx="11" cy="11" r="8" />
@@ -151,10 +131,7 @@ function ZoomOut({ baseline, className }) {
   );
 }
 
-ZoomOut.propTypes = propTypes;
-ZoomOut.defaultProps = defaultProps;
-
-function Refresh({ baseline, className }) {
+function Refresh({ baseline, className }: IconProps = defaultProps) {
   return (
     <Icon baseline={baseline} className={className}>
       <polyline points="23 4 23 10 17 10" />
@@ -163,9 +140,6 @@ function Refresh({ baseline, className }) {
     </Icon>
   );
 }
-
-Refresh.propTypes = propTypes;
-Refresh.defaultProps = defaultProps;
 
 export {
   Icon as default,

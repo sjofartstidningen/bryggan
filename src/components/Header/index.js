@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
-
+// @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Header as Wrapper } from '../MainGrid';
 import { SignOut } from '../Icon';
 import {
@@ -17,22 +16,22 @@ import {
   ProfileSignOut,
   ProfileSignOutLink,
 } from './components';
+import type { User } from '../../types';
 
-class Header extends Component {
-  static propTypes = {
-    user: PropTypes.shape({
-      displayName: PropTypes.string,
-      email: PropTypes.string.isRequired,
-    }),
-    onSignOut: PropTypes.func,
-  };
+type Props = {
+  user?: User,
+  onSignOut?: () => void,
+};
 
+class Header extends Component<Props, *> {
   static defaultProps = {
     user: null,
     onSignOut: null,
   };
 
-  handleSignOut = () => this.props.onSignOut();
+  handleSignOut = () => {
+    if (typeof this.props.onSignOut === 'function') this.props.onSignOut();
+  };
 
   render() {
     const { user } = this.props;

@@ -1,11 +1,17 @@
 // @flow
 
-declare type UserProfile = {
+export type Issue = {
+  id: string,
+  name: string,
+  coverSrc: string,
+};
+
+export type UserProfile = {
   displayName?: string,
   photoURL?: string,
 };
 
-declare interface User {
+export interface User {
   displayName: ?string;
   email: ?string;
   updateProfile(profile: UserProfile): Promise<void>;

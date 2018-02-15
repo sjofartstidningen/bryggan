@@ -23,7 +23,7 @@ interface StyledProps {
   theme: typeof theme;
 }
 
-const ax = (path: string) => (props: StyledProps): string | number => {
+const ax = (path: string) => (props: StyledProps) => {
   const [initial, ...paths] = path.split('.');
   // $FlowFixMe
   const val = paths.reduce((acc, p) => acc[p], props.theme[initial]);

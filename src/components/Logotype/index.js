@@ -1,5 +1,5 @@
+// @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Svg = styled.svg`
@@ -13,15 +13,7 @@ const Polygon = styled.polygon`
 
 const Path = Polygon.withComponent('path');
 
-const propTypes = {
-  className: PropTypes.string,
-};
-
-const defaultProps = {
-  className: '',
-};
-
-function Logotype({ className }) {
+function Logotype({ className = '' }: { className?: string } = {}) {
   return (
     <Svg viewBox="0 0 250 300" className={className}>
       <title>Logotype</title>
@@ -178,8 +170,5 @@ function Logotype({ className }) {
     </Svg>
   );
 }
-
-Logotype.propTypes = propTypes;
-Logotype.defaultProps = defaultProps;
 
 export default Logotype;

@@ -1,8 +1,16 @@
+// @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import md5 from 'md5';
 
-function Gravatar({ email, alt, className, onLoad, onError }) {
+type Props = {
+  email: string,
+  alt: string,
+  className?: string,
+  onLoad?: (event: SyntheticEvent<HTMLImageElement>) => void,
+  onError?: (event: SyntheticEvent<HTMLImageElement>) => void,
+};
+
+function Gravatar({ email, alt, className, onLoad, onError }: Props) {
   const hash = md5(email);
   const src = `https://www.gravatar.com/avatar/${hash}`;
 
@@ -16,14 +24,6 @@ function Gravatar({ email, alt, className, onLoad, onError }) {
     />
   );
 }
-
-Gravatar.propTypes = {
-  email: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  onLoad: PropTypes.func,
-  onError: PropTypes.func,
-};
 
 Gravatar.defaultProps = {
   className: undefined,

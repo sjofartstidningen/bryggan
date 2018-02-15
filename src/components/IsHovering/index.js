@@ -1,15 +1,23 @@
+// @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import type { Node, ElementType } from 'react';
 
-class IsHovering extends Component {
-  static propTypes = {
-    el: PropTypes.any, // eslint-disable-line react/forbid-prop-types
-    render: PropTypes.func.isRequired,
-    className: PropTypes.string,
-  };
+type RenderProps = {
+  isHovering: boolean,
+};
 
+type Props = {
+  el?: ElementType,
+  render: RenderProps => Node,
+  className?: string,
+};
+
+type State = {
+  isHovering: boolean,
+};
+
+class IsHovering extends Component<Props, State> {
   static defaultProps = {
-    el: 'div',
     className: '',
   };
 
@@ -26,18 +34,20 @@ class IsHovering extends Component {
   };
 
   render() {
-    const { el: El, render, className, ...props } = this.props;
+    const { el, render, className, ...props } = this.props;
     const { isHovering } = this.state;
 
+    const Wrapper = el || 'div';
+
     return (
-      <El
+      <Wrapper
         {...props}
         className={className}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
         {render({ isHovering })}
-      </El>
+      </Wrapper>
     );
   }
 }
