@@ -1,19 +1,25 @@
+// @flow
 import { join } from 'path';
 import axios from 'axios';
 import qs from 'qs';
+import type {
+  FilesListFolderProps,
+  FilesListFolderResponse,
+  GetThumbUrlProps,
+  FilesDownloadProps,
+  ThumbnailSize,
+  FilesDownloadResponse,
+} from './types';
 
-class DropboxError extends Error {
-  constructor({ message, status, originalError, cancelled = false }) {
-    super(message);
-    this.status = status;
-    this.originalError = originalError;
-    this.cancelled = cancelled;
-  }
-}
+type RequestConfig = {
+  url: string,
+  headers?: { [x: string]: string },
+  [x: string]: any,
+};
 
 class Dropbox {
-  accessToken = null;
-  rootFolder = '/';
+  accessToken: ?string = null;
+  rootFolder: string = '/';
 
   rpcEndpoint = axios.create({
     baseURL: 'https://api.dropboxapi.com/2',
@@ -26,7 +32,7 @@ class Dropbox {
     baseURL: 'https://content.dropboxapi.com/2',
   });
 
-  async rpc(config) {
+  async rpc(config: RequestConfig) {
     try {
       const response = await this.rpcEndpoint({
         method: 'post',
@@ -43,7 +49,7 @@ class Dropbox {
     }
   }
 
-  async content(config) {
+  async content(config: RequestConfig) {
     try {
       const response = await this.contentEndpoint({
         method: 'get',
@@ -61,19 +67,23 @@ class Dropbox {
     }
   }
 
-  updateAccessToken(accessToken) {
+  updateAccessToken(accessToken: string) {
     this.accessToken = accessToken;
   }
 
-  updateRootFolder(rootFolder) {
+  updateRootFolder(rootFolder: string) {
     this.rootFolder = rootFolder;
   }
 
   getAuthBearer() {
-    return `Bearer ${this.accessToken}`;
+    if (this.accessToken) return `Bearer ${this.accessToken}`;
+    throw new Error('Access token is not provided');
   }
 
-  getThumbnailSize = (width, dpi = window.devicePixelRatio || 1) => {
+  getThumbnailSize = (
+    width: number,
+    dpi: number = window.devicePixelRatio || 1,
+  ): ThumbnailSize => {
     const widths = {
       w32h32: { w: 32, h: 32 },
       w64h64: { w: 64, h: 64 },
@@ -102,7 +112,12 @@ class Dropbox {
     return keys[keys.length - 1];
   };
 
-  getThumbUrl({ file, size = 'w640h480', format = 'png', mode = 'bestfit' }) {
+  getThumbUrl({
+    file,
+    size = 'w640h480',
+    format = 'png',
+    mode = 'bestfit',
+  }: GetThumbUrlProps): string {
     const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
     const params = {
       authorization: this.getAuthBearer(),
@@ -117,7 +132,11 @@ class Dropbox {
     return `${baseURL}?${qs.stringify(params)}`;
   }
 
-  async filesListFolder({ folder, recursive, cancelToken }) {
+  async filesListFolder({
+    folder,
+    recursive = false,
+    cancelToken,
+  }: FilesListFolderProps): Promise<FilesListFolderResponse> {
     const path = join(this.rootFolder, folder);
 
     const response = await this.rpc({
@@ -132,7 +151,10 @@ class Dropbox {
     return response;
   }
 
-  async filesDownload({ file, cancelToken }) {
+  async filesDownload({
+    file,
+    cancelToken,
+  }: FilesDownloadProps): Promise<FilesDownloadResponse> {
     const path = join(this.rootFolder, file);
 
     const response = await this.content({
@@ -144,49 +166,8 @@ class Dropbox {
     return response;
   }
 
-  handleError = error => {
-    const newError = { originalError: error, cancelled: false };
-
-    if (axios.isCancel(error)) {
-      newError.message = error.message || 'Request canceled';
-      newError.cancelled = true;
-    } else if (error.response) {
-      const { status } = error.response;
-      newError.status = status;
-
-      switch (status) {
-        case 400:
-          newError.message = error.response.data;
-          break;
-        case 401:
-          newError.message = error.response.data.error_summary;
-          break;
-        case 403:
-          newError.message = 'Current account type cannot access the resource.';
-          break;
-        case 409:
-          newError.message = error.response.data.error_summary;
-          break;
-        case 429:
-          newError.message = 'Too many requests';
-          break;
-        default:
-          if (status > 499 && status < 600) {
-            newError.message = 'Error on Dropbox servers';
-          } else {
-            newError.message = error.message;
-          }
-      }
-    } else if (error.request) {
-      newError.message =
-        error.message ||
-        "Request could't be sent probably due to internet connection";
-    } else {
-      newError.message =
-        error.message || 'Something happend while setting up request';
-    }
-
-    throw new DropboxError(newError);
+  handleError = (error: Error) => {
+    throw new Error(error.message);
   };
 }
 

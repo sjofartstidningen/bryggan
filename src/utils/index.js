@@ -6,6 +6,9 @@ const compareBy = (prop: string) => (a: Object, b: Object): number => {
   return 0;
 };
 
+const compareByDesc = (prop: string) => (a: Object, b: Object) =>
+  -compareBy(prop)(a, b);
+
 const sortByName = compareBy('name');
 
 const getEnv = (key: string): string => {
@@ -42,4 +45,4 @@ const adjustWhere = <T>(
   return adjust(index, updateFn, list);
 };
 
-export { compareBy, sortByName, getEnv, adjust, adjustWhere };
+export { compareBy, compareByDesc, sortByName, getEnv, adjust, adjustWhere };

@@ -44,3 +44,11 @@ export type SignInCredentials = {
   password: string,
   remember: ?boolean,
 };
+
+export type Route = {
+  path?: string,
+  title: string | ((params: { [x: string]: ?string }) => string),
+  exact?: boolean,
+  strict?: boolean,
+  sensitive?: boolean,
+};

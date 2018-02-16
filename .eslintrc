@@ -26,6 +26,8 @@
         "components": ["Link", "NavLink"],
         "specialLink": ["to"]
       }
-    ]
+    ],
+
+    "flowtype/space-after-type-colon": 0
   }
 }

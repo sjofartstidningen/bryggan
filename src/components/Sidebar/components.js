@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Logotype from '../Logotype';
 import { getColor, colorMixin, backgroundColorMixin } from '../../styles/color';
 import { typeMixin } from '../../styles/type';
+import { layerMixin } from '../../styles/utils';
 
 const Wrapper = styled.div`
   position: fixed;
@@ -19,6 +20,7 @@ const Wrapper = styled.div`
   ${typeMixin('ui')};
   ${colorMixin('text01')};
   ${backgroundColorMixin('ui01')};
+  ${layerMixin('stickyNav')};
 `;
 
 const SidebarSection = styled.div`

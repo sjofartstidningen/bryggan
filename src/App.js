@@ -20,6 +20,7 @@ import InitialLoadingScreen from './components/InitialLoadingScreen';
 import { Grid, AreaSidebar } from './components/MainGrid';
 import Sidebar from './components/Sidebar';
 import SignIn from './views/SignIn';
+import Magazine from './views/Magazine';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
 import { Book, Sliders } from './components/Icon';
@@ -140,8 +141,16 @@ class App extends Component<*, State> {
 
                     <SecureRoute
                       authenticated={authenticated}
-                      path="/tidningen"
+                      path="/tidningen-legacy"
                       render={({ match }) => <Tidningen match={match} />}
+                    />
+
+                    <SecureRoute
+                      authenticated={authenticated}
+                      path="/tidningen"
+                      render={({ match, location }) => (
+                        <Magazine match={match} location={location} />
+                      )}
                     />
 
                     <SecureRoute
