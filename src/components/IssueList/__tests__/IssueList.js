@@ -18,7 +18,11 @@ describe('Component.IssueList', () => {
 
     const wrapper = mount(
       <WithContexts>
-        <IssueList issues={issues} getIssueLink={getIssueLink} />
+        <IssueList
+          issues={issues}
+          getIssueLink={getIssueLink}
+          caption={() => ''}
+        />
       </WithContexts>,
     );
 
