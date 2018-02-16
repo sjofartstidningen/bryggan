@@ -26,8 +26,9 @@ export type UserProfile = {
 };
 
 export interface User {
-  displayName: ?string;
   email: ?string;
+  displayName: ?string;
+  photoURL: ?string;
   updateProfile(profile: UserProfile): Promise<void>;
 }
 
