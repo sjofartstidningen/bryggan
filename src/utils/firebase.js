@@ -2,7 +2,7 @@
 // @flow
 import firebase from 'firebase';
 import { getEnv } from '../utils';
-import type { User, UserProfile, AppData } from '../types';
+import type { User, UserProfile, AppData, SignInCredentials } from '../types';
 
 const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
@@ -24,12 +24,11 @@ const awaitInitialAuthCheckEvent = (cb: AuthCheckEventHandler) => {
   return unsubscribe;
 };
 
-type SignInProps = { email: string, password: string, remember?: boolean };
 const signIn = async ({
   email,
   password,
   remember,
-}: SignInProps): Promise<User> => {
+}: SignInCredentials): Promise<User> => {
   try {
     const persistence = remember
       ? 'LOCAL'

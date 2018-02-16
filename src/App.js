@@ -23,7 +23,7 @@ import SignIn from './views/SignIn';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
 import { Book, Sliders } from './components/Icon';
-import type { User, LinkItem } from './types';
+import type { User, LinkItem, SignInCredentials } from './types';
 
 type State = {
   loading: boolean,
@@ -74,11 +74,7 @@ class App extends Component<*, State> {
     this.unsubscribe();
   };
 
-  handleSignIn = async (values: {
-    email: string,
-    password: string,
-    remember?: boolean,
-  }) => {
+  handleSignIn = async (values: SignInCredentials) => {
     try {
       const user = await signIn(values);
       const appData = await getAppData();

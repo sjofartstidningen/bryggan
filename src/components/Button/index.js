@@ -1,7 +1,9 @@
+// @flow
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import { lighten } from 'polished';
-import { getTypeScale, getColor } from '../../styles';
+import { typeMixin } from '../../styles/type';
+import { colorMixin, backgroundColorMixin, getColor } from '../../styles/color';
+import { transitionMixin } from '../../styles/utils';
 
 const Button = styled.button`
   display: inline-flex;
@@ -11,66 +13,47 @@ const Button = styled.button`
   margin: 1rem;
   border: 2px solid transparent;
   padding: 0 1rem;
-  font-family: ${p => p.theme.font.sansSerif};
-  font-weight: ${p => p.theme.fontWeight.normal};
-  ${getTypeScale(1)};
   text-align: center;
   text-decoration: none;
-  color: ${getColor('inverse text color')};
-  background-color: ${getColor('primary brand')};
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+
+  ${typeMixin('ui')};
+  ${colorMixin('inverse01')};
+  ${backgroundColorMixin('brand01')};
+  ${transitionMixin('background-color')};
 
   &:hover {
-    background-color: ${lighten(0.1, getColor('primary brand'))};
+    ${backgroundColorMixin('brand02')};
   }
 
   ${p =>
     p.state &&
     css`
-      background-color: ${getColor(p.state)};
+      ${backgroundColorMixin(p.state)};
 
       &:hover {
         background-color: ${lighten(0.1, getColor(p.state))};
       }
     `};
 
-  ${p => p.size === 'small' && css`
-    height: 2rem;
-    padding: 0 0.625rem;
-  `}
-`;
-
-const ButtonLink = Button.withComponent(Link);
-
-const ButtonSecondary = Button.extend`
-  border-color: ${getColor('primary brand')};
-  color: ${getColor('primary brand')};
-  background-color: transparent;
-  transition: border-color 0.2s ease, color 0.2s ease;
-
-  &:hover {
-    border-color: ${lighten(0.1, getColor('primary brand'))};
-    color: ${lighten(0.1, getColor('primary brand'))};
-    background-color: transparent;
-  }
+  ${p =>
+    p.size === 'small' &&
+    css`
+      height: 2rem;
+      padding: 0 0.625rem;
+    `};
 
   ${p =>
-    p.state &&
+    p.disabled &&
     css`
-      border-color: ${getColor(p.state)};
-      color: ${getColor(p.state)};
-      background-color: transparent;
+      ${backgroundColorMixin('text03')};
+      cursor: default;
 
       &:hover {
-        border-color: ${lighten(0.1, getColor(p.state))};
-        color: ${lighten(0.1, getColor(p.state))};
-        background-color: transparent;
+        ${backgroundColorMixin('text03')};
       }
     `};
 `;
 
-const ButtonLinkSecondary = ButtonSecondary.withComponent(Link);
-
-export { Button as default, ButtonSecondary, ButtonLink, ButtonLinkSecondary };
+export { Button };

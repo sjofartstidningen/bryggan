@@ -38,3 +38,9 @@ export type LinkItem = {
   icon?: ComponentType<*>,
   links?: Array<LinkItem>,
 };
+
+export type SignInCredentials = {
+  email: string,
+  password: string,
+  remember: ?boolean,
+};
