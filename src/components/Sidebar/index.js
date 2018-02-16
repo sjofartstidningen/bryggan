@@ -9,15 +9,15 @@ import {
   Logo,
   TitleLink,
 } from './components';
-import type { LinkItem } from '../../types';
+import type { LinkItem, User } from '../../types';
 
-type Props = { links: Array<LinkItem> };
+type Props = { links: Array<LinkItem>, user: ?User, onSignOut: () => void };
 type State = {};
 
 class Sidebar extends Component<Props, State> {
-  handleSignOut = () => {};
-
   render() {
+    const { user, onSignOut } = this.props;
+
     return (
       <Wrapper>
         <SidebarSection>
@@ -31,13 +31,16 @@ class Sidebar extends Component<Props, State> {
           <NavigationSection links={this.props.links} />
         </SidebarSection>
 
-        <SidebarSection style={{ marginTop: 'auto' }}>
-          <UserSection
-            profileImage="https://placehold.it/32x32"
-            name="Adam Bergman"
-            onSignOut={this.handleSignOut}
-          />
-        </SidebarSection>
+        {user && (
+          <SidebarSection style={{ marginTop: 'auto' }}>
+            <UserSection
+              email={user.email}
+              photoURL={user.photoURL}
+              displayName={user.displayName}
+              onSignOut={onSignOut}
+            />
+          </SidebarSection>
+        )}
       </Wrapper>
     );
   }

@@ -2,7 +2,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { getTypeScale, getColor, transition } from '../../styles';
+import { colorMixin } from '../../styles/color';
+import { typeMixin } from '../../styles/type';
+import { transitionMixin, pseudoMixin } from '../../styles/utils';
 import type { LinkItem } from '../../types';
 
 type Props = {
@@ -31,14 +33,15 @@ const MenuLink = styled(NavLinkWithoutPassedProps)`
   width: 100%;
   padding: 0.5rem;
   padding-left: 1.25rem;
-  ${getTypeScale(1)};
   text-decoration: none;
   color: inherit;
-  ${transition('color')};
+  ${typeMixin('zeta')};
+  ${colorMixin('text01')};
+  ${transitionMixin('color')};
 
   &.active,
   &:hover {
-    color: ${getColor('primary brand')};
+    ${colorMixin('brand01')};
 
     &::after {
       opacity: 0.99;
@@ -46,15 +49,14 @@ const MenuLink = styled(NavLinkWithoutPassedProps)`
   }
 
   &::after {
-    content: '';
-    position: absolute;
+    ${pseudoMixin};
     top: 0;
     left: 0;
     width: 4px;
     height: 100%;
     background-color: currentColor;
     opacity: 0.01;
-    ${transition('opacity')};
+    ${transitionMixin('opacity')};
   }
 
   ${p =>
@@ -68,7 +70,7 @@ const MenuLink = styled(NavLinkWithoutPassedProps)`
     p.active &&
     css`
       font-weight: ${p.theme.fontWeight.bold};
-      color: ${getColor('primary brand')};
+      ${colorMixin('brand01')};
     `};
 
   & .nav-icon {

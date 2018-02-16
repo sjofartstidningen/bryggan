@@ -18,7 +18,6 @@ import { theme } from './styles';
 import SecureRoute from './components/SecureRoute';
 import InitialLoadingScreen from './components/InitialLoadingScreen';
 import { Grid, AreaSidebar } from './components/MainGrid';
-import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import SignIn from './views/SignIn';
 import Tidningen from './views/Tidningen';
@@ -95,9 +94,9 @@ class App extends Component<*, State> {
     }
   };
 
-  handleSignOut = async () => {
+  handleSignOut = () => {
     this.setState(() => ({ authenticated: false, user: null }));
-    await signOut();
+    signOut();
   };
 
   handleUserUpdated = (user: User) => {
@@ -128,10 +127,12 @@ class App extends Component<*, State> {
               <Route
                 render={() => (
                   <Grid>
-                    <Header user={user} onSignOut={this.handleSignOut} />
-
                     <AreaSidebar>
-                      <Sidebar links={links} />
+                      <Sidebar
+                        links={links}
+                        user={user}
+                        onSignOut={this.handleSignOut}
+                      />
                     </AreaSidebar>
 
                     <SecureRoute

@@ -1,8 +1,11 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import Gravatar from '../Gravatar';
 import { SignOut } from '../Icon';
-import { getColor, getTypeScale, transition } from '../../styles';
+import { typeMixin } from '../../styles/type';
+import { getColor, colorMixin } from '../../styles/color';
+import { transitionMixin } from '../../styles/utils';
 
 const ProfileSection = styled.div`
   display: flex;
@@ -12,7 +15,7 @@ const ProfileSection = styled.div`
   margin-bottom: 1rem;
   padding: 0 1rem;
 
-  ${getTypeScale(1)};
+  ${typeMixin('ui')};
 `;
 
 const ProfileImageContainer = styled.div`
@@ -28,7 +31,7 @@ const ProfileImageContainer = styled.div`
     left: -2px;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    border: 1px solid ${getColor('emphasis border')};
+    border: 1px solid ${getColor('ui05')};
     border-radius: 100%;
   }
 `;
@@ -39,6 +42,8 @@ const ProfileImage = styled.img`
   height: 100%;
   border-radius: 100%;
 `;
+
+const ProfileGravatar = ProfileImage.withComponent(Gravatar);
 
 const ProfileName = styled.span`
   white-space: nowrap;
@@ -51,31 +56,37 @@ const SignOutButton = styled.button`
   margin-left: auto;
   border: none;
   padding: 0;
-  ${getTypeScale(0)};
-  color: ${getColor('hint text')};
   background-color: transparent;
   white-space: nowrap;
   cursor: pointer;
-  ${transition('color')};
+
+  ${typeMixin('caption')};
+  ${colorMixin('text03')};
+  ${transitionMixin('color')};
 
   &:hover {
-    color: ${getColor('error')};
+    ${colorMixin('error')};
   }
 `;
 
 type Props = {
-  profileImage: string,
-  name: string,
+  email: ?string,
+  displayName: ?string,
+  photoURL: ?string,
   onSignOut: () => void,
 };
 
-function UserSection({ profileImage, name, onSignOut }: Props) {
+function UserSection({ email, photoURL, displayName, onSignOut }: Props) {
   return (
     <ProfileSection>
       <ProfileImageContainer>
-        <ProfileImage src={profileImage} alt="" />
+        {photoURL ? (
+          <ProfileImage src={photoURL} alt="" />
+        ) : (
+          <ProfileGravatar email={email} alt="" />
+        )}
       </ProfileImageContainer>
-      <ProfileName>{name}</ProfileName>
+      <ProfileName>{displayName || email}</ProfileName>
       <SignOutButton onClick={onSignOut}>
         Logga ut <SignOut baseline />
       </SignOutButton>
