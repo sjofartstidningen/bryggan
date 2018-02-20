@@ -2,7 +2,8 @@
   "name": "bryggan",
   "version": "0.1.0",
   "license": "MIT",
-  "author": "Adam Bergman <adam@fransvilhelm.com> (https://github.com/adambrgmn)",
+  "author":
+    "Adam Bergman <adam@fransvilhelm.com> (https://github.com/adambrgmn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/sjofartstidningen/bryggan.git"
@@ -22,7 +23,8 @@
     "flow": "flow",
     "format": "prettier 'src/**/*' --write",
     "precommit": "lint-staged",
-    "validate": "eslint src && react-scripts test --env=jsdom && react-scripts build"
+    "validate":
+      "eslint src && react-scripts test --env=jsdom && react-scripts build"
   },
   "dependencies": {
     "axios": "^0.17.1",

@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 // @flow
-import firebase from 'firebase';
+import { auth, database, initializeApp } from 'firebase';
 import { getEnv } from '../utils';
 import type { User, UserProfile, AppData, SignInCredentials } from '../types';
 
@@ -13,14 +13,14 @@ const config = {
   messagingSenderId: getEnv('FIREBASE_MESSAGING_SENDER_ID'),
 };
 
-const bryggan = firebase.initializeApp(config, config.projectId);
+const bryggan = initializeApp(config);
 
-const auth = bryggan.auth();
-const database = bryggan.database();
+const Auth = auth();
+const Database = database();
 
 type AuthCheckEventHandler = (user: ?User) => void;
 const awaitInitialAuthCheckEvent = (cb: AuthCheckEventHandler) => {
-  const unsubscribe = auth.onAuthStateChanged(cb);
+  const unsubscribe = Auth.onAuthStateChanged(cb);
   return unsubscribe;
 };
 
@@ -34,21 +34,21 @@ const signIn = async ({
       ? 'LOCAL'
       : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
 
-    await auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);
+    await Auth.setPersistence(auth.Auth.Persistence[persistence]);
 
-    const user = await auth.signInWithEmailAndPassword(email, password);
+    const user = await Auth.signInWithEmailAndPassword(email, password);
     return user;
   } catch (err) {
     throw err;
   }
 };
 
-const signOut = (): Promise<void> => auth.signOut();
+const signOut = (): Promise<void> => Auth.signOut();
 
-const getUser = (): User => auth.currentUser;
+const getUser = (): User => Auth.currentUser;
 
 const getAppData = async (): Promise<AppData> => {
-  const snapshot = await database.ref('data').once('value');
+  const snapshot = await Database.ref('data').once('value');
   const data: AppData = snapshot.val();
   return data;
 };
@@ -61,8 +61,8 @@ const updateUserData = async (data: UserProfile) => {
 
 export {
   bryggan as default,
-  auth,
-  database,
+  Auth,
+  Database,
   awaitInitialAuthCheckEvent,
   signIn,
   signOut,
