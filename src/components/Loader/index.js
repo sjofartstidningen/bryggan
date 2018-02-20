@@ -1,9 +1,8 @@
 // @flow
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { lighten } from 'polished';
 import { CloudRain } from '../Icon';
-import { ax } from '../../styles';
+import { colorMixin } from '../../styles/color';
 
 const Wrapper = styled.div`
   position: relative;
@@ -11,7 +10,8 @@ const Wrapper = styled.div`
   height: 0;
   padding-top: calc(100% * ${p => p.ratio});
   font-size: 2em;
-  color: ${p => lighten(0.5, ax('color.black')(p))};
+
+  ${colorMixin('brand01')};
 `;
 
 const raindrops = keyframes`

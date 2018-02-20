@@ -15,6 +15,7 @@ import {
   getAppData,
 } from './utils/firebase';
 import { theme } from './styles';
+import { adjust, compareByDesc } from './utils';
 import SecureRoute from './components/SecureRoute';
 import InitialLoadingScreen from './components/InitialLoadingScreen';
 import { Grid, AreaSidebar } from './components/MainGrid';
@@ -61,6 +62,28 @@ class App extends Component<*, State> {
     if (typeof this.unsubscribe === 'function') this.unsubscribe();
   }
 
+  fetchSublinks = async () => {
+    const { data } = await dropbox.filesListFolder({ folder: '/' });
+    const { entries } = data;
+    const years: Array<LinkItem> = entries
+      .map(entry => ({
+        to: `/tidningen/${entry.name}`,
+        title: entry.name,
+      }))
+      .sort(compareByDesc('title'));
+
+    const newLinks = adjust(
+      0,
+      l => ({
+        ...l,
+        links: years,
+      }),
+      this.state.links,
+    );
+
+    this.setState(() => ({ links: newLinks }));
+  };
+
   handleInitialAuthCheck = async (user: ?User) => {
     const appData = user ? await getAppData() : {};
     dropbox.updateAccessToken(appData.dropbox_token);
@@ -73,6 +96,7 @@ class App extends Component<*, State> {
     }));
 
     this.unsubscribe();
+    this.fetchSublinks();
   };
 
   handleSignIn = async (values: SignInCredentials) => {

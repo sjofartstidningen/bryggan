@@ -10,16 +10,18 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  max-height: 100vh;
   background-color: white;
   z-index: 1;
 `;
 
 const LoaderContainer = styled.div`
-  width: 20rem;
+  width: 100%;
   max-width: 100vmin;
-  height: 20rem;
+  height: 100%;
   max-height: 100vmin;
 `;
 

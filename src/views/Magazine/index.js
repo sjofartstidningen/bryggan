@@ -4,7 +4,7 @@ import { matchPath, Route } from 'react-router-dom';
 import type { Location, Match } from 'react-router-dom';
 import { AreaMain } from '../../components/MainGrid';
 import MagazineHeader from './MagazineHeader';
-import MagazineYears from './MagazineYears';
+import MagazineList from './MagazineList';
 
 type Obj = { [x: string]: ?string };
 
@@ -21,11 +21,11 @@ class Magazine extends Component<Props, State> {
     { path: '/tidningen/:year', title: ({ year }: Obj) => year || '' },
     {
       path: '/tidningen/:year/:issue',
-      title: ({ issue }: Obj) => `Nummer ${issue || ''}`,
+      title: ({ issue }: Obj) => issue || '',
     },
     {
       path: '/tidningen/:year/:issue/:page',
-      title: ({ page }: Obj) => `Sida ${page || ''}`,
+      title: ({ page }: Obj) => page || '',
     },
   ];
 
@@ -37,13 +37,18 @@ class Magazine extends Component<Props, State> {
 
     const params = match ? match.params : {};
     const title = (() => {
-      if (params.page) return `Sida ${params.page}`;
-      if (params.issue) return `Nummer ${params.issue}`;
+      if (params.page) return params.page;
+      if (params.issue) return params.issue;
       if (params.year) return params.year;
       return 'Tidningen';
     })();
 
     return title;
+  };
+
+  stripRootUrl = (path: string = '/') => {
+    const { url } = this.props.match;
+    return path.replace(url, '');
   };
 
   render() {
@@ -61,7 +66,35 @@ class Magazine extends Component<Props, State> {
           <Route
             path={match.url}
             exact
-            render={props => <MagazineYears match={props.match} />}
+            render={props => (
+              <MagazineList
+                folder={this.stripRootUrl(props.match.url)}
+                match={props.match}
+              />
+            )}
+          />
+
+          <Route
+            path={`${match.url}/:year`}
+            exact
+            render={props => (
+              <MagazineList
+                folder={this.stripRootUrl(props.match.url)}
+                match={props.match}
+              />
+            )}
+          />
+
+          <Route
+            path={`${match.url}/:year/:issue`}
+            exact
+            render={props => (
+              <MagazineList
+                folder={this.stripRootUrl(props.match.url)}
+                match={props.match}
+                pages
+              />
+            )}
           />
         </AreaMain>
       </Fragment>

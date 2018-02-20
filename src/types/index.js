@@ -52,3 +52,27 @@ export type Route = {
   strict?: boolean,
   sensitive?: boolean,
 };
+
+export type MagazineEntry = {
+  id: string,
+  name: string,
+  url: string,
+  cover: string,
+  caption: string,
+};
+
+export type MagazineYear = {
+  id: string,
+  name: string,
+  url: string,
+  cover: string,
+  caption: string,
+};
+
+export type MagazineIssue = {
+  id: string,
+  name: string,
+  url: string,
+  cover: string,
+  caption: string,
+};

@@ -2,6 +2,7 @@
 import { join } from 'path';
 import axios from 'axios';
 import qs from 'qs';
+import { matchPath } from 'react-router-dom';
 import type {
   FilesListFolderProps,
   FilesListFolderResponse,
@@ -116,7 +117,7 @@ class Dropbox {
     file,
     size = 'w640h480',
     format = 'png',
-    mode = 'bestfit',
+    mode = 'fitone_bestfit',
   }: GetThumbUrlProps): string {
     const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
     const params = {
@@ -130,6 +131,41 @@ class Dropbox {
     };
 
     return `${baseURL}?${qs.stringify(params)}`;
+  }
+
+  getCoverUrl({
+    year,
+    issue = '01',
+    page = '001',
+    size,
+  }: {
+    year: string,
+    issue?: string,
+    page?: string,
+    size: ThumbnailSize,
+  } = {}): string {
+    return this.getThumbUrl({
+      file: `${year}/${issue}/${year}-${issue}-${page}.pdf`,
+      size,
+    });
+  }
+
+  getCoverUrlFromPath(path: string, size: ThumbnailSize) {
+    const match = matchPath(path, {
+      path: '/:any/:year?/:issue?/:page?',
+    });
+
+    const { params } = match || {};
+    const year = (params && params.year) || '';
+    const issue = (params && params.issue) || '01';
+    const page = (params && params.page) || '001';
+
+    return this.getCoverUrl({
+      year,
+      issue,
+      page,
+      size,
+    });
   }
 
   async filesListFolder({
