@@ -4,7 +4,6 @@ exports[`Component.IsHovering should update render prop when mouse hovers 1`] = 
 <Component>
   <IsHovering
     className="outer"
-    el="div"
     render={[Function]}
   >
     <div
@@ -29,7 +28,6 @@ exports[`Component.IsHovering should update render prop when mouse hovers 2`] = 
 <Component>
   <IsHovering
     className="outer"
-    el="div"
     render={[Function]}
   >
     <div

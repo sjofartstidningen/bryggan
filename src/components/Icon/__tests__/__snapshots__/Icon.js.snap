@@ -1,15 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Component.Icon should render an icon 1`] = `
-<Icon
-  baseline={false}
->
+<Icon>
   <styled.span>
     <span
       className="sc-bdVaJa dFIrRp"
     >
       <styled.svg
-        baseline={false}
         height="24"
         viewBox="0 0 24 24"
         width="24"
