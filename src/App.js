@@ -22,7 +22,6 @@ import { Grid, AreaSidebar } from './components/MainGrid';
 import Sidebar from './components/Sidebar';
 import SignIn from './views/SignIn';
 import Magazine from './views/Magazine';
-import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
 import { Book } from './components/Icon';
 import type { User, LinkItem, SignInCredentials } from './types';
@@ -161,12 +160,6 @@ class App extends Component<*, State> {
                       path="/"
                       exact
                       render={() => <Redirect to="/tidningen" />}
-                    />
-
-                    <SecureRoute
-                      authenticated={authenticated}
-                      path="/tidningen-legacy"
-                      render={({ match }) => <Tidningen match={match} />}
                     />
 
                     <SecureRoute
