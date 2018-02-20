@@ -22,7 +22,6 @@ import { Grid, AreaSidebar } from './components/MainGrid';
 import Sidebar from './components/Sidebar';
 import SignIn from './views/SignIn';
 import Magazine from './views/Magazine';
-import Settings from './views/Settings';
 import { Book } from './components/Icon';
 import type { User, LinkItem, SignInCredentials } from './types';
 
@@ -47,7 +46,6 @@ class App extends Component<*, State> {
         icon: Book,
         links: [],
       },
-      // { to: '/installningar', title: 'Inställningar', icon: Sliders },
     ],
   };
 
@@ -167,18 +165,6 @@ class App extends Component<*, State> {
                       path="/tidningen"
                       render={({ match, location }) => (
                         <Magazine match={match} location={location} />
-                      )}
-                    />
-
-                    <SecureRoute
-                      authenticated={authenticated}
-                      path="/installningar"
-                      render={props => (
-                        <Settings
-                          {...props}
-                          user={user}
-                          onUserUpdated={this.handleUserUpdated}
-                        />
                       )}
                     />
                   </Grid>

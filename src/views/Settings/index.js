@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { modularScale, lighten, darken } from 'polished';
 import { Formik } from 'formik';
 import { AreaMain } from '../../components/MainGrid';
-import { Title, SubTitle } from '../../components/Typography';
 import { ax } from '../../styles';
 import { updateUserData } from '../../utils/firebase';
 
@@ -106,7 +105,7 @@ class Settings extends Component {
 
     return (
       <AreaMain>
-        <Title>Inställningar</Title>
+        <h1>Inställningar</h1>
 
         <div>
           <Formik
@@ -124,7 +123,7 @@ class Settings extends Component {
               isSubmitting,
             }) => (
               <Form onSubmit={handleSubmit}>
-                <SubTitle>Användare</SubTitle>
+                <h2>Användare</h2>
 
                 <Fieldset>
                   <InputContainer>
