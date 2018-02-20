@@ -1,10 +1,11 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
+import IsHovering from '../../components/IsHovering';
 import Loader from '../../components/Loader';
 import LazyImage from '../../components/LazyImage';
-import { colorMixin, backgroundColorMixin, getColor } from '../../styles/color';
+import { colorMixin, getColor } from '../../styles/color';
 import { typeMixin } from '../../styles/type';
 import { transitionMixin } from '../../styles/utils';
 import { Eye } from '../../components/Icon';
@@ -13,20 +14,22 @@ import type { MagazineEntry } from '../../types';
 const ListWrapper = styled.ul`
   display: flex;
   flex-flow: row wrap;
-  margin: 0;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
   padding: 1rem;
   list-style: none;
 
   ${colorMixin('text01')};
 `;
 
-const ListItem = styled.li`
+const ListItem = styled(({ pages, ...rest }) => <IsHovering {...rest} />).attrs(
+  { el: 'li' },
+)`
   width: calc(100% / 4 - ${p => (p.pages ? 0.5 : 1)}rem);
   margin: 0.5rem;
   border: 1px solid ${getColor('ui04')};
   padding: 0.5rem;
-
-  ${backgroundColorMixin('ui02')};
 
   ${p =>
     p.pages &&
@@ -44,9 +47,13 @@ const ListItem = styled.li`
 
       &:first-child {
         margin-left: calc(100% / 4);
-        border-left-color: 1px solid ${getColor('ui04')};
+        border-left-color: ${getColor('ui04')};
       }
     `};
+
+  &:hover {
+    border-color: ${getColor('brand02')};
+  }
 `;
 
 const fadeIn = keyframes`
@@ -74,7 +81,7 @@ const ListItemCaption = styled.p`
   ${colorMixin('text02')};
 `;
 
-const ListItemLink = styled(Link)`
+const ListItemLink = styled(({ isHovering, ...rest }) => <Link {...rest} />)`
   position: relative;
   display: inline-block;
   width: 100%;
@@ -84,9 +91,11 @@ const ListItemLink = styled(Link)`
   ${colorMixin('text02')};
   ${transitionMixin('color')};
 
-  &:hover {
-    ${colorMixin('brand02')};
-  }
+  ${p =>
+    p.isHovering &&
+    css`
+      ${colorMixin('brand02')};
+    `};
 `;
 
 const ListItemEye = styled(Eye)`
@@ -95,10 +104,12 @@ const ListItemEye = styled(Eye)`
   transform: translate(150%, 1px);
   ${transitionMixin('transform', 'opacity')};
 
-  ${ListItemLink}:hover & {
-    opacity: 0.99;
-    transform: translate(5px, 1px);
-  }
+  ${p =>
+    p.isHovering &&
+    css`
+      opacity: 0.99;
+      transform: translate(5px, 1px);
+    `};
 `;
 
 type Props = {
@@ -110,30 +121,37 @@ function MagazineCoverView({ covers, pages = false }: Props = {}) {
   return (
     <ListWrapper>
       {covers.map(cover => (
-        <ListItem key={cover.id} pages={pages}>
-          <Link to={cover.url}>
-            <LazyImage
-              src={cover.cover}
-              render={props =>
-                !props.loaded ? (
-                  <Loader ratio={290 / 225} />
-                ) : (
-                  <ListItemImage
-                    src={props.src}
-                    onLoad={props.revokeObjectURL}
-                    alt=""
-                  />
-                )
-              }
-            />
-          </Link>
-          <ListItemCaption>
-            <ListItemLink to={cover.url}>
-              {cover.caption}
-              <ListItemEye baseline />
-            </ListItemLink>
-          </ListItemCaption>
-        </ListItem>
+        <ListItem
+          key={cover.id}
+          pages={pages}
+          render={({ isHovering }) => (
+            <Fragment>
+              <Link to={cover.url}>
+                <LazyImage
+                  src={cover.cover}
+                  render={props =>
+                    !props.loaded ? (
+                      <Loader ratio={290 / 225} />
+                    ) : (
+                      <ListItemImage
+                        src={props.src}
+                        onLoad={props.revokeObjectURL}
+                        alt=""
+                        isHovering={isHovering}
+                      />
+                    )
+                  }
+                />
+              </Link>
+              <ListItemCaption>
+                <ListItemLink to={cover.url} isHovering={isHovering}>
+                  {cover.caption}
+                  <ListItemEye baseline isHovering={isHovering} />
+                </ListItemLink>
+              </ListItemCaption>
+            </Fragment>
+          )}
+        />
       ))}
     </ListWrapper>
   );

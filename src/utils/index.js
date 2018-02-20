@@ -45,4 +45,18 @@ const adjustWhere = <T>(
   return adjust(index, updateFn, list);
 };
 
-export { compareBy, compareByDesc, sortByName, getEnv, adjust, adjustWhere };
+const clamp = (min: number, max: number, n: number): number => {
+  if (n < min) return min;
+  if (n > max) return max;
+  return n;
+};
+
+export {
+  compareBy,
+  compareByDesc,
+  sortByName,
+  getEnv,
+  adjust,
+  adjustWhere,
+  clamp,
+};

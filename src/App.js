@@ -24,7 +24,7 @@ import SignIn from './views/SignIn';
 import Magazine from './views/Magazine';
 import Tidningen from './views/Tidningen';
 import Settings from './views/Settings';
-import { Book, Sliders } from './components/Icon';
+import { Book } from './components/Icon';
 import type { User, LinkItem, SignInCredentials } from './types';
 
 type State = {
@@ -48,7 +48,7 @@ class App extends Component<*, State> {
         icon: Book,
         links: [],
       },
-      { to: '/installningar', title: 'Inställningar', icon: Sliders },
+      // { to: '/installningar', title: 'Inställningar', icon: Sliders },
     ],
   };
 

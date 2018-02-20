@@ -203,7 +203,7 @@ class Dropbox {
   }
 
   handleError = (error: Error) => {
-    throw new Error(error.message);
+    throw error;
   };
 }
 

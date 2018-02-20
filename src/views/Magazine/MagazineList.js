@@ -30,6 +30,10 @@ class MagazineList extends PureComponent<Props, State> {
     this.fetchYears();
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.folder !== prevProps.folder) this.fetchYears();
+  }
+
   getName = (name: string): string => {
     if (!name.endsWith('.pdf')) return name;
     const re = /(\d{4})-(\d{2})-(\d{2,3})\.pdf/g;
