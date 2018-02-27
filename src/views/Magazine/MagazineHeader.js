@@ -12,7 +12,7 @@ import type { Route } from '../../types';
 const Wrapper = styled.div`
   padding: 4rem 12.5% 0;
   border-bottom: 1px solid ${getColor('brand01')};
-  ${backgroundColorMixin('field01')};
+  ${backgroundColorMixin('ui02')};
   ${layerMixin('overlay')};
   ${colorMixin('text01')};
 `;
