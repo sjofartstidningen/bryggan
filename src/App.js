@@ -92,21 +92,14 @@ class App extends Component<*, State> {
       user,
     }));
 
+    if (user) this.fetchSublinks();
     this.unsubscribe();
-    this.fetchSublinks();
   };
 
   handleSignIn = async (values: SignInCredentials) => {
     try {
       const user = await signIn(values);
-      const appData = await getAppData();
-      dropbox.updateAccessToken(appData.dropbox_token);
-      dropbox.updateRootFolder(appData.dropbox_root);
-
-      this.setState(() => ({
-        user,
-        authenticated: true,
-      }));
+      await this.handleInitialAuthCheck(user);
     } catch (err) {
       throw err;
     }
