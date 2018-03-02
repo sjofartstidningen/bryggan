@@ -22,7 +22,9 @@
     "flow": "flow",
     "format": "prettier 'src/**/*' --write",
     "precommit": "lint-staged",
-    "validate": "eslint src && react-scripts test --env=jsdom && react-scripts build"
+    "validate":
+      "eslint src && react-scripts test --env=jsdom && react-scripts build",
+    "storybook": "start-storybook -p 9009 -s public"
   },
   "dependencies": {
     "axios": "^0.17.1",
@@ -66,7 +68,12 @@
     "lint-staged": "^6.1.0",
     "nock": "^9.1.6",
     "prettier": "^1.10.2",
-    "react-test-renderer": "^16.2.0"
+    "react-test-renderer": "^16.2.0",
+    "@storybook/react": "^3.3.14",
+    "@storybook/addon-actions": "^3.3.14",
+    "@storybook/addon-links": "^3.3.14",
+    "@storybook/addons": "^3.3.14",
+    "babel-core": "^6.26.0"
   },
   "config": {
     "commitizen": {
