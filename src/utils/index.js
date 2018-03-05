@@ -51,6 +51,9 @@ const clamp = (min: number, max: number, n: number): number => {
   return n;
 };
 
+const unique = <T>(list: Array<T>): Array<T> =>
+  list.filter((x: T, idx, self) => self.indexOf(x) === idx);
+
 export {
   compareBy,
   compareByDesc,
@@ -59,4 +62,5 @@ export {
   adjust,
   adjustWhere,
   clamp,
+  unique,
 };

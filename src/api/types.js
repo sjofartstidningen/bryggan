@@ -3,6 +3,7 @@ import type { CancelToken, $AxiosXHR } from 'axios';
 
 type FileMetadata = {
   '.tag': 'file',
+  tag: 'file',
   name: string,
   id: string,
   client_modified: string,
@@ -15,6 +16,7 @@ type FileMetadata = {
 
 type FolderMetadata = {
   '.tag': 'folder',
+  tag: 'folder',
   name: string,
   id: string,
   path_lower: string,

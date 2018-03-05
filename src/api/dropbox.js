@@ -11,6 +11,7 @@ import type {
   ThumbnailSize,
   FilesDownloadResponse,
 } from './types';
+import type { MagazinePagePreview } from '../types/magazine';
 
 type RequestConfig = {
   url: string,
@@ -81,30 +82,30 @@ class Dropbox {
     throw new Error('Access token is not provided');
   }
 
+  thumbnailSizes = {
+    w32h32: { w: 32, h: 32 },
+    w64h64: { w: 64, h: 64 },
+    w128h128: { w: 128, h: 128 },
+    w256h256: { w: 256, h: 256 },
+    w480h320: { w: 480, h: 320 },
+    w640h480: { w: 640, h: 480 },
+    w960h640: { w: 960, h: 640 },
+    w1024h768: { w: 1024, h: 768 },
+    w2048h1536: { w: 2048, h: 1536 },
+  };
+
   getThumbnailSize = (
     width: number,
     dpi: number = window.devicePixelRatio || 1,
   ): ThumbnailSize => {
-    const widths = {
-      w32h32: { w: 32, h: 32 },
-      w64h64: { w: 64, h: 64 },
-      w128h128: { w: 128, h: 128 },
-      w256h256: { w: 256, h: 256 },
-      w480h320: { w: 480, h: 320 },
-      w640h480: { w: 640, h: 480 },
-      w960h640: { w: 960, h: 640 },
-      w1024h768: { w: 1024, h: 768 },
-      w2048h1536: { w: 2048, h: 1536 },
-    };
-
     const actualWidth = width * dpi;
 
-    const keys = Object.keys(widths);
+    const keys = Object.keys(this.thumbnailSizes);
     let i = 0;
 
     while (i < keys.length) {
       const key = keys[i];
-      const { w } = widths[key];
+      const { w } = this.thumbnailSizes[key];
 
       if (w >= actualWidth) return key;
       i += 1;
@@ -168,6 +169,61 @@ class Dropbox {
     });
   }
 
+  generatePreviews({
+    year,
+    issue = '01',
+    page = '001',
+  }: {
+    year: string,
+    issue?: string,
+    page?: string,
+  } = {}): MagazinePagePreview {
+    return {
+      '32': this.getCoverUrl({ year, issue, page, size: 'w32h32' }),
+      '64': this.getCoverUrl({ year, issue, page, size: 'w64h64' }),
+      '128': this.getCoverUrl({ year, issue, page, size: 'w128h128' }),
+      '256': this.getCoverUrl({ year, issue, page, size: 'w256h256' }),
+      '480': this.getCoverUrl({ year, issue, page, size: 'w480h320' }),
+      '640': this.getCoverUrl({ year, issue, page, size: 'w640h480' }),
+      '960': this.getCoverUrl({ year, issue, page, size: 'w960h640' }),
+      '1024': this.getCoverUrl({ year, issue, page, size: 'w1024h768' }),
+      '2048': this.getCoverUrl({ year, issue, page, size: 'w2048h1536' }),
+    };
+  }
+
+  generatePreviewsFromPath = (path: string): MagazinePagePreview => {
+    const match = matchPath(path, {
+      path: '/:any/:year?/:issue?/:page?',
+    });
+
+    const { params } = match || {};
+    const year = (params && params.year) || '';
+    const issue = (params && params.issue) || '01';
+    const page = (params && params.page) || `${year}-${issue}-001.pdf`;
+    const file = join(year, issue, page);
+    return {
+      '32': this.getThumbUrl({ file, size: 'w32h32' }),
+      '64': this.getThumbUrl({ file, size: 'w64h64' }),
+      '128': this.getThumbUrl({ file, size: 'w128h128' }),
+      '256': this.getThumbUrl({ file, size: 'w256h256' }),
+      '480': this.getThumbUrl({ file, size: 'w480h320' }),
+      '640': this.getThumbUrl({ file, size: 'w640h480' }),
+      '960': this.getThumbUrl({ file, size: 'w960h640' }),
+      '1024': this.getThumbUrl({ file, size: 'w1024h768' }),
+      '2048': this.getThumbUrl({ file, size: 'w2048h1536' }),
+    };
+  };
+
+  getFileDownloadLink({ path }: { path: string }): string {
+    const baseURL = 'https://content.dropboxapi.com/2/files/download';
+    const params = {
+      authorization: this.getAuthBearer(),
+      arg: JSON.stringify({ path }),
+    };
+
+    return `${baseURL}?${qs.stringify(params)}`;
+  }
+
   async filesListFolder({
     folder,
     recursive = false,
@@ -184,7 +240,20 @@ class Dropbox {
       cancelToken,
     });
 
-    return response;
+    const newEntries = response.data.entries.map(entry => ({
+      ...entry,
+      tag: entry['.tag'],
+    }));
+
+    const newResponse = {
+      ...response,
+      data: {
+        ...response.data,
+        entries: newEntries,
+      },
+    };
+
+    return newResponse;
   }
 
   async filesDownload({
