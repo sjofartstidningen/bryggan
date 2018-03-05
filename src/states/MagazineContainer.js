@@ -1,7 +1,8 @@
 // @flow
 import { join } from 'path';
 import { Container } from 'unstated';
-import { uniq, uniqBy } from 'lodash-es';
+import uniqBy from 'lodash.uniqby';
+import uniq from 'lodash.uniq';
 import { adjustWhere } from '../utils';
 import dropbox from '../api/dropbox';
 import type {
@@ -23,6 +24,28 @@ const isIssueFolder = entry => /^\d{2}.*$/.test(entry.name);
 const isPageFile = entry => /^\d{4}-\d{2}-\d{3}\.pdf$/.test(entry.name);
 
 const uniqById = <T>(list: Array<T>): Array<T> => uniqBy(list, 'id');
+const appendEntries = (ids, state, match: Array<string>) =>
+  adjustWhere(
+    x => ({ ...x, entries: uniq([...x.entries, ...ids]) }),
+    x => match.every(y => x.path.includes(y)),
+    state,
+  );
+
+const listFolder = async ({ folder }: { folder: string }) => {
+  const response = await dropbox.filesListFolder({ folder });
+  return response.data.entries;
+};
+
+const extractBasicInfo = (entry: {
+  id: string,
+  name: string,
+  path_lower: string,
+}) => ({
+  id: entry.id,
+  name: entry.name,
+  path: entry.path_lower,
+  preview: dropbox.generatePreviewsFromPath(entry.path_lower),
+});
 
 class MagazineContainer extends Container<MagazineState> {
   state = {
@@ -45,33 +68,32 @@ class MagazineContainer extends Container<MagazineState> {
     this.setState({ accessToken, rootFolder });
   }
 
-  listFolder = async ({ folder }: { folder: string }) => {
-    const response = await dropbox.filesListFolder({ folder });
-    return response.data.entries;
-  };
-
-  extractBasicInfo = (entry: {
-    id: string,
-    name: string,
-    path_lower: string,
-  }) => ({
-    id: entry.id,
-    name: entry.name,
-    path: entry.path_lower,
-    preview: dropbox.generatePreviewsFromPath(entry.path_lower),
-  });
-
-  async fetchAllYears() {
-    const entries = await this.listFolder({ folder: '/' });
-    const years = entries.reduce((acc, entry) => {
+  fetchFolderContent = async ({
+    folder,
+    validate,
+  }: {
+    folder: string,
+    validate: (x: any) => boolean,
+  }) => {
+    const entries = await listFolder({ folder });
+    const reduced = entries.reduce((acc, entry) => {
       switch (entry.tag) {
         case 'folder':
-          if (!isYearFolder(entry)) return acc;
-          return [...acc, { ...this.extractBasicInfo(entry), issues: [] }];
+          if (!validate(entry)) return acc;
+          return [...acc, { ...extractBasicInfo(entry), entries: [] }];
         default:
           return acc;
       }
     }, []);
+
+    return reduced;
+  };
+
+  async fetchAllYears() {
+    const years = await this.fetchFolderContent({
+      folder: '/',
+      validate: isYearFolder,
+    });
 
     if (years.length > 0) {
       this.setState({
@@ -81,16 +103,10 @@ class MagazineContainer extends Container<MagazineState> {
   }
 
   async fetchIssuesByYear({ year }: { year: string }) {
-    const entries = await this.listFolder({ folder: year });
-    const issues = entries.reduce((acc, entry) => {
-      switch (entry.tag) {
-        case 'folder':
-          if (!isIssueFolder(entry)) return acc;
-          return [...acc, { ...this.extractBasicInfo(entry), pages: [] }];
-        default:
-          return acc;
-      }
-    }, []);
+    const issues = await this.fetchFolderContent({
+      folder: year,
+      validate: isIssueFolder,
+    });
 
     if (issues.length > 0) {
       const newIssues = uniqById([...this.state.issues, ...issues]);
@@ -98,17 +114,13 @@ class MagazineContainer extends Container<MagazineState> {
 
       this.setState({
         issues: newIssues,
-        years: adjustWhere(
-          y => ({ ...y, issues: uniq([...y.issues, ...ids]) }),
-          y => y.name === year,
-          this.state.years,
-        ),
+        years: appendEntries(ids, this.state.years, [year]),
       });
     }
   }
 
   async fetchPagesByIssue({ year, issue }: { year: string, issue: string }) {
-    const entries = await this.listFolder({ folder: join(year, issue) });
+    const entries = await listFolder({ folder: join(year, issue) });
     const pages = entries.reduce((acc, entry) => {
       switch (entry.tag) {
         case 'file':
@@ -116,7 +128,7 @@ class MagazineContainer extends Container<MagazineState> {
           return [
             ...acc,
             {
-              ...this.extractBasicInfo(entry),
+              ...extractBasicInfo(entry),
               modified: entry.client_modified,
               src: dropbox.getFileDownloadLink({ path: entry.path_lower }),
             },
@@ -132,11 +144,7 @@ class MagazineContainer extends Container<MagazineState> {
 
       this.setState({
         pages: newPages,
-        issues: adjustWhere(
-          i => ({ ...i, pages: [...i.pages, ...ids] }),
-          i => i.name === issue,
-          this.state.issues,
-        ),
+        issues: appendEntries(ids, this.state.issues, [year, issue]),
       });
     }
   }

@@ -19,11 +19,11 @@ export type MagazineEntry = {
 };
 
 export type MagazineYear = {
-  issues: Array<string>,
+  entries: Array<string>,
 } & MagazineEntry;
 
 export type MagazineIssue = {
-  pages: Array<string>,
+  entries: Array<string>,
 } & MagazineEntry;
 
 export type MagazinePage = {

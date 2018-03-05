@@ -4,6 +4,7 @@
 import { Dropbox } from '../dropbox';
 
 jest.unmock('axios');
+jest.unmock('../dropbox');
 const testOnCI = process.env.CI ? test : test.skip;
 
 describe('api.dropbox', () => {
