@@ -119,11 +119,11 @@ class MagazineContainer extends Container<MagazineState> {
         cancelToken: this.cancelToken.token,
       });
 
-      this.setState({ fetching: this.state.fetching - 1 });
       return response.data.entries;
     } catch (err) {
-      this.setState({ fetching: this.state.fetching - 1 });
       throw err;
+    } finally {
+      this.setState({ fetching: this.state.fetching - 1 });
     }
   };
 
