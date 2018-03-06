@@ -2,8 +2,7 @@
   "name": "bryggan",
   "version": "0.1.0",
   "license": "MIT",
-  "author":
-    "Adam Bergman <adam@fransvilhelm.com> (https://github.com/adambrgmn)",
+  "author": "Adam Bergman <adam@fransvilhelm.com> (https://github.com/adambrgmn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/sjofartstidningen/bryggan.git"
@@ -23,16 +22,17 @@
     "flow": "flow",
     "format": "prettier 'src/**/*' --write",
     "precommit": "lint-staged",
-    "validate":
-      "eslint src && react-scripts test --env=jsdom && react-scripts build"
+    "validate": "eslint src && react-scripts test --env=jsdom && react-scripts build"
   },
   "dependencies": {
     "axios": "^0.17.1",
     "axios-extensions": "^1.1.3",
     "firebase": "^4.9.0",
-    "flow-bin": "^0.65.0",
+    "flow-bin": "^0.66.0",
     "formik": "^0.10.5",
     "lodash.padstart": "^4.6.1",
+    "lodash.uniq": "^4.5.0",
+    "lodash.uniqby": "^4.7.0",
     "md5": "^2.2.1",
     "mitt": "^1.1.3",
     "normalize.css": "^7.0.0",
@@ -44,7 +44,8 @@
     "react-pdf": "^2.5.2",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.0",
-    "styled-components": "^3.1.0"
+    "styled-components": "^3.1.0",
+    "unstated": "^1.0.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
