@@ -169,28 +169,6 @@ class Dropbox {
     });
   }
 
-  generatePreviews({
-    year,
-    issue = '01',
-    page = '001',
-  }: {
-    year: string,
-    issue?: string,
-    page?: string,
-  } = {}): MagazinePagePreview {
-    return {
-      '32': this.getCoverUrl({ year, issue, page, size: 'w32h32' }),
-      '64': this.getCoverUrl({ year, issue, page, size: 'w64h64' }),
-      '128': this.getCoverUrl({ year, issue, page, size: 'w128h128' }),
-      '256': this.getCoverUrl({ year, issue, page, size: 'w256h256' }),
-      '480': this.getCoverUrl({ year, issue, page, size: 'w480h320' }),
-      '640': this.getCoverUrl({ year, issue, page, size: 'w640h480' }),
-      '960': this.getCoverUrl({ year, issue, page, size: 'w960h640' }),
-      '1024': this.getCoverUrl({ year, issue, page, size: 'w1024h768' }),
-      '2048': this.getCoverUrl({ year, issue, page, size: 'w2048h1536' }),
-    };
-  }
-
   generatePreviewsFromPath = (path: string): MagazinePagePreview => {
     const match = matchPath(path, {
       path: '/:any/:year?/:issue?/:page?',
@@ -201,17 +179,13 @@ class Dropbox {
     const issue = (params && params.issue) || '01';
     const page = (params && params.page) || `${year}-${issue}-001.pdf`;
     const file = join(year, issue, page);
-    return {
-      '32': this.getThumbUrl({ file, size: 'w32h32' }),
-      '64': this.getThumbUrl({ file, size: 'w64h64' }),
-      '128': this.getThumbUrl({ file, size: 'w128h128' }),
-      '256': this.getThumbUrl({ file, size: 'w256h256' }),
-      '480': this.getThumbUrl({ file, size: 'w480h320' }),
-      '640': this.getThumbUrl({ file, size: 'w640h480' }),
-      '960': this.getThumbUrl({ file, size: 'w960h640' }),
-      '1024': this.getThumbUrl({ file, size: 'w1024h768' }),
-      '2048': this.getThumbUrl({ file, size: 'w2048h1536' }),
-    };
+    return Object.keys(this.thumbnailSizes).reduce((acc, size) => {
+      const width = this.thumbnailSizes[size].w;
+      return {
+        ...acc,
+        [width.toString()]: this.getThumbUrl({ file, size }),
+      };
+    }, {});
   };
 
   getFileDownloadLink({ path }: { path: string }): string {

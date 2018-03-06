@@ -1,14 +1,6 @@
 // @flow
 export type MagazinePagePreview = {
-  '32': string,
-  '64': string,
-  '128': string,
-  '256': string,
-  '480': string,
-  '640': string,
-  '960': string,
-  '1024': string,
-  '2048': string,
+  [x: string]: string,
 };
 
 export type MagazineEntry = {
@@ -18,13 +10,12 @@ export type MagazineEntry = {
   preview: MagazinePagePreview,
 };
 
-export type MagazineYear = {
+type MagazineFolder = {
   entries: Array<string>,
-} & MagazineEntry;
+};
 
-export type MagazineIssue = {
-  entries: Array<string>,
-} & MagazineEntry;
+export type MagazineYear = MagazineFolder & MagazineEntry;
+export type MagazineIssue = MagazineFolder & MagazineEntry;
 
 export type MagazinePage = {
   modified: string,
