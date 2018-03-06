@@ -13,14 +13,6 @@ import type {
   MagazinePage,
 } from '../types/magazine';
 
-type MagazineState = {
-  accessToken: ?string,
-  rootFolder: ?string,
-  years: Array<MagazineYear>,
-  issues: Array<MagazineIssue>,
-  pages: Array<MagazinePage>,
-};
-
 /**
  * Utility functions
  *
@@ -69,8 +61,18 @@ const extractBasicInfo = (entry: {
   preview: dropbox.generatePreviewsFromPath(entry.path_lower),
 });
 
+type MagazineState = {
+  fetching: number,
+  accessToken: ?string,
+  rootFolder: ?string,
+  years: Array<MagazineYear>,
+  issues: Array<MagazineIssue>,
+  pages: Array<MagazinePage>,
+};
+
 class MagazineContainer extends Container<MagazineState> {
   state = {
+    fetching: 0,
     accessToken: null,
     rootFolder: null,
     years: [],
@@ -79,6 +81,8 @@ class MagazineContainer extends Container<MagazineState> {
   };
 
   cancelToken = CancelToken.source();
+
+  isFetching = () => this.state.fetching > 0;
 
   cancelRequest = () => {
     this.cancelToken.cancel();
@@ -101,17 +105,26 @@ class MagazineContainer extends Container<MagazineState> {
   }
 
   /**
-   * Lists the folder content of the specified folder and return only the entries
+   * Lists the folder content of the specified folder and return only the
+   * entries
    *
    * @param {string}  opt.folder  A path string (relative to dropox root)
    * @returns {Array<entries>} Returns an array of Dropbox entries
    */
   listFolder = async ({ folder }: { folder: string }) => {
-    const response = await dropbox.filesListFolder({
-      folder,
-      cancelToken: this.cancelToken.token,
-    });
-    return response.data.entries;
+    try {
+      this.setState({ fetching: this.state.fetching + 1 });
+      const response = await dropbox.filesListFolder({
+        folder,
+        cancelToken: this.cancelToken.token,
+      });
+
+      this.setState({ fetching: this.state.fetching - 1 });
+      return response.data.entries;
+    } catch (err) {
+      this.setState({ fetching: this.state.fetching - 1 });
+      throw err;
+    }
   };
 
   /**
