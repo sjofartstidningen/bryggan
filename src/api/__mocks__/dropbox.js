@@ -1,10 +1,13 @@
-const { default: dropbox } = jest.genMockFromModule('../dropbox');
+const { Dropbox } = require.requireActual('../dropbox');
 
-let rpcData = {};
-dropbox.setRpcReturnData = data => {
-  rpcData = data;
-};
+class Api extends Dropbox {
+  rpcData = {};
+  setRpcReturnData = data => {
+    this.rpcData = data;
+  };
 
-dropbox.filesListFolder = jest.fn(() => Promise.resolve({ data: rpcData }));
+  rpc = jest.fn(() => Promise.resolve({ data: this.rpcData }));
+}
 
+const dropbox = new Api();
 export default dropbox;
