@@ -1,52 +1,51 @@
 // @flow
-import { hsl, opacify } from 'polished';
+import { hsl, hsla, rem } from 'polished';
 
-type Font = { family: string };
-const font: Font = {
+const font = {
   family: '"Roboto", sans-serif',
 };
 
-type Weight = { normal: number, bold: number };
-const weight: Weight = {
+const weight = {
   normal: 400,
   bold: 700,
 };
 
-type TypeSize = { label: string, body: string, heading: string };
-const typeSize: TypeSize = {
-  label: '12px',
-  body: '16px',
-  heading: '18px',
+const typeSize = {
+  label: rem('12px'),
+  body: rem('16px'),
+  heading: rem('18px'),
 };
 
-type LineHeight = { label: number, body: number, heading: number };
-const lineHeight: LineHeight = {
-  label: 1,
-  body: 1.5,
-  heading: 1.2,
+const lineHeight = {
+  label: rem('16px'),
+  heading: rem('18px'),
+  body: rem('24px'),
+  double: rem('32px'),
 };
 
-type Color = {
-  black: string,
-  greyDark: string,
-  grey: string,
-  greyLight: string,
-  brand: string,
-  error: string,
+const margin = {
+  fourth: rem('4px'),
+  half: rem('8px'),
+  standard: rem('16px'),
+  extra: rem('18px'),
+  double: rem('32px'),
 };
-const color: Color = {
+
+const padding = margin;
+
+const color = {
+  white: hsl(0, 0, 1),
   black: hsl(0, 0, 0.17),
-  greyDark: hsl(0, 0, 0.4),
-  grey: hsl(0, 0, 0.65),
   greyLight: hsl(0, 0, 0.95),
-  brand: hsl(200, 98, 89),
-  error: hsl(10, 63, 92),
+  grey: hsl(0, 0, 0.65),
+  greyDark: hsl(0, 0, 0.4),
+  brand: hsl(200, 0.96, 0.45),
+  error: hsl(10, 0.78, 0.63),
 };
 
-type Border = { lightGrey: string, brand: string };
-const border: Border = {
-  lightGrey: `1px solid ${opacify(0.25, color.grey)}`,
+const border = {
+  greyOpaque: `1px solid ${hsla(0, 0, 0.4, 0.25)}`,
   brand: `1px solid ${color.brand}`,
 };
 
-export { font, weight, typeSize, lineHeight, color, border };
+export { font, weight, typeSize, lineHeight, margin, padding, color, border };
