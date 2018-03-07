@@ -3,6 +3,7 @@ import { configure, addDecorator } from '@storybook/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import * as theme from '../src/theme';
+import '../src/index.css';
 
 addDecorator(story => (
   <Router>
