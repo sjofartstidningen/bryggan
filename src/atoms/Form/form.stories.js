@@ -2,6 +2,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import {
   Form,
   FormFieldset,
@@ -12,6 +13,11 @@ import {
   FormInputDetail,
 } from './index';
 import { Button } from '../Button';
+
+const handleClick = e => {
+  e.preventDefault();
+  action('clicked')(e);
+};
 
 storiesOf('atoms/Form', module).add('all', () => (
   <Form>
@@ -41,8 +47,10 @@ storiesOf('atoms/Form', module).add('all', () => (
     </FormFieldset>
 
     <FormGroup>
-      <Button modifiers={['brand']}>Sign in</Button>
-      <Button>Clear</Button>
+      <Button modifiers={['brand']} onClick={handleClick}>
+        Sign in
+      </Button>
+      <Button onClick={handleClick}>Clear</Button>
     </FormGroup>
   </Form>
 ));

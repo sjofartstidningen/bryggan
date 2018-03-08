@@ -10,8 +10,8 @@ storiesOf('atoms/Icon', module)
       {Object.keys(Icon).map(key => {
         const Comp = Icon[key];
         return (
-          <div style={{ margin: '1rem', fontFamily: 'Roboto' }}>
-            <Comp key={key} /> – {key}
+          <div key={key} style={{ margin: '1rem', fontFamily: 'Roboto' }}>
+            <Comp /> – {'<'}{key}{' />'}
           </div>
         );
       }, [])}
@@ -22,8 +22,8 @@ storiesOf('atoms/Icon', module)
       {Object.keys(Icon).map(key => {
         const Comp = Icon[key];
         return (
-          <div style={{ margin: '1rem', fontFamily: 'Roboto' }}>
-            <Comp baseline={false} key={key} /> – {key}
+          <div key={key} style={{ margin: '1rem', fontFamily: 'Roboto' }}>
+            <Comp baseline={false} /> – {'<'}{key}{' baseline={false} />'}
           </div>
         );
       }, [])}
