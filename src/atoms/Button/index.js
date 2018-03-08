@@ -4,8 +4,8 @@ import {
   applyStyleModifiers,
   styleModifierPropTypes,
 } from 'styled-components-modifiers';
-import { darken, timingFunctions } from 'polished';
-import { readableColor, fontSmoothing } from '../../theme/utils';
+import { darken } from 'polished';
+import { readableColor, fontSmoothing, transitions } from '../../theme/utils';
 
 const applyBgColor = (bg: string) => `
   color: ${readableColor(bg)};
@@ -38,12 +38,12 @@ const Button = styled.button.attrs({
   text-align: center;
   vertical-align: middle;
   text-transform: capitalize;
-  transition: background-color 0.2s ${timingFunctions('easeInOutCubic')};
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
 
   ${fontSmoothing};
+  ${transitions.short('background-color')};
   ${applyStyleModifiers(modifierConfig)};
 
   &:hover {

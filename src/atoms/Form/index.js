@@ -3,8 +3,7 @@ import {
   applyStyleModifiers,
   styleModifierPropTypes,
 } from 'styled-components-modifiers';
-import { timingFunctions } from 'polished';
-import { fontSmoothing } from '../../theme/utils';
+import { fontSmoothing, transitions } from '../../theme/utils';
 
 const Form = styled.form`
   max-width: 40rem;
@@ -73,12 +72,12 @@ const FormInput = styled.input`
   font-weight: ${({ theme }) => theme.weight.normal};
   line-height: ${({ theme }) => theme.lineHeight.body};
   color: ${({ theme }) => theme.color.black};
-  transition: border-color 0.2s ${timingFunctions('easeInOutCubic')};
   vertical-align: middle;
   background-color: #ffffff;
   -webkit-appearance: none;
 
   ${fontSmoothing};
+  ${transitions.short('border-color')};
   ${applyStyleModifiers(formInputModifierConfig)};
 
   &:focus {
@@ -103,9 +102,9 @@ const FormInputDetail = styled.small`
   font-weight: ${({ theme }) => theme.weight.normal};
   line-height: ${({ theme }) => theme.lineHeight.body};
   color: ${({ theme }) => theme.color.greyDark};
-  transition: color 0.2s ${timingFunctions('easeInOutCubic')};
 
   ${fontSmoothing};
+  ${transitions.short('color')};
   ${applyStyleModifiers(formInputDetailModifierConfig)};
 
   ${FormInput}:focus + & {

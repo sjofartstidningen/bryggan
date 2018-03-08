@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { timingFunctions } from 'polished';
 import { NavLink as _NavLink } from 'react-router-dom';
-import { fontSmoothing } from '../../theme/utils';
+import { fontSmoothing, transitions } from '../../theme/utils';
 import { Link } from '../../atoms/Link';
 import SafeImage from '../SafeImage';
 import { slideInUp, slideInLeft } from '../../theme/animations';
@@ -84,6 +83,7 @@ const ProfileContainer = styled.div`
   padding-top: ${({ theme }) => theme.padding.double};
 
   ${slideInUp};
+  animation-delay: 1s;
 
   &::before {
     content: '';
@@ -129,7 +129,8 @@ const ProfileSignOutButton = styled.button`
   font-size: 0.625rem;
   color: ${({ theme }) => theme.color.greyDark};
   background-color: transparent;
-  transition: color 0.2s ${timingFunctions('easeInOutCubic')};
+
+  ${transitions.short('color')};
 
   &:hover {
     color: ${({ theme }) => theme.color.error};

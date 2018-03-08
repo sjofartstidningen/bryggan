@@ -1,6 +1,10 @@
 // @flow
 import { css } from 'styled-components';
-import { getLuminance } from 'polished';
+import {
+  getLuminance,
+  transitions as _transitions,
+  timingFunctions,
+} from 'polished';
 import { color } from './index';
 
 const readableColor = (c: string): string =>
@@ -12,4 +16,12 @@ const fontSmoothing = () => css`
   -moz-osx-font-smoothing: grayscale;
 `;
 
-export { readableColor, fontSmoothing };
+const transitions = {
+  short: (...props: Array<string>) => css`
+    ${_transitions(
+      ...props.map(p => `${p} 0.2s ${timingFunctions('easeInOutCubic')}`),
+    )};
+  `,
+};
+
+export { readableColor, fontSmoothing, transitions };

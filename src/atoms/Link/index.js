@@ -4,14 +4,16 @@ import React from 'react';
 import type { Node } from 'react';
 import styled from 'styled-components';
 import { Link as _Link } from 'react-router-dom';
-import { darken, timingFunctions } from 'polished';
+import { darken } from 'polished';
 import { ExternalLink as ExternalIcon } from '../Icon';
+import { transitions } from '../../theme/utils';
 
 const Link = styled(_Link)`
   border-bottom: 1px solid currentColor;
   color: ${({ theme }) => theme.color.brand};
   text-decoration: none;
-  transition: color 0.2s ${timingFunctions('easeInOutCubic')};
+
+  ${transitions.short('color')};
 
   &:hover {
     color: ${({ theme }) => darken(0.05, theme.color.brand)};
