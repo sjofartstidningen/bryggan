@@ -5,7 +5,7 @@ import {
   styleModifierPropTypes,
 } from 'styled-components-modifiers';
 import { darken, timingFunctions } from 'polished';
-import { readableColor } from '../../theme/utils';
+import { readableColor, fontSmoothing } from '../../theme/utils';
 
 const applyBgColor = (bg: string) => `
   color: ${readableColor(bg)};
@@ -34,9 +34,6 @@ const Button = styled.button.attrs({
   font-family: ${({ theme }) => theme.font.family};
   font-size: ${({ theme }) => theme.typeSize.label};
   font-weight: ${({ theme }) => theme.weight.normal};
-  font-smooth: always;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   line-height: ${({ theme }) => theme.lineHeight.double};
   text-align: center;
   vertical-align: middle;
@@ -46,6 +43,7 @@ const Button = styled.button.attrs({
   white-space: nowrap;
   overflow: hidden;
 
+  ${fontSmoothing};
   ${applyStyleModifiers(modifierConfig)};
 
   &:hover {

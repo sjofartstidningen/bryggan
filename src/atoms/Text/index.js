@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { fontSmoothing } from '../../theme/utils';
 
 const Paragraph = styled.p`
   width: 100%;
@@ -8,11 +9,10 @@ const Paragraph = styled.p`
   font-family: ${({ theme }) => theme.font.family};
   font-size: ${({ theme }) => theme.typeSize.body};
   font-weight: ${({ theme }) => theme.weight.normal};
-  font-smooth: always;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   line-height: ${({ theme }) => theme.lineHeight.body};
   color: ${({ theme }) => theme.color.black};
+
+  ${fontSmoothing};
 `;
 
 const Strong = styled.strong`
