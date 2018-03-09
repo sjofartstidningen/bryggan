@@ -15,8 +15,9 @@ type Props = {
   height?: string | number,
   backgroundColor?: string,
   className?: string,
+  onLoad?: () => void,
   onError?: () => void,
-  onSuccess?: () => void,
+  onCancel?: () => void,
 };
 
 type State = {
@@ -36,25 +37,50 @@ class SafeImage extends PureComponent<Props, State> {
     error: false,
   };
 
+  cancel: ?() => void;
+
   componentDidMount() {
-    this.fetchImage();
+    this.fetchImage(this.props.src);
   }
 
-  fetchImage = () => {
-    const { src } = this.props;
-    const img = new Image();
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.src !== prevProps.src) {
+      if (this.cancel) this.cancel();
+      this.fetchImage(this.props.src);
+    }
+  }
 
-    img.onload = () => {
-      this.setState(() => ({ fetched: true }));
-      if (this.props.onSuccess) this.props.onSuccess();
-    };
+  componentWillUnmount() {
+    if (this.cancel) this.cancel();
+  }
 
-    img.onerror = () => {
-      this.setState(() => ({ fetched: true, error: true }));
-      if (this.props.onError) this.props.onError();
-    };
+  fetchImage = (src: string) => {
+    this.setState({ fetched: false, error: false });
 
-    img.src = src;
+    if (src) {
+      const img = new Image();
+      img.onload = this.handleLoad.bind(this);
+      img.onerror = this.handleError.bind(this);
+      img.src = src;
+
+      this.cancel = () => {
+        if (this.props.onCancel) this.props.onCancel();
+
+        img.onload = undefined;
+        img.onerror = undefined;
+        img.src = '';
+      };
+    }
+  };
+
+  handleLoad = () => {
+    this.setState(() => ({ fetched: true }));
+    if (this.props.onLoad) this.props.onLoad();
+  };
+
+  handleError = () => {
+    this.setState(() => ({ fetched: true, error: true }));
+    if (this.props.onError) this.props.onError();
   };
 
   render() {

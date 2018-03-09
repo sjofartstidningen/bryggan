@@ -1,4 +1,5 @@
 // @flow
+import md5 from 'md5';
 
 const compareBy = (prop: string) => (a: Object, b: Object): number => {
   if (a[prop] > b[prop]) return 1;
@@ -54,6 +55,9 @@ const clamp = (min: number, max: number, n: number): number => {
 const unique = <T>(list: Array<T>): Array<T> =>
   list.filter((x: T, idx, self) => self.indexOf(x) === idx);
 
+const gravatarUrl = (email: string) =>
+  `https://www.gravatar.com/avatar/${md5(email)}?d=404`;
+
 export {
   compareBy,
   compareByDesc,
@@ -63,4 +67,5 @@ export {
   adjustWhere,
   clamp,
   unique,
+  gravatarUrl,
 };

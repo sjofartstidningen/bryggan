@@ -28,6 +28,7 @@ const margin = {
   half: rem('8px'),
   standard: rem('16px'),
   extra: rem('18px'),
+  extended: rem('24px'),
   double: rem('32px'),
 };
 
@@ -48,4 +49,18 @@ const border = {
   brand: `1px solid ${color.brand}`,
 };
 
-export { font, weight, typeSize, lineHeight, margin, padding, color, border };
+const boxShadow = {
+  greyOpaque: `0px 2px 6px ${hsla(0, 0, 0.4, 0.25)}`,
+};
+
+export {
+  font,
+  weight,
+  typeSize,
+  lineHeight,
+  margin,
+  padding,
+  color,
+  border,
+  boxShadow,
+};
