@@ -28,8 +28,8 @@ const Wrapper = styled.div`
 
 const Bar = styled.div`
   position: relative;
-  width: 75%;
-  height 4px;
+  width: ${p => p.width};
+  height 2px;
   background-color: ${({ theme }) => theme.color.greyLight};
 `;
 

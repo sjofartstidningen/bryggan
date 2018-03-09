@@ -51,6 +51,7 @@ const border = {
 
 const boxShadow = {
   greyOpaque: `0px 2px 6px ${hsla(0, 0, 0.4, 0.25)}`,
+  error: `0px 2px 6px ${hsla(10, 0.78, 0.63, 0.25)}`,
 };
 
 export {

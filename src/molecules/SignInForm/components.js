@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { borderRadius } from 'polished';
 import { fontSmoothing, transitions } from '../../theme/utils';
 import { Button } from '../../atoms/Button';
@@ -9,6 +9,7 @@ import {
   FormInputDetail,
   FormGroup as _FormGroup,
 } from '../../atoms/Form';
+import { slideInDownShort, fadeIn } from '../../theme/animations';
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,6 +25,8 @@ const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.color.greyLight};
 
   ${fontSmoothing};
+  ${fadeIn};
+  animation-timing-function: ease-in-out;
 `;
 
 const Container = styled.div`
@@ -36,6 +39,15 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.color.white};
   box-shadow: ${({ theme }) => theme.boxShadow.greyOpaque};
   z-index: 0;
+
+  ${transitions.short('box-shadow')};
+  ${slideInDownShort};
+
+  ${p =>
+    p.error &&
+    css`
+      box-shadow: ${({ theme }) => theme.boxShadow.error};
+    `};
 `;
 
 const TitleContainer = styled.div`
@@ -76,6 +88,7 @@ const SubmitButtonContainer = styled.div`
 `;
 
 const SubmitButton = Button.extend`
+  position: relative;
   display: block;
   width: 100%;
   height: 3rem;
@@ -103,6 +116,19 @@ const SubmitButton = Button.extend`
   }
 `;
 
+const SubmitButtonText = styled.span`
+  opacity: 1;
+  ${transitions.short('opacity')};
+  transition-delay: 0.4s;
+
+  ${p =>
+    !p.show &&
+    css`
+      opacity: 0;
+      transition-delay: 0s;
+    `};
+`;
+
 export {
   Wrapper,
   Container,
@@ -116,4 +142,5 @@ export {
   InputDetail,
   SubmitButtonContainer,
   SubmitButton,
+  SubmitButtonText,
 };

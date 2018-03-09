@@ -8,6 +8,7 @@ type Props = {
   show: boolean,
   trickleSpeed: number,
   delay: number,
+  width: string,
 };
 
 type State = {
@@ -29,6 +30,7 @@ class ProgressBar extends PureComponent<Props, State> {
   static defaultProps = {
     trickleSpeed: 200,
     delay: 200,
+    width: '75%',
   };
 
   interval: ?number;
@@ -60,7 +62,7 @@ class ProgressBar extends PureComponent<Props, State> {
 
   startAfterDelay = () => {
     this.timeout = window.setTimeout(() => {
-      this.setState(() => ({ awaitDelay: false }));
+      this.setState(() => ({ awaitDelay: false, progress: 0 }));
       if (this.props.show) this.start();
       if (!this.props.show) this.clear();
     }, this.props.delay);
@@ -84,12 +86,12 @@ class ProgressBar extends PureComponent<Props, State> {
   };
 
   render() {
-    const { show } = this.props;
+    const { show, width } = this.props;
     const { progress, awaitDelay } = this.state;
 
     return (
       <Wrapper show={show && !awaitDelay}>
-        <Bar>
+        <Bar width={width}>
           <Progress
             progress={progress}
             show={show}

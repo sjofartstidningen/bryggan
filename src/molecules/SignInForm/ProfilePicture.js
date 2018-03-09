@@ -25,6 +25,7 @@ const InnerWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  padding: ${({ theme }) => theme.padding.fourth};
   border-radius: 100%;
   background-color: ${({ theme }) => theme.color.white};
   box-shadow: ${({ theme }) => theme.boxShadow.greyOpaque};

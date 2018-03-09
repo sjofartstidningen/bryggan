@@ -15,8 +15,10 @@ import {
   InputDetail,
   SubmitButtonContainer,
   SubmitButton,
+  SubmitButtonText,
 } from './components';
 import ProfilePicture from './ProfilePicture';
+import ProgressBar from '../ProgressBar';
 
 type FormikSetSubmitting = boolean => void;
 type FormikSetErrors = (validation: {
@@ -42,6 +44,7 @@ class SignInForm extends PureComponent<Props, State> {
   ) => {
     try {
       await this.props.onSignIn(values);
+      setSubmitting(false);
     } catch (err) {
       const validationError = this.props.onSignInError(err);
       setErrors(validationError);
@@ -90,7 +93,7 @@ class SignInForm extends PureComponent<Props, State> {
 
           return (
             <Wrapper>
-              <Container>
+              <Container error={!emailValid || !passwordValid}>
                 <ProfilePicture email={values.email} />
 
                 <TitleContainer>
@@ -144,7 +147,10 @@ class SignInForm extends PureComponent<Props, State> {
                           isSubmitting || !values.email || !values.password
                         }
                       >
-                        Logga in
+                        <SubmitButtonText show={!isSubmitting}>
+                          Logga in
+                        </SubmitButtonText>
+                        <ProgressBar show={isSubmitting} width="50%" />
                       </SubmitButton>
                     </SubmitButtonContainer>
                   </Form>
