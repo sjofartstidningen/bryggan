@@ -24,6 +24,7 @@ const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.color.greyLight};
 
   ${fontSmoothing};
+  ${slideInLeft};
 `;
 
 const IconContainer = styled.div`
@@ -50,7 +51,7 @@ const NavListItem = styled.li`
   ${p =>
     Array.from(
       { length: p.items || 0 },
-      (_, i) => `&:nth-child(${i + 1}){ animation-delay: ${i * 0.1}s }`,
+      (_, i) => `&:nth-child(${i + 1}){ animation-delay: ${(i + 2) * 0.1}s }`,
     ).join('')};
 `;
 
