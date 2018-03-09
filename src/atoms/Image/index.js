@@ -11,7 +11,7 @@ const modifierConfig = {
 const Img = styled.img`
   display: block;
   max-width: 100%;
-  height: auto
+  height: auto;
   border-style: none;
 
   ${applyStyleModifiers(modifierConfig)};
