@@ -19,9 +19,9 @@ type State = {
 const getNextStep = (progress: number): number => {
   let add = 0;
   if (progress < 0.2) add = 0.1;
-  else if (progress < 0.5) add = 0.03;
-  else if (progress < 0.8) add = 0.01;
-  else if (progress < 0.99) add = 0.005;
+  else if (progress < 0.3) add = 0.03;
+  else if (progress < 0.5) add = 0.01;
+  else if (progress < 0.8) add = 0.005;
 
   return clamp(0, 0.995, progress + add);
 };
@@ -29,7 +29,7 @@ const getNextStep = (progress: number): number => {
 class ProgressBar extends PureComponent<Props, State> {
   static defaultProps = {
     trickleSpeed: 200,
-    delay: 200,
+    delay: 500,
     width: '75%',
   };
 
