@@ -1,7 +1,6 @@
 // @flow
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
-import SafeImage from '../SafeImage';
 import { Logotype } from '../../atoms/Icon';
 import { gravatarUrl } from '../../utils';
 import {
@@ -10,6 +9,7 @@ import {
   slideOutUp,
   slideOutDown,
 } from '../../theme/animations';
+import LazyImage from '../LazyImage';
 
 const emailRe = () => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
@@ -32,7 +32,7 @@ const InnerWrapper = styled.div`
   overflow: hidden;
 `;
 
-const Image = styled(SafeImage)`
+const Image = styled(LazyImage)`
   border-radius: 100%;
   overflow: hidden;
   background-color: ${({ theme }) => theme.color.white};
@@ -45,7 +45,7 @@ const Image = styled(SafeImage)`
     `};
 `;
 
-const Logo = styled(Logotype)`
+const Logo = styled(Logotype).attrs({ baseline: false })`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -79,35 +79,30 @@ type Props = {
   email: string,
 };
 
-type State = {
-  fetched: boolean,
-};
+type State = {};
 
-class ProfilePicture extends PureComponent<Props, State> {
-  state = {
-    fetched: false,
-  };
+class ProfilePicture extends Component<Props, State> {
+  state = {};
 
-  handleLoad = () => this.setState(() => ({ fetched: true }));
-  handleError = () => this.setState(() => ({ fetched: false }));
+  shouldComponentUpdate({ email }: Props) {
+    const { email: prevEmail } = this.props;
+    return prevEmail !== email && emailRe().test(email);
+  }
 
   render() {
     const { email } = this.props;
-    const { fetched } = this.state;
-
-    const src = emailRe().test(email) ? gravatarUrl(email) : null;
+    const src = gravatarUrl(email);
 
     return (
       <Wrapper>
         <Cutout />
         <InnerWrapper>
-          <Logo baseline={false} hide={src && fetched} />
           <Image
-            src={src || ''}
-            hide={!src && !fetched}
-            onLoad={this.handleLoad}
-            onError={this.handleError}
-            onCancel={this.handleError}
+            src={src}
+            alt={`Gravatar for ${email}`}
+            renderPlaceholder={() => <Logo />}
+            renderLoading={() => <Logo />}
+            renderError={() => <Logo />}
           />
         </InnerWrapper>
       </Wrapper>

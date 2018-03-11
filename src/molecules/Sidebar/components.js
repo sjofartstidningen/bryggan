@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { NavLink as _NavLink } from 'react-router-dom';
 import { fontSmoothing, transitions } from '../../theme/utils';
 import { Link } from '../../atoms/Link';
-import SafeImage from '../SafeImage';
+import LazyImage from '../LazyImage';
 import { slideInUp, slideInLeft } from '../../theme/animations';
 
 const Wrapper = styled.div`
@@ -101,7 +101,7 @@ const ProfileImageContainer = styled.div`
   margin-right: ${({ theme }) => theme.margin.half};
 `;
 
-const ProfileImage = styled(SafeImage)`
+const ProfileImage = styled(LazyImage)`
   border-radius: 100%;
   overflow: hidden;
   background-color: ${({ theme }) => theme.color.white};
