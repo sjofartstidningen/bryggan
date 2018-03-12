@@ -90,9 +90,11 @@ type State = {};
 class ProfilePicture extends Component<Props, State> {
   state = {};
 
-  shouldComponentUpdate({ email }: Props) {
-    const { email: prevEmail } = this.props;
-    return prevEmail !== email && emailRe().test(email);
+  shouldComponentUpdate({ email, error }: Props) {
+    const { email: prevEmail, error: prevError } = this.props;
+    return (
+      (prevEmail !== email && emailRe().test(email)) || error !== prevError
+    );
   }
 
   render() {
