@@ -55,8 +55,8 @@ const clamp = (min: number, max: number, n: number): number => {
 const unique = <T>(list: Array<T>): Array<T> =>
   list.filter((x: T, idx, self) => self.indexOf(x) === idx);
 
-const gravatarUrl = (email: string) =>
-  `https://www.gravatar.com/avatar/${md5(email)}?d=404`;
+const gravatarUrl = (email: string, fallback: string = '404') =>
+  `https://www.gravatar.com/avatar/${md5(email)}?d=${fallback}`;
 
 export {
   compareBy,
