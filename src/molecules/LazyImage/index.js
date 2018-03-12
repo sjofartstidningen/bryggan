@@ -26,7 +26,7 @@ class LazyImage extends PureComponent<Props, State> {
   static defaultProps = {
     ratio: 1,
     renderPlaceholder: () => null,
-    renderLoading: () => <ProgressBar show delay={0} />,
+    renderLoading: () => <ProgressBar delay={0} />,
     renderError: () => <DefaultError />,
   };
 

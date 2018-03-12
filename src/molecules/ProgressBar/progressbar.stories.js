@@ -4,19 +4,33 @@ import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import ProgressBar from './index';
 
+const Container = ({ children }: any) => (
+  <div
+    style={{
+      position: 'relative',
+      width: '50vw',
+      height: '50vw',
+      margin: '2rem auto',
+      border: '1px solid black',
+    }}
+  >
+    {children}
+  </div>
+);
+
 class Wrapper extends Component<*, *> {
   static defaultProps = {
-    delay: 200,
+    delay: 500,
     duration: 3000,
   };
 
-  state = { show: true };
+  state = { done: false };
 
   timeout: ?number;
 
   componentDidMount() {
     this.timeout = window.setTimeout(
-      () => this.setState(() => ({ show: false })),
+      () => this.setState(() => ({ done: true })),
       this.props.duration + this.props.delay,
     );
   }
@@ -26,37 +40,26 @@ class Wrapper extends Component<*, *> {
   }
 
   render() {
-    const { show } = this.state;
+    const { done } = this.state;
     return (
-      <div
-        style={{
-          position: 'relative',
-          width: '50vw',
-          height: '50vw',
-          margin: '2rem auto',
-          border: '1px solid black',
-        }}
-      >
-        <ProgressBar show={show} delay={this.props.delay} />
-      </div>
+      <Container>
+        <ProgressBar done={done} delay={this.props.delay} />
+      </Container>
     );
   }
 }
 
 storiesOf('molecules/ProgressBar', module)
   .add('standard', () => (
-    <div
-      style={{
-        position: 'relative',
-        width: '50vw',
-        height: '50vw',
-        margin: '2rem auto',
-        border: '1px solid black',
-      }}
-    >
-      <ProgressBar show />
-    </div>
+    <Container>
+      <ProgressBar />
+    </Container>
   ))
   .add('with finish', () => <Wrapper />)
   .add('with no delay', () => <Wrapper delay={0} />)
   .add('with long delay', () => <Wrapper delay={2000} />)
+  .add('with adjusted trickleSpeed', () => (
+    <Container>
+      <ProgressBar trickleSpeed={1000} />
+    </Container>
+  ));

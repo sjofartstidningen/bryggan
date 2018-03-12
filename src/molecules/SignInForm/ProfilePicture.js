@@ -25,11 +25,16 @@ const InnerWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  padding: ${({ theme }) => theme.padding.fourth};
   border-radius: 100%;
   background-color: ${({ theme }) => theme.color.white};
   box-shadow: ${({ theme }) => theme.boxShadow.greyOpaque};
   overflow: hidden;
+
+  ${p =>
+    p.error &&
+    css`
+      box-shadow: ${({ theme }) => theme.boxShadow.error};
+    `};
 `;
 
 const Image = styled(LazyImage)`
@@ -77,6 +82,7 @@ const Cutout = styled.div`
 
 type Props = {
   email: string,
+  error: boolean,
 };
 
 type State = {};
@@ -90,13 +96,13 @@ class ProfilePicture extends Component<Props, State> {
   }
 
   render() {
-    const { email } = this.props;
+    const { email, error } = this.props;
     const src = gravatarUrl(email);
 
     return (
       <Wrapper>
         <Cutout />
-        <InnerWrapper>
+        <InnerWrapper error={error}>
           <Image
             src={src}
             alt={`Gravatar for ${email}`}

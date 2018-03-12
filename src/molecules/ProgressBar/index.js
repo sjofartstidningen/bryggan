@@ -5,14 +5,14 @@ import { Wrapper, Bar, Progress } from './components';
 import { clamp } from '../../utils';
 
 type Props = {
-  show: boolean,
+  done?: boolean,
   trickleSpeed: number,
   delay: number,
   width: string,
 };
 
 type State = {
-  awaitDelay: boolean,
+  state: 'await' | 'run' | 'pause' | 'finish',
   progress: number,
 };
 
@@ -37,17 +37,30 @@ class ProgressBar extends PureComponent<Props, State> {
   timeout: ?number;
 
   state = {
-    awaitDelay: true,
+    state: 'await',
     progress: 0,
   };
 
   componentDidMount() {
-    this.startAfterDelay();
+    this.initialize();
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (this.props.show !== prevProps.show) {
-      this.startAfterDelay();
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { done } = this.props;
+    const { state } = this.state;
+    const equalStates = state === prevState.state;
+
+    if (!equalStates && state === 'run') {
+      this.start();
+    }
+
+    if (!equalStates && state === 'pause') {
+      this.clear();
+    }
+
+    if (done) {
+      this.finalize();
+      this.clear();
     }
   }
 
@@ -60,11 +73,9 @@ class ProgressBar extends PureComponent<Props, State> {
     if (this.timeout) window.clearTimeout(this.timeout);
   };
 
-  startAfterDelay = () => {
+  initialize = () => {
     this.timeout = window.setTimeout(() => {
-      this.setState(() => ({ awaitDelay: false, progress: 0 }));
-      if (this.props.show) this.start();
-      if (!this.props.show) this.clear();
+      this.setState(() => ({ state: 'run', progress: 0 }));
     }, this.props.delay);
   };
 
@@ -76,7 +87,7 @@ class ProgressBar extends PureComponent<Props, State> {
         const nextProgress = getNextStep(progress);
 
         if (nextProgress === progress) {
-          this.clear();
+          this.setState(() => ({ state: 'pause' }));
         } else {
           this.setState(() => ({ progress: nextProgress }));
         }
@@ -85,19 +96,28 @@ class ProgressBar extends PureComponent<Props, State> {
     );
   };
 
+  finalize = () => {
+    this.setState(() => ({ state: 'finish' }));
+  };
+
   render() {
-    const { show, width } = this.props;
-    const { progress, awaitDelay } = this.state;
+    const { width } = this.props;
+    const { state, progress } = this.state;
+    const finalize = state === 'finish';
 
     return (
-      <Wrapper show={show && !awaitDelay}>
-        <Bar width={width}>
-          <Progress
-            progress={progress}
-            show={show}
-            style={{ transform: `scaleX(${!show ? 1 : progress})` }}
-          />
-        </Bar>
+      <Wrapper show={!finalize}>
+        {state === 'await' ? null : (
+          <Bar width={width}>
+            <Progress
+              progress={progress}
+              style={{
+                transform: `scaleX(${finalize ? 1 : progress})`,
+              }}
+              show={!finalize}
+            />
+          </Bar>
+        )}
       </Wrapper>
     );
   }
