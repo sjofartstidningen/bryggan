@@ -12,6 +12,7 @@ import {
   ProfileContainer,
   ProfileImageContainer,
   ProfileImage,
+  ProfileImageFallback,
   ProfileDataContainer,
   ProfileDataName,
   ProfileSignOutButton,
@@ -64,7 +65,14 @@ class Sidebar extends Component<Props, State> {
 
         <ProfileContainer>
           <ProfileImageContainer>
-            <ProfileImage src={photoUrl} width="2rem" height="2rem" />
+            <ProfileImage
+              src={photoUrl}
+              width="2rem"
+              height="2rem"
+              renderPlaceholder={() => <ProfileImageFallback />}
+              renderLoading={() => <ProfileImageFallback />}
+              renderError={() => <ProfileImageFallback />}
+            />
           </ProfileImageContainer>
 
           <ProfileDataContainer>

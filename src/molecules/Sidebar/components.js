@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { NavLink as _NavLink } from 'react-router-dom';
 import { fontSmoothing, transitions } from '../../theme/utils';
 import { Link } from '../../atoms/Link';
+import { Logotype } from '../../atoms/Icon';
 import LazyImage from '../LazyImage';
 import { slideInUp, slideInLeft } from '../../theme/animations';
 
@@ -97,14 +98,23 @@ const ProfileContainer = styled.div`
 `;
 
 const ProfileImageContainer = styled.div`
+  position: relative;
   flex: 0 0 2rem;
   margin-right: ${({ theme }) => theme.margin.half};
+  background-color: ${({ theme }) => theme.color.white};
+  border-radius: 100%;
 `;
 
 const ProfileImage = styled(LazyImage)`
   border-radius: 100%;
   overflow: hidden;
-  background-color: ${({ theme }) => theme.color.white};
+`;
+
+const ProfileImageFallback = styled(Logotype).attrs({ baseline: false })`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const ProfileDataContainer = styled.div`
@@ -149,6 +159,7 @@ export {
   ProfileContainer,
   ProfileImageContainer,
   ProfileImage,
+  ProfileImageFallback,
   ProfileDataContainer,
   ProfileDataName,
   ProfileSignOutButton,
