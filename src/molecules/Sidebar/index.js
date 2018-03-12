@@ -76,7 +76,9 @@ class Sidebar extends Component<Props, State> {
           </ProfileImageContainer>
 
           <ProfileDataContainer>
-            <ProfileDataName>{user.displayName || user.email}</ProfileDataName>
+            <ProfileDataName title={user.email}>
+              {user.displayName || user.email}
+            </ProfileDataName>
             <ProfileSignOutButton onClick={() => onSignOut(user)}>
               Logga ut
             </ProfileSignOutButton>
