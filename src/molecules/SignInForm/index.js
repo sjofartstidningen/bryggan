@@ -94,7 +94,10 @@ class SignInForm extends PureComponent<Props, State> {
           return (
             <Wrapper>
               <Container error={!emailValid || !passwordValid}>
-                <ProfilePicture email={values.email} />
+                <ProfilePicture
+                  email={values.email}
+                  error={!emailValid || !passwordValid}
+                />
 
                 <TitleContainer>
                   <Title>Bryggan</Title>
@@ -113,6 +116,7 @@ class SignInForm extends PureComponent<Props, State> {
                         onBlur={handleBlur}
                         autoCorrect="off"
                         autoCapitalize="off"
+                        autoComplete="email"
                         modifiers={[!emailValid && 'error'].filter(Boolean)}
                       />
                       {!emailValid && (
@@ -131,6 +135,7 @@ class SignInForm extends PureComponent<Props, State> {
                         value={values.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        autoComplete="current-password"
                         modifiers={[!passwordValid && 'error'].filter(Boolean)}
                       />
                       {!passwordValid && (
@@ -150,7 +155,7 @@ class SignInForm extends PureComponent<Props, State> {
                         <SubmitButtonText show={!isSubmitting}>
                           Logga in
                         </SubmitButtonText>
-                        <ProgressBar show={isSubmitting} width="50%" />
+                        {isSubmitting && <ProgressBar width="50%" />}
                       </SubmitButton>
                     </SubmitButtonContainer>
                   </Form>
