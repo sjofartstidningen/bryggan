@@ -144,6 +144,16 @@ function ChevronRight({
 
 ChevronRight.defaultProps = defaultProps;
 
+function ChevronDown({ baseline = true, className }: IconProps = defaultProps) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <polyline points="6 9 12 15 18 9" />
+    </Icon>
+  );
+}
+
+ChevronDown.defaultProps = defaultProps;
+
 function ZoomIn(props: IconProps) {
   return (
     <Icon {...props}>
@@ -257,6 +267,7 @@ export {
   ChevronsRight,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   ZoomIn,
   ZoomOut,
   Refresh,
