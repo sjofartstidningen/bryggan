@@ -1,15 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { hideVisually } from 'polished';
 import { Close } from '../../atoms/Icon';
 
 const Container = styled.div.attrs({
-  ratio: p => p.ratio || 1,
+  ratio: p => p.ratio || null,
 })`
   position: relative;
   width: 100%;
-  height: 0;
-  padding-bottom: calc(100% * ${p => p.ratio});
+  height: auto;
+
+  ${p =>
+    p.ratio &&
+    css`
+      height: 0;
+      padding-bottom: calc(100% * ${p.ratio});
+    `};
 `;
 
 const HiddenImage = styled.img`

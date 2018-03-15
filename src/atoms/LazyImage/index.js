@@ -9,7 +9,7 @@ import ProgressBar from '../ProgressBar';
 type Props = {
   src: string,
   alt: string,
-  ratio: number,
+  ratio: ?number,
   className?: string,
   onLoad?: (event: SyntheticEvent<HTMLImageElement>) => void,
   onError?: (event: any) => void,
@@ -24,7 +24,7 @@ type State = {
 
 class LazyImage extends PureComponent<Props, State> {
   static defaultProps = {
-    ratio: 1,
+    ratio: null,
     renderPlaceholder: () => null,
     renderLoading: () => <ProgressBar delay={0} />,
     renderError: () => <DefaultError />,
