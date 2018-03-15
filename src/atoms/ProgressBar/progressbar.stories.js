@@ -49,7 +49,7 @@ class Wrapper extends Component<*, *> {
   }
 }
 
-storiesOf('molecules/ProgressBar', module)
+storiesOf('atoms/ProgressBar', module)
   .add('standard', () => (
     <Container>
       <ProgressBar />

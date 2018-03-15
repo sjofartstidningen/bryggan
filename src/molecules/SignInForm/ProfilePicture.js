@@ -9,7 +9,7 @@ import {
   slideOutUp,
   slideOutDown,
 } from '../../theme/animations';
-import LazyImage from '../LazyImage';
+import LazyImage from '../../atoms/LazyImage';
 
 const emailRe = () => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 

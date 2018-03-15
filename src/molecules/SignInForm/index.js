@@ -18,7 +18,7 @@ import {
   SubmitButtonText,
 } from './components';
 import ProfilePicture from './ProfilePicture';
-import ProgressBar from '../ProgressBar';
+import ProgressBar from '../../atoms/ProgressBar';
 
 type FormikSetSubmitting = boolean => void;
 type FormikSetErrors = (validation: {

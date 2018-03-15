@@ -21,7 +21,7 @@ const Wrapper = ({ children }: { children: any }) => (
 
 const Separator = () => <div style={{ marginTop: '100vh' }} />;
 
-storiesOf('molecules/LazyImage', module)
+storiesOf('atoms/LazyImage', module)
   .add('standard', () => (
     <Wrapper>
       <LazyImage

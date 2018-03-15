@@ -3,7 +3,7 @@ import { NavLink as _NavLink } from 'react-router-dom';
 import { fontSmoothing, transitions } from '../../theme/utils';
 import { Link } from '../../atoms/Link';
 import { Logotype } from '../../atoms/Icon';
-import LazyImage from '../LazyImage';
+import LazyImage from '../../atoms/LazyImage';
 import { slideInUp, slideInLeft } from '../../theme/animations';
 
 const Wrapper = styled.div`
