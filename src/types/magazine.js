@@ -7,6 +7,7 @@ export type MagazineEntry = {
   id: string,
   name: string,
   path: string,
+  url: string,
   preview: MagazinePagePreview,
 };
 
