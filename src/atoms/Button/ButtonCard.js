@@ -1,3 +1,6 @@
+// @flow
+import React from 'react';
+import type { ComponentType } from 'react';
 import styled from 'styled-components';
 import { borderRadius } from 'polished';
 import { Button as _Button } from '../../atoms/Button';
@@ -55,4 +58,22 @@ const Label = styled.span`
   }
 `;
 
-export { Button, Title, Label };
+type Props = {
+  title: string,
+  label: string,
+  icon?: ComponentType<any>, // eslint-disable-line
+  onClick: (e: SyntheticMouseEvent<HTMLButtonElement>) => void | Promise<void>,
+};
+
+function ButtonCard({ title, label, icon: Icon, onClick }: Props) {
+  return (
+    <Button>
+      <Title>{title}</Title>
+      <Label onClick={onClick}>
+        {Icon && <Icon />} {label}
+      </Label>
+    </Button>
+  );
+}
+
+export { ButtonCard as default };
