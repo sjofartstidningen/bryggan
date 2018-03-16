@@ -145,7 +145,14 @@ class MagazineContainer extends Container<MagazineState> {
       switch (entry.tag) {
         case 'folder':
           if (!validate(entry)) return acc;
-          return [...acc, { ...extractBasicInfo(entry), entries: [] }];
+          return [
+            ...acc,
+            {
+              ...extractBasicInfo(entry),
+              url: join('/', folder, entry.name),
+              entries: [],
+            },
+          ];
         default:
           return acc;
       }
@@ -183,15 +190,20 @@ class MagazineContainer extends Container<MagazineState> {
   }
 
   async fetchPagesByIssue({ year, issue }: { year: string, issue: string }) {
-    const entries = await this.listFolder({ folder: join(year, issue) });
+    const folder = join(year, issue);
+    const entries = await this.listFolder({ folder });
     const pages = entries.reduce((acc, entry) => {
       switch (entry.tag) {
-        case 'file':
+        case 'file': // eslint-disable-line
           if (!isPageFile(entry)) return acc;
+
+          const [, , , name] = re.page().exec(entry.name);
           return [
             ...acc,
             {
               ...extractBasicInfo(entry),
+              name,
+              url: join('/', folder, name),
               modified: entry.client_modified,
               src: dropbox.getFileDownloadLink({ path: entry.path_lower }),
             },
