@@ -54,6 +54,10 @@ const Button = styled.button.attrs({
     outline: 1px dotted ${({ theme }) => theme.color.white};
     outline-offset: -4px;
   }
+
+  &:disabled {
+    cursor: default;
+  }
 `;
 
 Button.propTypes = {
