@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 `;
 
 const Icon = styled(Close)`
