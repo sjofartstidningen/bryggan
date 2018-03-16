@@ -155,6 +155,28 @@ function ChevronDown({ baseline = true, className }: IconProps = defaultProps) {
 
 ChevronDown.defaultProps = defaultProps;
 
+function ArrowLeft({ baseline = true, className }: IconProps = defaultProps) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <line x1="19" y1="12" x2="5" y2="12" />
+      <polyline points="12 19 5 12 12 5" />
+    </Icon>
+  );
+}
+
+ArrowLeft.defaultProps = defaultProps;
+
+function ArrowRight({ baseline = true, className }: IconProps = defaultProps) {
+  return (
+    <Icon baseline={baseline} className={className}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </Icon>
+  );
+}
+
+ArrowRight.defaultProps = defaultProps;
+
 function ZoomIn(props: IconProps) {
   return (
     <Icon {...props}>
@@ -260,6 +282,27 @@ function Download(props: IconProps) {
 
 Download.defaultProps = defaultProps;
 
+function Plus(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </Icon>
+  );
+}
+
+Plus.defaultProps = defaultProps;
+
+function Minus(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </Icon>
+  );
+}
+
+Minus.defaultProps = defaultProps;
+
 function Logotype(props: IconProps) {
   return (
     <Icon useFill {...props}>
@@ -278,6 +321,8 @@ export {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  ArrowLeft,
+  ArrowRight,
   ZoomIn,
   ZoomOut,
   Refresh,
@@ -286,5 +331,7 @@ export {
   Close,
   ExternalLink,
   Download,
+  Plus,
+  Minus,
   Logotype,
 };
