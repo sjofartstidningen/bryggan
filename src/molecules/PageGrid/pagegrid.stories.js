@@ -2,11 +2,12 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import PageGrid from './index';
 
 const page = (_, i) => ({
   id: `${i}`,
-  name: '001',
+  name: `00${i + 1}`,
   path: '',
   url: '/',
   // prettier-ignore
@@ -24,6 +25,9 @@ const page = (_, i) => ({
 });
 const pages = Array.from({ length: 15 }, page);
 
-storiesOf('molecules/PageGrid', module).add('standard', () => (
-  <PageGrid pages={pages} />
-));
+storiesOf('molecules/PageGrid', module)
+  .add('standard', () => <PageGrid pages={pages} />)
+  .add('with first page pushed', () => <PageGrid pages={pages} push />)
+  .add('with refreshButton', () => (
+    <PageGrid pages={pages} onRefreshClick={action('refresh')} />
+  ));
