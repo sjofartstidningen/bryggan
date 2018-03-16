@@ -35,6 +35,7 @@ class Wrapper extends Component<*, *> {
         total={this.props.pages.length}
         onNext={this.handleTransition(1)}
         onPrev={this.handleTransition(-1)}
+        onClose={action('close')}
       />
     );
   }
@@ -47,6 +48,7 @@ storiesOf('molecules/PdfPreview', module)
       total={1}
       onNext={action('next')}
       onPrev={action('prev')}
+      onClose={action('close')}
     />
   ))
   .add('with multiple pages', () => <Wrapper pages={pages} />)

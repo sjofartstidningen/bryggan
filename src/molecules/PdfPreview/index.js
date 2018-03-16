@@ -3,7 +3,8 @@ import React, { PureComponent } from 'react';
 import { setOptions } from 'react-pdf';
 import type { MagazinePage } from '../../types/magazine';
 import PreviewControls from '../PreviewControls';
-import { Wrapper, Preview, Document, Page } from './components';
+import { Wrapper, Preview, Document, Page, CloseButton } from './components';
+import { Close } from '../../atoms/Icon';
 import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
@@ -13,6 +14,7 @@ type Props = {
   total: number,
   onNext: () => void,
   onPrev: () => void,
+  onClose: () => void,
 };
 
 type State = {
@@ -32,6 +34,12 @@ class PdfPreview extends PureComponent<Props, State> {
     setOptions({
       workerSrc: 'https://unpkg.com/pdfjs-dist@2.0.303/build/pdf.worker.min.js',
     });
+
+    window.addEventListener('keydown', this.handleKeydown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeydown);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -40,9 +48,14 @@ class PdfPreview extends PureComponent<Props, State> {
     }
   }
 
+  handleKeydown = (event: KeyboardEvent) => {
+    const { keyCode } = event;
+    if (keyCode === 27) this.props.onClose();
+  };
+
   handleZoom = (val: number) => () => {
     const currentZoom = this.state.zoom;
-    const nextZoom = clamp(0.1, 2, currentZoom + val);
+    const nextZoom = clamp(0.1, 3, currentZoom * (1 + val));
     if (nextZoom !== currentZoom) this.setState(() => ({ zoom: nextZoom }));
   };
 
@@ -74,7 +87,7 @@ class PdfPreview extends PureComponent<Props, State> {
   };
 
   render() {
-    const { page, total, onNext, onPrev } = this.props;
+    const { page, total, onNext, onPrev, onClose } = this.props;
     const { zoom, state, message } = this.state;
 
     const { src } = page;
@@ -83,6 +96,10 @@ class PdfPreview extends PureComponent<Props, State> {
 
     return (
       <Wrapper>
+        <CloseButton onClick={onClose}>
+          <Close />
+        </CloseButton>
+
         <PreviewControls
           current={current}
           total={total}
