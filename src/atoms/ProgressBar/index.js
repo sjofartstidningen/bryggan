@@ -9,6 +9,7 @@ type Props = {
   trickleSpeed: number,
   delay: number,
   width: string,
+  background?: string,
 };
 
 type State = {
@@ -101,14 +102,14 @@ class ProgressBar extends PureComponent<Props, State> {
   };
 
   render() {
-    const { width } = this.props;
+    const { width, background } = this.props;
     const { state, progress } = this.state;
     const finalize = state === 'finish';
 
     return (
       <Wrapper show={!finalize}>
         {state === 'await' ? null : (
-          <Bar width={width}>
+          <Bar width={width} background={background}>
             <Progress
               progress={progress}
               style={{

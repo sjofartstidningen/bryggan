@@ -62,4 +62,9 @@ storiesOf('atoms/ProgressBar', module)
     <Container>
       <ProgressBar trickleSpeed={1000} />
     </Container>
+  ))
+  .add('with different backgorund', () => (
+    <Container>
+      <ProgressBar background="brand" />
+    </Container>
   ));

@@ -26,11 +26,13 @@ const Wrapper = styled.div`
     `};
 `;
 
-const Bar = styled.div`
+const Bar = styled.div.attrs({
+  background: p => p.background || 'greyLight',
+})`
   position: relative;
   width: ${p => p.width};
   height 2px;
-  background-color: ${({ theme }) => theme.color.greyLight};
+  background-color: ${({ theme, background }) => theme.color[background]};
 `;
 
 const Progress = styled.div`
