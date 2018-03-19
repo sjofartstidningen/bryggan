@@ -26,7 +26,7 @@ type FormikSetErrors = (validation: {
 }) => void;
 
 type Props = {
-  onSignIn: (cred: SignInCredentials) => Promise<void>,
+  onSignIn: (cred: SignInCredentials) => void | Promise<void>,
   onSignInError: (err: Error) => { [x: 'email' | 'password']: string },
 };
 
@@ -44,7 +44,6 @@ class SignInForm extends PureComponent<Props, State> {
   ) => {
     try {
       await this.props.onSignIn(values);
-      setSubmitting(false);
     } catch (err) {
       const validationError = this.props.onSignInError(err);
       setErrors(validationError);

@@ -12,6 +12,9 @@ import {
 import { slideInDownShort, fadeIn } from '../../theme/animations';
 
 const Wrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;

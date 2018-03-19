@@ -63,8 +63,6 @@ const extractBasicInfo = (entry: {
 
 type MagazineState = {
   fetching: number,
-  accessToken: ?string,
-  rootFolder: ?string,
   years: Array<MagazineYear>,
   issues: Array<MagazineIssue>,
   pages: Array<MagazinePage>,
@@ -73,8 +71,6 @@ type MagazineState = {
 class MagazineContainer extends Container<MagazineState> {
   state = {
     fetching: 0,
-    accessToken: null,
-    rootFolder: null,
     years: [],
     issues: [],
     pages: [],
@@ -84,24 +80,8 @@ class MagazineContainer extends Container<MagazineState> {
 
   isFetching = () => this.state.fetching > 0;
 
-  cancelRequest = () => {
+  cancelRequest() {
     this.cancelToken.cancel();
-  };
-
-  /**
-   * Set the needed api environment variables for Dropbox api to function
-   * correctly. Both accessToken and rootFolder are strings.
-   */
-  setApiEnvironment({
-    accessToken,
-    rootFolder = '/',
-  }: {
-    accessToken: string,
-    rootFolder?: string,
-  } = {}) {
-    dropbox.updateAccessToken(accessToken);
-    dropbox.updateRootFolder(rootFolder);
-    this.setState({ accessToken, rootFolder });
   }
 
   /**
@@ -111,7 +91,7 @@ class MagazineContainer extends Container<MagazineState> {
    * @param {string}  opt.folder  A path string (relative to dropox root)
    * @returns {Array<entries>} Returns an array of Dropbox entries
    */
-  listFolder = async ({ folder }: { folder: string }) => {
+  async listFolder({ folder }: { folder: string }) {
     try {
       this.setState({ fetching: this.state.fetching + 1 });
       const response = await dropbox.filesListFolder({
@@ -125,7 +105,7 @@ class MagazineContainer extends Container<MagazineState> {
     } finally {
       this.setState({ fetching: this.state.fetching - 1 });
     }
-  };
+  }
 
   /**
    * Fetch folder content. This method is for internal use mainly since both
@@ -133,13 +113,13 @@ class MagazineContainer extends Container<MagazineState> {
    * years are four digits and issues begins with two digits, followed by an
    * optional extra name.
    */
-  fetchFolderContent = async ({
+  async fetchFolderContent({
     folder,
     validate,
   }: {
     folder: string,
     validate: (x: any) => boolean,
-  }) => {
+  }) {
     const entries = await this.listFolder({ folder });
     const reduced = entries.reduce((acc, entry) => {
       switch (entry.tag) {
@@ -159,9 +139,9 @@ class MagazineContainer extends Container<MagazineState> {
     }, []);
 
     return reduced;
-  };
+  }
 
-  async fetchAllYears() {
+  fetchAllYears = async () => {
     const years = await this.fetchFolderContent({
       folder: '/',
       validate: isYearFolder,
@@ -170,9 +150,9 @@ class MagazineContainer extends Container<MagazineState> {
     if (years.length > 0) {
       this.setState({ years: uniqById([...this.state.years, ...years]) });
     }
-  }
+  };
 
-  async fetchIssuesByYear({ year }: { year: string }) {
+  fetchIssuesByYear = async ({ year }: { year: string }) => {
     const issues = await this.fetchFolderContent({
       folder: year,
       validate: isIssueFolder,
@@ -187,9 +167,15 @@ class MagazineContainer extends Container<MagazineState> {
         years: appendEntries(ids, this.state.years, [year]),
       });
     }
-  }
+  };
 
-  async fetchPagesByIssue({ year, issue }: { year: string, issue: string }) {
+  fetchPagesByIssue = async ({
+    year,
+    issue,
+  }: {
+    year: string,
+    issue: string,
+  }) => {
     const folder = join(year, issue);
     const entries = await this.listFolder({ folder });
     const pages = entries.reduce((acc, entry) => {
@@ -222,7 +208,7 @@ class MagazineContainer extends Container<MagazineState> {
         issues: appendEntries(ids, this.state.issues, [year, issue]),
       });
     }
-  }
+  };
 }
 
 export { MagazineContainer as default };
