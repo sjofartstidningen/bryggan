@@ -22,7 +22,7 @@
     "flow": "flow",
     "format": "prettier 'src/**/*' --write",
     "precommit": "lint-staged",
-    "validate": "eslint src && react-scripts test --env=jsdom && react-scripts build",
+    "validate": "yarn lint && yarn test && yarn build",
     "storybook": "start-storybook -p 9009 -s public"
   },
   "dependencies": {
