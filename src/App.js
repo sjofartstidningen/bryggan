@@ -122,8 +122,9 @@ class App extends Component<*, State> {
 
                     <AreaMain>
                       <Switch>
-                        <Route path="/sign-in">
-                          {({ location }) =>
+                        <Route
+                          path="/sign-in"
+                          render={({ location }) =>
                             authenticated ? (
                               <Redirect
                                 to={
@@ -138,21 +139,23 @@ class App extends Component<*, State> {
                               />
                             )
                           }
-                        </Route>
+                        />
 
                         {routes.map(route => (
                           <SecureRoute
                             key={route.to}
                             authenticated={authenticated}
                             path={route.to}
-                          >
-                            {route.render}
-                          </SecureRoute>
+                            render={route.render}
+                          />
                         ))}
 
-                        <SecureRoute authenticated={authenticated}>
-                          {props => <pre>{JSON.stringify(props, null, 2)}</pre>}
-                        </SecureRoute>
+                        <SecureRoute
+                          authenticated={authenticated}
+                          render={props => (
+                            <pre>{JSON.stringify(props, null, 2)}</pre>
+                          )}
+                        />
                       </Switch>
                     </AreaMain>
                   </Grid>
