@@ -8,7 +8,9 @@ import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
 
-function NoOp() { return null };
+function NoOp() {
+  return null;
+}
 
 type Props = {
   page: { src: string, name: string },
@@ -33,7 +35,7 @@ class PdfPreview extends PureComponent<Props, State> {
 
   componentDidMount() {
     setOptions({
-      workerSrc: 'https://unpkg.com/pdfjs-dist@2.0.303/build/pdf.worker.min.js',
+      workerSrc: 'https://unpkg.com/pdfjs-dist@2.0.305/build/pdf.worker.min.js',
     });
 
     window.addEventListener('keydown', this.handleKeydown);
