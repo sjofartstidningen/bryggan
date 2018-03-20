@@ -120,27 +120,27 @@ class App extends Component<*, State> {
                       />
                     </AreaSidebar>
 
-                    <AreaMain>
-                      <Switch>
-                        <Route
-                          path="/sign-in"
-                          render={({ location }) =>
-                            authenticated ? (
-                              <Redirect
-                                to={
-                                  (location.state && location.state.referrer) ||
-                                  '/'
-                                }
-                              />
-                            ) : (
-                              <SignIn
-                                onSignIn={this.handleSignIn}
-                                onSignInError={this.handleSignInError}
-                              />
-                            )
-                          }
-                        />
+                    <Switch>
+                      <Route
+                        path="/sign-in"
+                        render={({ location }) =>
+                          authenticated ? (
+                            <Redirect
+                              to={
+                                (location.state && location.state.referrer) ||
+                                '/'
+                              }
+                            />
+                          ) : (
+                            <SignIn
+                              onSignIn={this.handleSignIn}
+                              onSignInError={this.handleSignInError}
+                            />
+                          )
+                        }
+                      />
 
+                      <AreaMain>
                         {routes.map(route => (
                           <SecureRoute
                             key={route.to}
@@ -156,8 +156,8 @@ class App extends Component<*, State> {
                             <pre>{JSON.stringify(props, null, 2)}</pre>
                           )}
                         />
-                      </Switch>
-                    </AreaMain>
+                      </AreaMain>
+                    </Switch>
                   </Grid>
                 </Router>
               </Fragment>
