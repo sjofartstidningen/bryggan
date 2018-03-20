@@ -2,6 +2,7 @@
 import React from 'react';
 import type { ContextRouter } from 'react-router-dom';
 import Tidningen from './pages/Tidningen';
+import Nyhetsbrevet from './pages/Nyhetsbrevet';
 import PreProps from './components/PreProps';
 
 const routes = [
@@ -13,7 +14,7 @@ const routes = [
   {
     to: '/nyhetsbrevet',
     title: 'Nyhetsbrevet',
-    render: (props: ContextRouter) => <PreProps {...props} />,
+    render: (props: ContextRouter) => <Nyhetsbrevet {...props} />,
   },
   {
     to: '/installningar',

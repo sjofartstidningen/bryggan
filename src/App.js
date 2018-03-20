@@ -149,13 +149,6 @@ class App extends Component<*, State> {
                             render={route.render}
                           />
                         ))}
-
-                        <SecureRoute
-                          authenticated={authenticated}
-                          render={props => (
-                            <pre>{JSON.stringify(props, null, 2)}</pre>
-                          )}
-                        />
                       </AreaMain>
                     </Switch>
                   </Grid>
