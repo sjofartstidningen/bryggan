@@ -7,6 +7,8 @@ import LazyImage from '../../atoms/LazyImage';
 import { slideInUp, slideInLeft } from '../../theme/animations';
 
 const Wrapper = styled.div`
+  position: sticky;
+  top: 0;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;

@@ -70,8 +70,8 @@ class ProgressBar extends PureComponent<Props, State> {
   }
 
   clear = () => {
-    if (this.interval) window.clearInterval(this.interval);
-    if (this.timeout) window.clearTimeout(this.timeout);
+    window.clearInterval(this.interval);
+    window.clearTimeout(this.timeout);
   };
 
   initialize = () => {

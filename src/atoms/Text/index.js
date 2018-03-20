@@ -19,4 +19,23 @@ const Strong = styled.strong`
   font-weight: ${({ theme }) => theme.weight.bold};
 `;
 
-export { Paragraph, Strong };
+const Tinted = styled.span`
+  color: ${({ theme }) => theme.color.greyDark};
+`;
+
+const Heading1 = Paragraph.withComponent('h1').extend`
+  margin: 0;
+  margin-top: ${({ theme }) => theme.margin.extra};
+  margin-bottom: ${({ theme }) => theme.margin.half};
+  font-size: ${({ theme }) => theme.typeSize.heading};
+  font-weight: ${({ theme }) => theme.weight.bold};
+`;
+
+const Heading2 = Heading1.withComponent('h2').extend`
+  margin-bottom: ${({ theme }) => theme.margin.double};
+  font-family: ${({ theme }) => theme.font.family};
+  font-size: ${({ theme }) => theme.typeSize.body};
+  font-weight: ${({ theme }) => theme.weight.normal};
+`;
+
+export { Paragraph, Strong, Tinted, Heading1, Heading2 };

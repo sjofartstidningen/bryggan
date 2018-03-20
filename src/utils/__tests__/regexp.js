@@ -21,9 +21,7 @@ describe('regexp.issue', () => {
     expect(re.issue().test('2015')).toBeFalsy();
 
     expect(re.issue().exec('01')[0]).toBe('01');
-    expect(re.issue().exec('02-Special Edition')[0]).toBe(
-      '02-Special Edition',
-    );
+    expect(re.issue().exec('02-Special Edition')[0]).toBe('02-Special Edition');
   });
 });
 
@@ -40,5 +38,48 @@ describe('regexp.page', () => {
     const matches = result.slice(1, 4);
     expect(result[0]).toBe('2018-02 Special Edition-002.pdf');
     expect(matches).toEqual(['2018', '02 Special Edition', '002']);
+  });
+});
+
+describe('regexp.default', () => {
+  test('should extract contents from path', () => {
+    expect([...re.default().exec('/2017/01/2017-01-001.pdf')]).toEqual([
+      '/2017/01/2017-01-001',
+      '2017',
+      '01',
+      '2017-01-001',
+    ]);
+
+    expect([...re.default().exec('/2017')]).toEqual([
+      '/2017',
+      '2017',
+      undefined,
+      undefined,
+    ]);
+
+    expect([...re.default().exec('/2017/01')]).toEqual([
+      '/2017/01',
+      '2017',
+      '01',
+      undefined,
+    ]);
+
+    expect([...re.default().exec('/2017/01 - Special Edition')]).toEqual([
+      '/2017/01 - Special Edition',
+      '2017',
+      '01 - Special Edition',
+      undefined,
+    ]);
+
+    expect([
+      ...re
+        .default()
+        .exec('/2017/01 - Special Edition/2017-01 - Special Edition-001.pdf'),
+    ]).toEqual([
+      '/2017/01 - Special Edition/2017-01 - Special Edition-001',
+      '2017',
+      '01 - Special Edition',
+      '2017-01 - Special Edition-001',
+    ]);
   });
 });

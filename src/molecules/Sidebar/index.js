@@ -17,11 +17,12 @@ import {
   ProfileDataName,
   ProfileSignOutButton,
 } from './components';
+// import type { User } from '../../types';
 
 interface User {
-  email: string;
-  displayName?: string;
-  photoURL?: string;
+  email?: ?string;
+  displayName?: ?string;
+  photoURL?: ?string;
 }
 
 type NavLinkItem = {
@@ -31,8 +32,8 @@ type NavLinkItem = {
 
 type Props = {
   links: Array<NavLinkItem>,
-  user: User,
-  onSignOut: (user: User) => void,
+  user: ?User,
+  onSignOut: (user: User) => void | Promise<void>,
 };
 
 type State = {};
@@ -42,10 +43,6 @@ class Sidebar extends Component<Props, State> {
 
   render() {
     const { links, user, onSignOut } = this.props;
-
-    const photoUrl =
-      user.photoURL ||
-      `https://www.gravatar.com/avatar/${md5(user.email)}?d=404`;
 
     return (
       <Wrapper>
@@ -63,27 +60,32 @@ class Sidebar extends Component<Props, State> {
           </NavList>
         </NavContainer>
 
-        <ProfileContainer>
-          <ProfileImageContainer>
-            <ProfileImage
-              src={photoUrl}
-              width="2rem"
-              height="2rem"
-              renderPlaceholder={() => <ProfileImageFallback />}
-              renderLoading={() => <ProfileImageFallback />}
-              renderError={() => <ProfileImageFallback />}
-            />
-          </ProfileImageContainer>
+        {user && (
+          <ProfileContainer>
+            <ProfileImageContainer>
+              <ProfileImage
+                src={
+                  user.photoURL ||
+                  `https://www.gravatar.com/avatar/${md5(user.email)}?d=404`
+                }
+                width="2rem"
+                height="2rem"
+                renderPlaceholder={() => <ProfileImageFallback />}
+                renderLoading={() => <ProfileImageFallback />}
+                renderError={() => <ProfileImageFallback />}
+              />
+            </ProfileImageContainer>
 
-          <ProfileDataContainer>
-            <ProfileDataName title={user.email}>
-              {user.displayName || user.email}
-            </ProfileDataName>
-            <ProfileSignOutButton onClick={() => onSignOut(user)}>
-              Logga ut
-            </ProfileSignOutButton>
-          </ProfileDataContainer>
-        </ProfileContainer>
+            <ProfileDataContainer>
+              <ProfileDataName title={user.email}>
+                {user.displayName || user.email}
+              </ProfileDataName>
+              <ProfileSignOutButton onClick={() => onSignOut(user)}>
+                Logga ut
+              </ProfileSignOutButton>
+            </ProfileDataContainer>
+          </ProfileContainer>
+        )}
       </Wrapper>
     );
   }

@@ -11,14 +11,33 @@ export type MagazineEntry = {
   preview: MagazinePagePreview,
 };
 
-type MagazineFolder = {
+export type MagazineFolder = {
   entries: Array<string>,
 };
 
-export type MagazineYear = MagazineFolder & MagazineEntry;
-export type MagazineIssue = MagazineFolder & MagazineEntry;
+export type MagazineYear = {
+  id: string,
+  name: string,
+  path: string,
+  url: string,
+  preview: MagazinePagePreview,
+  entries: Array<string>,
+};
+export type MagazineIssue = {
+  id: string,
+  name: string,
+  path: string,
+  url: string,
+  preview: MagazinePagePreview,
+  entries: Array<string>,
+};
 
 export type MagazinePage = {
+  id: string,
+  name: string,
+  path: string,
+  url: string,
+  preview: MagazinePagePreview,
   modified: string,
   src: string,
-} & MagazineEntry;
+};

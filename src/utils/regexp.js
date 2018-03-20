@@ -9,4 +9,7 @@ const issue = () => new RegExp(`^${issueStr}$`);
 const page = () =>
   new RegExp(`^(${yearStr})-(${issueStr})-(${pageStr})\\.pdf$`);
 
-export { year, issue, page };
+const path = () =>
+  /\/(\d{4})(?:\/)?(\d{2}(?:(?: |-)(?:\w| |-)*)*)?(?:\/)?(\d{4}-\d{2}(?:(?: |-)(?:\w| |-)*)*-\d{3})?/;
+
+export { path as default, year, issue, page };

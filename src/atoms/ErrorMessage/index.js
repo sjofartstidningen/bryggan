@@ -21,6 +21,7 @@ const Icon = styled(Close)`
 
 const Message = Paragraph.extend`
   text-align: center;
+  max-width: 20rem;
 `;
 
 // eslint-disable-next-line

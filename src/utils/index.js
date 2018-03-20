@@ -58,6 +58,25 @@ const unique = <T>(list: Array<T>): Array<T> =>
 const gravatarUrl = (email: string, fallback: string = '404') =>
   `https://www.gravatar.com/avatar/${md5(email)}?d=${fallback}`;
 
+const getBestThumbnail = (
+  widths: Array<string>,
+  containerWidth: number,
+  dpi: number = window.devicePixelRatio || 1,
+): string => {
+  const actualWidth = containerWidth * dpi;
+
+  let i = 0;
+  while (i < widths.length) {
+    const key = widths[i];
+    const width = Number.parseInt(key, 10);
+    if (width >= actualWidth) return key;
+
+    i += 1;
+  }
+
+  return widths[widths.length - 1];
+};
+
 export {
   compareBy,
   compareByDesc,
@@ -68,4 +87,5 @@ export {
   clamp,
   unique,
   gravatarUrl,
+  getBestThumbnail,
 };

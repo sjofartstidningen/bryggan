@@ -1,11 +1,12 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
 } from 'react-router-dom';
+import { Provider as StateProvider } from 'unstated';
 import { ThemeProvider } from 'styled-components';
 import dropbox from './api/dropbox';
 import {
@@ -14,44 +15,32 @@ import {
   signOut,
   getAppData,
 } from './utils/firebase';
-import { theme } from './styles';
-import { adjust, compareByDesc } from './utils';
+import * as theme from './theme';
+import type { User, SignInCredentials } from './types';
+
+import routes from './routes';
 import SecureRoute from './components/SecureRoute';
-import InitialLoadingScreen from './components/InitialLoadingScreen';
-import { Grid, AreaSidebar } from './components/MainGrid';
-import Sidebar from './components/Sidebar';
-import SignIn from './views/SignIn';
-import Magazine from './views/Magazine';
-import { Book } from './components/Icon';
-import type { User, LinkItem, SignInCredentials } from './types';
+import ProgressBar from './atoms/ProgressBar';
+import Sidebar from './molecules/Sidebar';
+import SignIn from './pages/SignIn';
+import { Grid, AreaSidebar, AreaMain } from './molecules/Grid';
 
 type State = {
-  loading: boolean,
-  authenticated: boolean,
+  state: 'loading' | 'authenticated' | 'unauthenticated',
   user: ?User,
-  links: Array<LinkItem>,
 };
 
 class App extends Component<*, State> {
   unsubscribe: () => void;
 
   state = {
-    loading: true,
-    authenticated: false,
+    state: 'loading',
     user: null,
-    links: [
-      {
-        to: '/tidningen',
-        title: 'Tidningen',
-        icon: Book,
-        links: [],
-      },
-    ],
   };
 
   componentDidMount() {
     this.unsubscribe = awaitInitialAuthCheckEvent(user => {
-      this.handleInitialAuthCheck(user);
+      this.authorize(user);
     });
   }
 
@@ -59,114 +48,116 @@ class App extends Component<*, State> {
     if (typeof this.unsubscribe === 'function') this.unsubscribe();
   }
 
-  fetchSublinks = async () => {
-    const { data } = await dropbox.filesListFolder({ folder: '/' });
-    const { entries } = data;
-    const years: Array<LinkItem> = entries
-      .map(entry => ({
-        to: `/tidningen/${entry.name}`,
-        title: entry.name,
-      }))
-      .sort(compareByDesc('title'));
+  authorize = async (user: ?User) => {
+    if (user == null) {
+      this.setState(() => ({ state: 'unauthenticated' }));
+    } else {
+      const appData = await getAppData();
+      dropbox.updateAccessToken(appData.dropbox_token);
+      dropbox.updateRootFolder(appData.dropbox_root);
 
-    const newLinks = adjust(
-      0,
-      l => ({
-        ...l,
-        links: years,
-      }),
-      this.state.links,
-    );
+      this.setState(() => ({ state: 'authenticated', user }));
+    }
 
-    this.setState(() => ({ links: newLinks }));
-  };
-
-  handleInitialAuthCheck = async (user: ?User) => {
-    const appData = user ? await getAppData() : {};
-    dropbox.updateAccessToken(appData.dropbox_token);
-    dropbox.updateRootFolder(appData.dropbox_root);
-
-    this.setState(() => ({
-      loading: false,
-      authenticated: !!user,
-      user,
-    }));
-
-    if (user) this.fetchSublinks();
     this.unsubscribe();
   };
 
   handleSignIn = async (values: SignInCredentials) => {
     try {
       const user = await signIn(values);
-      await this.handleInitialAuthCheck(user);
+      await this.authorize(user);
     } catch (err) {
       throw err;
     }
   };
 
-  handleSignOut = () => {
-    this.setState(() => ({ authenticated: false, user: null }));
-    signOut();
+  handleSignOut = async () => {
+    await signOut();
+    this.setState(() => ({ state: 'unauthenticated', user: null }));
   };
 
-  handleUserUpdated = (user: User) => {
-    this.setState(() => ({ user }));
+  handleSignInError = (err: any) => {
+    const { code } = err;
+    const ret = {};
+
+    switch (code) {
+      case 'auth/invalid-email':
+        ret.email = 'Emailadressen är felaktig';
+        break;
+      case 'auth/user-disabled':
+        ret.email = 'Det här kontot har stängts ner';
+        break;
+      case 'auth/user-not-found':
+        ret.email = 'Emailadressen finns inte registrerad';
+        break;
+      case 'auth/wrong-password':
+        ret.password = 'Felaktigt lösenord';
+        break;
+      default:
+    }
+
+    return ret;
   };
 
   render() {
-    const { user, authenticated, loading, links } = this.state;
+    const { state, user } = this.state;
+    const authenticated = state === 'authenticated';
 
     return (
-      <ThemeProvider theme={theme}>
-        <Router>
-          {loading ? (
-            <InitialLoadingScreen />
-          ) : (
-            <Switch>
-              <Route
-                path="/sign-in"
-                render={props =>
-                  authenticated ? (
-                    <Redirect to="/" />
-                  ) : (
-                    <SignIn {...props} onSubmit={this.handleSignIn} />
-                  )
-                }
-              />
-
-              <Route
-                render={() => (
+      <StateProvider>
+        <ThemeProvider theme={theme}>
+          <div>
+            {state === 'loading' && <ProgressBar />}
+            {state !== 'loading' && (
+              <Fragment>
+                <Router>
                   <Grid>
                     <AreaSidebar>
                       <Sidebar
-                        links={links}
-                        user={user}
+                        links={routes}
                         onSignOut={this.handleSignOut}
+                        user={user}
                       />
                     </AreaSidebar>
 
-                    <SecureRoute
-                      authenticated={authenticated}
-                      path="/"
-                      exact
-                      render={() => <Redirect to="/tidningen" />}
-                    />
+                    <Switch>
+                      <Route
+                        path="/sign-in"
+                        render={({ location }) =>
+                          authenticated ? (
+                            <Redirect
+                              to={
+                                (location.state && location.state.referrer) ||
+                                '/'
+                              }
+                            />
+                          ) : (
+                            <SignIn
+                              onSignIn={this.handleSignIn}
+                              onSignInError={this.handleSignInError}
+                            />
+                          )
+                        }
+                      />
 
-                    <SecureRoute
-                      authenticated={authenticated}
-                      path="/tidningen"
-                      render={({ match, location }) => (
-                        <Magazine match={match} location={location} />
-                      )}
-                    />
+                      <AreaMain>
+                        {routes.map(route => (
+                          <SecureRoute
+                            key={route.to}
+                            authenticated={authenticated}
+                            path={route.to}
+                            render={route.render}
+                          />
+                        ))}
+                      </AreaMain>
+                    </Switch>
                   </Grid>
-                )}
-              />
-            </Switch>
-          )}
-        </Router>
-      </ThemeProvider>
+                </Router>
+              </Fragment>
+            )}
+          </div>
+        </ThemeProvider>
+      </StateProvider>
     );
   }
 }

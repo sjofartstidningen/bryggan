@@ -1,7 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { hideVisually } from 'polished';
+import { Img as _Img } from '../../atoms/Image';
 import { Close } from '../../atoms/Icon';
+import { fadeIn } from '../../theme/animations';
 
 const Container = styled.div.attrs({
   ratio: p => p.ratio || null,
@@ -16,6 +18,10 @@ const Container = styled.div.attrs({
       height: 0;
       padding-bottom: calc(100% * ${p.ratio});
     `};
+`;
+
+const Img = _Img.extend`
+  ${fadeIn};
 `;
 
 const HiddenImage = styled.img`
@@ -39,4 +45,4 @@ function DefaultError() {
   );
 }
 
-export { Container, HiddenImage, DefaultError };
+export { Container, Img, HiddenImage, DefaultError };

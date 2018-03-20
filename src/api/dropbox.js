@@ -1,253 +1,237 @@
 // @flow
 import { join } from 'path';
-import axios from 'axios';
 import qs from 'qs';
-import { matchPath } from 'react-router-dom';
-import type {
-  FilesListFolderProps,
-  FilesListFolderResponse,
-  GetThumbUrlProps,
-  FilesDownloadProps,
-  ThumbnailSize,
-  FilesDownloadResponse,
-} from './types';
-import type { MagazinePagePreview } from '../types/magazine';
+import axios from 'axios';
+import type { CancelToken } from 'axios';
+import * as re from '../utils/regexp';
 
-type RequestConfig = {
+type Preview = {
+  '32': string,
+  '64': string,
+  '128': string,
+  '256': string,
+  '480': string,
+  '640': string,
+  '960': string,
+  '1024': string,
+  '2048': string,
+};
+
+type Entry = {
+  type: 'year' | 'issue' | 'page',
+  tag: 'file' | 'folder',
+  id: string,
+  name: string,
   url: string,
-  headers?: { [x: string]: string },
-  [x: string]: any,
+  modified?: string,
+  src?: string,
+  preview: Preview,
+};
+
+type ListFolderReturn = Array<Entry>;
+
+const getType = (name: string): ?('year' | 'issue' | 'page') => {
+  if (re.year().test(name)) return 'year';
+  if (re.issue().test(name)) return 'issue';
+  if (re.page().test(name)) return 'page';
+  return null;
 };
 
 class Dropbox {
   accessToken: ?string = null;
-  rootFolder: string = '/';
+  rootFolder: ?string = null;
+  cache: Map<string, ListFolderReturn> = new Map();
 
-  rpcEndpoint = axios.create({
-    baseURL: 'https://api.dropboxapi.com/2',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  contentEndpoint = axios.create({
-    baseURL: 'https://content.dropboxapi.com/2',
-  });
-
-  async rpc(config: RequestConfig) {
-    try {
-      const response = await this.rpcEndpoint({
-        method: 'post',
-        ...config,
-        headers: {
-          Authorization: this.getAuthBearer(),
-          ...(config.headers || {}),
-        },
-      });
-
-      return response;
-    } catch (err) {
-      return this.handleError(err);
-    }
-  }
-
-  async content(config: RequestConfig) {
-    try {
-      const response = await this.contentEndpoint({
-        method: 'get',
-        responseType: 'blob',
-        ...config,
-        params: {
-          authorization: this.getAuthBearer(),
-          ...(config.params || {}),
-        },
-      });
-
-      return response;
-    } catch (err) {
-      return this.handleError(err);
-    }
-  }
-
-  updateAccessToken(accessToken: string) {
+  updateAccessToken = (accessToken: string) => {
     this.accessToken = accessToken;
-  }
-
-  updateRootFolder(rootFolder: string) {
-    this.rootFolder = rootFolder;
-  }
-
-  getAuthBearer() {
-    if (this.accessToken) return `Bearer ${this.accessToken}`;
-    throw new Error('Access token is not provided');
-  }
-
-  thumbnailSizes = {
-    w32h32: { w: 32, h: 32 },
-    w64h64: { w: 64, h: 64 },
-    w128h128: { w: 128, h: 128 },
-    w256h256: { w: 256, h: 256 },
-    w480h320: { w: 480, h: 320 },
-    w640h480: { w: 640, h: 480 },
-    w960h640: { w: 960, h: 640 },
-    w1024h768: { w: 1024, h: 768 },
-    w2048h1536: { w: 2048, h: 1536 },
   };
 
-  getThumbnailSize = (
-    width: number,
-    dpi: number = window.devicePixelRatio || 1,
-  ): ThumbnailSize => {
-    const actualWidth = width * dpi;
+  updateRootFolder = (rootFolder: string) => {
+    this.rootFolder = rootFolder;
+  };
 
-    const keys = Object.keys(this.thumbnailSizes);
-    let i = 0;
-
-    while (i < keys.length) {
-      const key = keys[i];
-      const { w } = this.thumbnailSizes[key];
-
-      if (w >= actualWidth) return key;
-      i += 1;
+  async post(url: string, data: Object, cancelToken: CancelToken) {
+    if (!this.accessToken) {
+      throw new Error('Dropbox: accessToken and rootFolder must be defined');
     }
 
-    return keys[keys.length - 1];
-  };
+    try {
+      const response = await axios.post(url, data, {
+        baseURL: 'https://api.dropbox.com/2',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+        cancelToken,
+      });
 
-  getThumbUrl({
-    file,
-    size = 'w640h480',
-    format = 'png',
-    mode = 'fitone_bestfit',
-  }: GetThumbUrlProps): string {
-    const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
-    const params = {
-      authorization: this.getAuthBearer(),
-      arg: JSON.stringify({
-        path: join(this.rootFolder, file),
-        format,
-        size,
-        mode,
-      }),
-    };
-
-    return `${baseURL}?${qs.stringify(params)}`;
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  getCoverUrl({
+  generatePreview({
     year,
     issue = '01',
     page = '001',
-    size,
   }: {
     year: string,
     issue?: string,
     page?: string,
-    size: ThumbnailSize,
-  } = {}): string {
-    return this.getThumbUrl({
-      file: `${year}/${issue}/${year}-${issue}-${page}.pdf`,
-      size,
-    });
-  }
+  }): Preview {
+    if (!this.rootFolder || !this.accessToken) {
+      throw new Error('Dropbox: accessToken and rootFolder must be defined');
+    }
 
-  getCoverUrlFromPath(path: string, size: ThumbnailSize) {
-    const match = matchPath(path, {
-      path: '/:any/:year?/:issue?/:page?',
-    });
+    const baseURL = 'https://content.dropboxapi.com/2/files/get_thumbnail';
+    const authorization = `Bearer ${this.accessToken}`;
+    const generateUrl = (path: string, size: string) =>
+      `${baseURL}?${qs.stringify({
+        authorization,
+        arg: JSON.stringify({
+          path,
+          size,
+          format: 'jpeg',
+          mode: 'fitone_bestfit',
+        }),
+      })}`;
 
-    const { params } = match || {};
-    const year = (params && params.year) || '';
-    const issue = (params && params.issue) || '01';
-    const page = (params && params.page) || '001';
-
-    return this.getCoverUrl({
+    const path = join(
+      this.rootFolder,
       year,
       issue,
-      page,
-      size,
-    });
+      `${year}-${issue}-${page}.pdf`,
+    );
+
+    const previews = {
+      '32': generateUrl(path, 'w32h32'),
+      '64': generateUrl(path, 'w64h64'),
+      '128': generateUrl(path, 'w128h128'),
+      '256': generateUrl(path, 'w256h256'),
+      '480': generateUrl(path, 'w480h320'),
+      '640': generateUrl(path, 'w640h480'),
+      '960': generateUrl(path, 'w960h640'),
+      '1024': generateUrl(path, 'w1024h768'),
+      '2048': generateUrl(path, 'w2048h1536'),
+    };
+
+    return previews;
   }
 
-  generatePreviewsFromPath = (path: string): MagazinePagePreview => {
-    const match = matchPath(path, {
-      path: '/:any/:year?/:issue?/:page?',
-    });
+  generateSrc(path: string): string {
+    if (!this.rootFolder || !this.accessToken) {
+      throw new Error('Dropbox: accessToken and rootFolder must be defined');
+    }
 
-    const { params } = match || {};
-    const year = (params && params.year) || '';
-    const issue = (params && params.issue) || '01';
-    const page = (params && params.page) || `${year}-${issue}-001.pdf`;
-    const file = join(year, issue, page);
-    return Object.keys(this.thumbnailSizes).reduce((acc, size) => {
-      const width = this.thumbnailSizes[size].w;
-      return {
-        ...acc,
-        [width.toString()]: this.getThumbUrl({ file, size }),
-      };
-    }, {});
-  };
-
-  getFileDownloadLink({ path }: { path: string }): string {
     const baseURL = 'https://content.dropboxapi.com/2/files/download';
-    const params = {
-      authorization: this.getAuthBearer(),
-      arg: JSON.stringify({ path }),
-    };
+    const authorization = `Bearer ${this.accessToken}`;
+    const arg = JSON.stringify({ path });
 
-    return `${baseURL}?${qs.stringify(params)}`;
+    return `${baseURL}?${qs.stringify({ authorization, arg })}`;
   }
 
-  async filesListFolder({
-    folder,
-    recursive = false,
-    cancelToken,
-  }: FilesListFolderProps): Promise<FilesListFolderResponse> {
-    const path = join(this.rootFolder, folder);
+  mapToEntry = (entry: any): ?Entry => {
+    const { id, name } = entry;
+    const tag = entry['.tag'];
+    const type = getType(entry.name);
 
-    const response = await this.rpc({
-      url: '/files/list_folder',
-      data: {
-        path: path === '/' ? '' : path,
-        recursive,
-      },
-      cancelToken,
-    });
+    const [, year, issue, page] = re.default().exec(entry.path_display);
 
-    const newEntries = response.data.entries.map(entry => ({
-      ...entry,
-      tag: entry['.tag'],
-    }));
+    switch (type) {
+      case 'year':
+        return {
+          type,
+          tag,
+          id,
+          name,
+          url: join('/', year),
+          preview: this.generatePreview({ year }),
+        };
 
-    const newResponse = {
-      ...response,
-      data: {
-        ...response.data,
-        entries: newEntries,
-      },
-    };
+      case 'issue':
+        return {
+          type,
+          tag,
+          id,
+          name,
+          url: join('/', year, issue),
+          preview: this.generatePreview({ year, issue }),
+        };
 
-    return newResponse;
-  }
+      // eslint-disable-next-line
+      case 'page':
+        const [, , , pageName] = re.page().exec(`${page}.pdf`);
+        return {
+          type,
+          tag,
+          id,
+          name: pageName,
+          url: join('/', year, issue, pageName),
+          modified: entry.client_modified,
+          src: this.generateSrc(entry.path_lower),
+          preview: this.generatePreview({ year, issue, page: pageName }),
+        };
 
-  async filesDownload({
-    file,
-    cancelToken,
-  }: FilesDownloadProps): Promise<FilesDownloadResponse> {
-    const path = join(this.rootFolder, file);
-
-    const response = await this.content({
-      url: '/files/download',
-      params: { arg: JSON.stringify({ path }) },
-      cancelToken,
-    });
-
-    return response;
-  }
-
-  handleError = (error: Error) => {
-    throw error;
+      default:
+        return null;
+    }
   };
+
+  async metadata(
+    path: string,
+    {
+      cancelToken = axios.CancelToken.source().token,
+      ignoreCache = false,
+    }: { cancelToken: CancelToken, ignoreCache: boolean } = {},
+  ): Promise<ListFolderReturn> {
+    if (!ignoreCache && this.cache.has(path)) {
+      const fromCache = this.cache.get(path);
+      if (fromCache) return fromCache;
+    }
+
+    if (!this.rootFolder || typeof this.rootFolder !== 'string') {
+      throw new Error('Dropbox: rootFolder must be defined');
+    }
+
+    const config = { path: join(this.rootFolder, path) };
+    const { data } = await this.post(
+      '/files/get_metadata',
+      config,
+      cancelToken,
+    );
+
+    const file = [this.mapToEntry(data)].filter(Boolean);
+
+    this.cache.set(path, file);
+    return file;
+  }
+
+  async listFolder(
+    path: string,
+    {
+      cancelToken = axios.CancelToken.source().token,
+      ignoreCache = false,
+    }: { cancelToken: CancelToken, ignoreCache: boolean } = {},
+  ): Promise<ListFolderReturn> {
+    if (!ignoreCache && this.cache.has(path)) {
+      const fromCache = this.cache.get(path);
+      if (fromCache) return fromCache;
+    }
+
+    if (!this.rootFolder || typeof this.rootFolder !== 'string') {
+      throw new Error('Dropbox: rootFolder must be defined');
+    }
+
+    const config = { path: join(this.rootFolder, path) };
+    const { data } = await this.post('/files/list_folder', config, cancelToken);
+    const { entries } = data;
+
+    const content = entries.map(this.mapToEntry).filter(Boolean);
+
+    this.cache.set(path, content);
+    return content;
+  }
 }
 
 const dropbox = new Dropbox();
