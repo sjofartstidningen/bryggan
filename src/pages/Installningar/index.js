@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import type { Location } from 'react-router-dom';
 import { Formik } from 'formik';
+import format from 'date-fns/format';
 import type { Route as RouteType } from '../../types';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import { MainContentWrapper } from '../../molecules/Grid';
@@ -51,6 +52,17 @@ class Installningar extends Component<Props, State> {
 
   handleDownload = (repo: { name: string, url: string }) => {
     window.open(repo.url);
+  };
+
+  parseDate = (date: string): string => {
+    try {
+      const d = format(date, 'YYYY-MM-DD HH:mm:ss');
+      if (d === 'Invalid Date') return '-';
+
+      return d;
+    } catch (err) {
+      return '-';
+    }
   };
 
   render() {
@@ -151,7 +163,7 @@ class Installningar extends Component<Props, State> {
           <Paragraph>
             <Tinted>Aktuell version:</Tinted> {version} <br />
             <Tinted>Uppdaterad:</Tinted>{' '}
-            {process.env.REACT_APP_BUILD_DATE || '-'} <br />
+            {this.parseDate(process.env.REACT_APP_BUILD_DATE || '')} <br />
             <ExternalLink to={bugs.url}>Rapportera ett fel</ExternalLink>
           </Paragraph>
         </Section>
