@@ -4,7 +4,7 @@ import { Container } from 'unstated';
 import { CancelToken } from 'axios';
 import uniqBy from 'lodash.uniqby';
 import uniq from 'lodash.uniq';
-import { adjustWhere } from '../utils';
+import { adjustWhere, sortByName } from '../utils';
 import dropbox from '../api/dropbox';
 import * as re from '../utils/regexp';
 import type {
@@ -208,6 +208,44 @@ class MagazineContainer extends Container<MagazineState> {
         issues: appendEntries(ids, this.state.issues, [year, issue]),
       });
     }
+  };
+
+  getIssuesForYear = ({ year }: { year: string }): Array<MagazineIssue> => {
+    const foundYear = this.state.years.find(y => y.name === year);
+
+    if (foundYear) {
+      const { entries } = foundYear;
+      const issues = entries
+        .map(issueId => this.state.issues.find(i => i.id === issueId))
+        .filter(Boolean);
+
+      return issues.sort((a, b) => -sortByName(a, b));
+    }
+
+    return [];
+  };
+
+  getPagesForIssue = ({
+    year,
+    issue,
+  }: {
+    year: string,
+    issue: string,
+  }): Array<MagazinePage> => {
+    const foundIssue = this.state.issues.find(
+      i => i.path.includes(year) && i.name === issue,
+    );
+
+    if (foundIssue) {
+      const { entries } = foundIssue;
+      const pages = entries
+        .map(pageId => this.state.pages.find(i => i.id === pageId))
+        .filter(Boolean);
+
+      return pages.sort(sortByName);
+    }
+
+    return [];
   };
 }
 

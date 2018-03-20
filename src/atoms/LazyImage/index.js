@@ -1,8 +1,7 @@
 // @flow
 import React, { PureComponent, Fragment } from 'react';
 import type { Node } from 'react';
-import { Container, HiddenImage, DefaultError } from './components';
-import { Img } from '../../atoms/Image';
+import { Container, Img, HiddenImage, DefaultError } from './components';
 import getObserver, { emitter, events } from './observer';
 import ProgressBar from '../ProgressBar';
 

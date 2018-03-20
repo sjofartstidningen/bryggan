@@ -1,31 +1,43 @@
 // @flow
 import React from 'react';
-import type { MagazineEntry } from '../../types/magazine';
 import LazyImage from '../../atoms/LazyImage';
 import {
   Wrapper,
   Page,
   PageLink,
   Description,
+  Placeholder,
   EyeIcon,
   RefreshButton,
   RefreshIcon,
 } from './components';
 
-type Props = {
-  pages: Array<MagazineEntry>,
-  push?: boolean,
-  onRefreshClick?: ?(entry: MagazineEntry) => void | Promise<void>,
+type PageEntry = {
+  id: string,
+  name: string,
+  url: string,
+  preview?: string,
 };
 
-function PageGrid({ pages, push, onRefreshClick }: Props) {
+type Props = {
+  pages: Array<PageEntry>,
+  push?: boolean,
+  onRefreshClick?: ?(entry: PageEntry) => void | Promise<void>,
+  ratio?: number,
+};
+
+function PageGrid({ pages, push, onRefreshClick, ratio }: Props) {
   return (
     <Wrapper>
       {push && <Page />}
       {pages.map(page => (
         <Page key={page.id}>
           <PageLink to={page.url}>
-            <LazyImage src={page.preview['32']} alt="" ratio={1} />
+            {page.preview ? (
+              <LazyImage src={page.preview} alt="" ratio={ratio} />
+            ) : (
+              <Placeholder ratio={ratio} />
+            )}
             <Description>
               <span>
                 {page.name} <EyeIcon />
@@ -46,6 +58,7 @@ function PageGrid({ pages, push, onRefreshClick }: Props) {
 PageGrid.defaultProps = {
   push: false,
   onRefreshClick: null,
+  ratio: 1,
 };
 
 export { PageGrid as default };

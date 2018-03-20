@@ -50,6 +50,12 @@ const Description = Paragraph.extend`
   }
 `;
 
+const Placeholder = styled.div`
+  width: 100%;
+  height: 0;
+  padding-top: calc(100% * ${p => p.ratio});
+`;
+
 const EyeIcon = styled(Eye).attrs({ baseline: false })`
   position: absolute;
   margin-left: ${({ theme }) => theme.margin.fourth};
@@ -98,6 +104,7 @@ export {
   Page,
   PageLink,
   Description,
+  Placeholder,
   EyeIcon,
   RefreshButton,
   RefreshIcon,
