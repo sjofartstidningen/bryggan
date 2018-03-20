@@ -1,9 +1,16 @@
 // @flow
 import React from 'react';
 import type { ContextRouter } from 'react-router-dom';
-import Tidningen from './pages/Tidningen';
-import Nyhetsbrevet from './pages/Nyhetsbrevet';
-import Installningar from './pages/Installningar';
+import Loadable from 'react-loadable';
+import ProgressBar from './atoms/ProgressBar';
+
+const createLoader = loader =>
+  // $FlowFixMe
+  Loadable({ loader, loading: () => <ProgressBar /> });
+
+const Tidningen = createLoader(() => import('./pages/Tidningen'));
+const Nyhetsbrevet = createLoader(() => import('./pages/Nyhetsbrevet'));
+const Installningar = createLoader(() => import('./pages/Installningar'));
 
 const routes = [
   {
