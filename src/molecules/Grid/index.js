@@ -17,4 +17,10 @@ const AreaMain = styled.div`
   position: relative;
 `;
 
-export { Grid, AreaSidebar, AreaMain };
+const MainContentWrapper = styled.div`
+  width: 100%;
+  height: auto;
+  padding: ${({ theme }) => theme.padding.double};
+`;
+
+export { Grid, AreaSidebar, AreaMain, MainContentWrapper };

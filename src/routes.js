@@ -3,7 +3,7 @@ import React from 'react';
 import type { ContextRouter } from 'react-router-dom';
 import Tidningen from './pages/Tidningen';
 import Nyhetsbrevet from './pages/Nyhetsbrevet';
-import PreProps from './components/PreProps';
+import Installningar from './pages/Installningar';
 
 const routes = [
   {
@@ -19,7 +19,7 @@ const routes = [
   {
     to: '/installningar',
     title: 'Inställningar',
-    render: (props: ContextRouter) => <PreProps {...props} />,
+    render: (props: ContextRouter) => <Installningar {...props} />,
   },
 ];
 

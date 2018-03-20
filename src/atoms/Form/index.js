@@ -6,9 +6,7 @@ import {
 import { fontSmoothing, transitions } from '../../theme/utils';
 
 const Form = styled.form`
-  max-width: 40rem;
-  border-bottom: ${({ theme }) => theme.border.greyOpaque};
-  padding-bottom: ${({ theme }) => theme.margin.double};
+  
 `;
 
 const FormFieldset = styled.fieldset`
@@ -16,6 +14,10 @@ const FormFieldset = styled.fieldset`
   margin-bottom: ${({ theme }) => theme.margin.double};
   border: 0;
   padding: 0;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 `;
 
 const FormLegend = styled.legend`

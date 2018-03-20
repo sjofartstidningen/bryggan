@@ -15,6 +15,10 @@ const applyBgColor = (bg: string) => `
   &:active {
     background-color: ${darken(0.05, bg)};
   }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 
 const modifierConfig = {

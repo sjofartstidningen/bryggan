@@ -12,7 +12,7 @@ import Breadcrumbs from '../../molecules/Breadcrumbs';
 import IssueList from './IssueList';
 import PagePreview from './PagePreview';
 import OnMount from '../../components/OnMount';
-import { Wrapper } from './components';
+import { MainContentWrapper } from '../../molecules/Grid';
 import { Heading1 } from '../../atoms/Text';
 import ErrorMessage from '../../atoms/ErrorMessage';
 
@@ -54,7 +54,7 @@ class Tidningen extends Component<Props, State> {
     return (
       <Subscribe to={[MagazineContainer]}>
         {magazine => (
-          <Wrapper>
+          <MainContentWrapper>
             <OnMount
               onMount={async () => {
                 await magazine.fetchYears();
@@ -168,7 +168,7 @@ class Tidningen extends Component<Props, State> {
                   />
                 </Fragment>
               )}
-          </Wrapper>
+          </MainContentWrapper>
         )}
       </Subscribe>
     );

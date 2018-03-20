@@ -32,6 +32,7 @@ const Title = Paragraph.extend`
   flex: 1;
   margin: 0;
   padding: ${({ theme }) => theme.padding.half};
+  color: ${({ theme }) => theme.color.greyDark};
   text-align: center;
   white-space: normal;
 `;
@@ -67,9 +68,9 @@ type Props = {
 
 function ButtonCard({ title, label, icon: Icon, onClick }: Props) {
   return (
-    <Button>
+    <Button onClick={onClick}>
       <Title>{title}</Title>
-      <Label onClick={onClick}>
+      <Label>
         {Icon && <Icon />} {label}
       </Label>
     </Button>
