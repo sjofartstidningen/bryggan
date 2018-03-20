@@ -60,74 +60,76 @@ class Installningar extends Component<Props, State> {
       <MainContentWrapper>
         <Breadcrumbs location={location} routes={breadcrumbs} />
 
-        <Section>
-          <Heading2>Användare</Heading2>
+        {false && (
+          <Section>
+            <Heading2>Användare</Heading2>
 
-          <Formik
-            initialValues={{ name: '', email: '' }}
-            onSubmit={this.handleSubmit}
-            render={({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              handleReset,
-              isSubmitting,
-            }) => (
-              <Form onSubmit={handleSubmit}>
-                <FormFieldset>
-                  <FormGroup>
-                    <FormInputLabel>Namn</FormInputLabel>
-                    <FormInput
-                      type="text"
-                      name="name"
-                      id="name"
-                      value={values.name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      autoCorrect="on"
-                      autoCapitalize="on"
-                      autoComplete="name"
-                    />
-                  </FormGroup>
+            <Formik
+              initialValues={{ name: '', email: '' }}
+              onSubmit={this.handleSubmit}
+              render={({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                handleReset,
+                isSubmitting,
+              }) => (
+                <Form onSubmit={handleSubmit}>
+                  <FormFieldset>
+                    <FormGroup>
+                      <FormInputLabel>Namn</FormInputLabel>
+                      <FormInput
+                        type="text"
+                        name="name"
+                        id="name"
+                        value={values.name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        autoCorrect="on"
+                        autoCapitalize="on"
+                        autoComplete="name"
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <FormInputLabel>Email</FormInputLabel>
-                    <FormInput
-                      type="text"
-                      name="email"
-                      id="email"
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      autoCorrect="off"
-                      autoCapitalize="off"
-                      autoComplete="email"
-                      modifiers={[
-                        touched.email && errors.email && 'error',
-                      ].filter(Boolean)}
-                    />
-                  </FormGroup>
-                </FormFieldset>
+                    <FormGroup>
+                      <FormInputLabel>Email</FormInputLabel>
+                      <FormInput
+                        type="text"
+                        name="email"
+                        id="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        autoComplete="email"
+                        modifiers={[
+                          touched.email && errors.email && 'error',
+                        ].filter(Boolean)}
+                      />
+                    </FormGroup>
+                  </FormFieldset>
 
-                <FormFieldset>
-                  <FormGroup>
-                    <Button
-                      type="submit"
-                      modifiers={['brand']}
-                      disabled={isSubmitting}
-                    >
-                      Spara
-                    </Button>
-                    <Button onClick={handleReset}>Ångra</Button>
-                  </FormGroup>
-                </FormFieldset>
-              </Form>
-            )}
-          />
-        </Section>
+                  <FormFieldset>
+                    <FormGroup>
+                      <Button
+                        type="submit"
+                        modifiers={['brand']}
+                        disabled={isSubmitting}
+                      >
+                        Spara
+                      </Button>
+                      <Button onClick={handleReset}>Ångra</Button>
+                    </FormGroup>
+                  </FormFieldset>
+                </Form>
+              )}
+            />
+          </Section>
+        )}
 
         <Section>
           <Heading2>Nedladdningar</Heading2>
@@ -135,7 +137,7 @@ class Installningar extends Component<Props, State> {
           {repos.map(repo => (
             <ButtonCard
               key={repo.name}
-              title="InDesign Export"
+              title={repo.name}
               label="Ladda ner"
               icon={() => <Download />}
               onClick={() => this.handleDownload(repo)}
