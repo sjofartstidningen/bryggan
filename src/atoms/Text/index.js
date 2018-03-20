@@ -19,4 +19,12 @@ const Strong = styled.strong`
   font-weight: ${({ theme }) => theme.weight.bold};
 `;
 
-export { Paragraph, Strong };
+const Heading1 = Paragraph.withComponent('h1').extend`
+  margin: 0;
+  margin-top: ${({ theme }) => theme.margin.extra};
+  margin-bottom: ${({ theme }) => theme.margin.half};
+  font-size: ${({theme}) => theme.typeSize.heading};
+  font-weight: ${({theme}) => theme.weight.bold};
+`;
+
+export { Paragraph, Strong, Heading1 };

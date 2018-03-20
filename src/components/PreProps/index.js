@@ -2,6 +2,8 @@
 import React from 'react';
 
 const serializer = (k, v) => {
+  if (v == null) return 'null/undefined';
+
   const valueType = typeof v;
   switch (valueType) {
     case 'function':

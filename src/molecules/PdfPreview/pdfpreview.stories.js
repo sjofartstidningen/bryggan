@@ -7,12 +7,7 @@ import qs from 'qs';
 import PdfPreview from './index';
 
 const pages = Array.from({ length: 10 }, (_, i) => ({
-  id: `${i + 1}`,
   name: `00${i + 1}`,
-  path: '',
-  url: '',
-  preview: {},
-  modified: '',
   src: `https://content.dropboxapi.com/2/files/download?${qs.stringify({
     arg: JSON.stringify({ path: `/bryggan/2018/01/2018-01-00${i + 1}.pdf` }),
     authorization: `Bearer ${process.env.STORYBOOK_DROPBOX_TOKEN || ''}`,
@@ -55,12 +50,7 @@ storiesOf('molecules/PdfPreview', module)
   .add('with error page', () => (
     <Wrapper
       pages={pages.slice(0, 2).concat({
-        id: '3',
         name: `003`,
-        path: '',
-        url: '',
-        preview: {},
-        modified: '',
         src: `https://content.dropboxapi.com/2/files/download?${qs.stringify({
           arg: JSON.stringify({
             path: `/bryggan/2018/01/2018-01-no-num.pdf`,

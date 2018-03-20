@@ -1,7 +1,6 @@
 // @flow
 import React, { PureComponent } from 'react';
 import { setOptions } from 'react-pdf';
-import type { MagazinePage } from '../../types/magazine';
 import PreviewControls from '../PreviewControls';
 import { Wrapper, Preview, Document, Page, CloseButton } from './components';
 import { Close } from '../../atoms/Icon';
@@ -9,8 +8,10 @@ import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
 
+function NoOp() { return null };
+
 type Props = {
-  page: MagazinePage,
+  page: { src: string, name: string },
   total: number,
   onNext: () => void,
   onPrev: () => void,
@@ -113,8 +114,8 @@ class PdfPreview extends PureComponent<Props, State> {
         <Preview state={state}>
           <Document
             file={src}
-            loading={() => null}
-            error={() => null}
+            loading={<NoOp />}
+            error={<NoOp />}
             onLoadError={this.handleError('load')}
             onSourceError={this.handleError('source')}
           >
