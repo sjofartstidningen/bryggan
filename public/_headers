@@ -1,6 +1,7 @@
 /*
-  Content-Security-Policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com/; style-src 'self' https://fonts.googleapis.com/ 'unsafe-inline'
+  Content-Security-Policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com/; style-src 'self' https://fonts.googleapis.com/ 'unsafe-inline'; object-src 'none'; img-src 'self' https://content.dropboxapi.com/; report-uri https://sjofartstidningen.report-uri.com/r/d/csp/enforce
   X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer-when-downgrade
+  Expect-CT: max-age=0, report-uri="https://sjofartstidningen.report-uri.com/r/d/ct/reportOnly"
