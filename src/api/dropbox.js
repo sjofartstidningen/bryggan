@@ -4,6 +4,8 @@ import qs from 'qs';
 import axios from 'axios';
 import type { CancelToken } from 'axios';
 import * as re from '../utils/regexp';
+import { create } from '../utils/cache';
+import type { Cache } from '../utils/cache';
 
 type Preview = {
   '32': string,
@@ -40,7 +42,7 @@ const getType = (name: string): ?('year' | 'issue' | 'page') => {
 class Dropbox {
   accessToken: ?string = null;
   rootFolder: ?string = null;
-  cache: Map<string, ListFolderReturn> = new Map();
+  cache: Cache<string, string, ListFolderReturn> = create(x => x);
 
   updateAccessToken = (accessToken: string) => {
     this.accessToken = accessToken;
