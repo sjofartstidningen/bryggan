@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   transition-delay: 0.2s;
 
   ${p =>
-    !p.show &&
+    p.done &&
     css`
       opacity: 0;
       visibility: hidden;
