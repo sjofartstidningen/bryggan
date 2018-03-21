@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // @flow
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
@@ -15,12 +16,14 @@ type Props = {
   strict?: boolean,
 };
 
-function SecureRoute({
-  authenticated,
-  redirect = '/sign-in',
-  ...rest
-}: Props = {}) {
-  return authenticated ? <Route {...rest} /> : <Redirect to={redirect} />;
+function SecureRoute({ authenticated, redirect, path, ...rest }: Props) {
+  return authenticated ? (
+    <Route path={path} {...rest} />
+  ) : (
+    <Redirect to={{ pathname: redirect, state: { referrer: path } }} />
+  );
 }
 
-export default SecureRoute;
+SecureRoute.defaultProps = { redirect: '/sign-in' };
+
+export { SecureRoute as default };

@@ -15,5 +15,5 @@ script: yarn run validate
 
 branches:
   only:
-    - master
-    - develop
+  - master
+  - next

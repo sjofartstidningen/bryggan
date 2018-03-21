@@ -1,4 +1,5 @@
 // @flow
+import md5 from 'md5';
 
 const compareBy = (prop: string) => (a: Object, b: Object): number => {
   if (a[prop] > b[prop]) return 1;
@@ -51,6 +52,31 @@ const clamp = (min: number, max: number, n: number): number => {
   return n;
 };
 
+const unique = <T>(list: Array<T>): Array<T> =>
+  list.filter((x: T, idx, self) => self.indexOf(x) === idx);
+
+const gravatarUrl = (email: string, fallback: string = '404') =>
+  `https://www.gravatar.com/avatar/${md5(email)}?d=${fallback}`;
+
+const getBestThumbnail = (
+  widths: Array<string>,
+  containerWidth: number,
+  dpi: number = window.devicePixelRatio || 1,
+): string => {
+  const actualWidth = containerWidth * dpi;
+
+  let i = 0;
+  while (i < widths.length) {
+    const key = widths[i];
+    const width = Number.parseInt(key, 10);
+    if (width >= actualWidth) return key;
+
+    i += 1;
+  }
+
+  return widths[widths.length - 1];
+};
+
 export {
   compareBy,
   compareByDesc,
@@ -59,4 +85,7 @@ export {
   adjust,
   adjustWhere,
   clamp,
+  unique,
+  gravatarUrl,
+  getBestThumbnail,
 };
