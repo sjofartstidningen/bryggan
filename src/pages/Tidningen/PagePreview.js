@@ -1,15 +1,9 @@
 // @flow
 import React, { PureComponent } from 'react';
-import Loadable from 'react-loadable';
 import type { RouterHistory } from 'react-router-dom';
 import padStart from 'lodash.padstart';
 import RenderInPreview from '../../components/RenderInPreview';
-import ProgressBar from '../../atoms/ProgressBar';
-
-const PdfPreview = Loadable({
-  loader: () => import('../../molecules/PdfPreview'),
-  loading: () => <ProgressBar />,
-});
+import PdfPreview from '../../molecules/PdfPreview';
 
 type Entry = {
   name: string,
