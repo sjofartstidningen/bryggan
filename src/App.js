@@ -1,4 +1,5 @@
 // @flow
+import 'intersection-observer';
 import React, { Component, Fragment } from 'react';
 import {
   BrowserRouter as Router,
