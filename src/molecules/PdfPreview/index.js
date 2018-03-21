@@ -62,9 +62,9 @@ class PdfPreview extends PureComponent<Props, State> {
 
   clearCache = () => {
     this.cache.clear((_, value) => {
-      window.requestIdleCallback(() => {
+      window.setTimeout(() => {
         URL.revokeObjectURL(value);
-      });
+      }, 0);
     });
   };
 
