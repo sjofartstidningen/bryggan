@@ -7,6 +7,8 @@ import { Close } from '../../atoms/Icon';
 import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
+import { create } from '../../utils/cache';
+import type { Cache } from '../../utils/cache';
 
 function NoOp() {
   return null;
@@ -24,6 +26,7 @@ type State = {
   zoom: number,
   state: 'loading' | 'success' | 'error',
   message: ?string,
+  uri: ?string,
 };
 
 class PdfPreview extends PureComponent<Props, State> {
@@ -31,7 +34,10 @@ class PdfPreview extends PureComponent<Props, State> {
     zoom: 1,
     state: 'loading',
     message: null,
+    uri: null,
   };
+
+  cache: Cache<string, string, string> = create(x => x);
 
   componentDidMount() {
     setOptions({
@@ -39,17 +45,55 @@ class PdfPreview extends PureComponent<Props, State> {
     });
 
     window.addEventListener('keydown', this.handleKeydown);
+    this.fetchPdf();
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
+    this.clearCache();
   }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.page.src !== this.props.page.src) {
       this.setState(() => ({ state: 'loading', zoom: 1 })); // eslint-disable-line
+      this.fetchPdf();
     }
   }
+
+  clearCache = () => {
+    this.cache.clear((_, value) => {
+      window.requestIdleCallback(() => {
+        URL.revokeObjectURL(value);
+      });
+    });
+  };
+
+  fetchPdf = async () => {
+    const { src } = this.props.page;
+
+    if (this.cache.has(src)) {
+      const uri = this.cache.get(src);
+
+      if (uri) {
+        this.setState(() => ({ uri }));
+        return;
+      }
+    }
+
+    try {
+      const response = await fetch(src);
+      const blob = await response.blob();
+      const uri = URL.createObjectURL(blob);
+
+      this.cache.set(src, uri);
+      this.setState(() => ({ uri }));
+    } catch (err) {
+      this.setState(() => ({
+        state: 'error',
+        message: 'Kunde inte hämta PDFen',
+      }));
+    }
+  };
 
   handleKeydown = (event: KeyboardEvent) => {
     const { keyCode } = event;
@@ -91,9 +135,7 @@ class PdfPreview extends PureComponent<Props, State> {
 
   render() {
     const { page, total, onNext, onPrev, onClose } = this.props;
-    const { zoom, state, message } = this.state;
-
-    const { src } = page;
+    const { zoom, state, message, uri } = this.state;
 
     const current = Number.parseInt(page.name, 10);
 
@@ -115,7 +157,7 @@ class PdfPreview extends PureComponent<Props, State> {
 
         <Preview state={state}>
           <Document
-            file={src}
+            file={uri}
             loading={<NoOp />}
             error={<NoOp />}
             onLoadError={this.handleError('load')}
