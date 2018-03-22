@@ -13,7 +13,11 @@ node_js:
 
 script: yarn run validate
 
+deploy:
+  provider: script
+  script:
+    - yarn run semantic-release
+
 branches:
   only:
-  - master
-  - next
+    - master

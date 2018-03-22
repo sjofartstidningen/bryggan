@@ -1,0 +1,6 @@
+[Settings]
+  ID = "9971f8da-9849-47ab-af9a-66163c05300b"
+
+[Build]
+  Publish = "build/"
+  Command = "node scripts/netlify-prepare.js && yarn build"
