@@ -8,16 +8,27 @@ const pkg = require('../package.json');
 
 const writeFile = promisify(fs.writeFile);
 
+async function latestReleaseVersion() {
+  const [, owner, repo] = /\/(\w+)\/((?:\d|\w|-)+)\.git$/.exec(
+    pkg.repository.url,
+  );
+
+  const githubApiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+
+  const { data } = await axios.get(githubApiUrl);
+  const version = data.name.replace('v', '');
+
+  return version;
+}
+
+function prVersion() {
+  return `PR #${process.env.REVIEW_ID}`;
+}
+
 (async () => {
   try {
-    const [, owner, repo] = /\/(\w+)\/((?:\d|\w|-)+)\.git$/.exec(
-      pkg.repository.url,
-    );
-
-    const githubApiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
-
-    const { data } = await axios.get(githubApiUrl);
-    const version = data.name.replace('v', '');
+    const isPr = process.env.PULL_REQUEST;
+    const version = isPr ? await latestReleaseVersion() : prVersion();
 
     const newPkg = Object.assign({}, pkg, { version });
 
