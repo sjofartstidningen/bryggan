@@ -59,7 +59,7 @@ class Dropbox {
 
     try {
       const response = await axios.post(url, data, {
-        baseURL: 'https://api.dropbox.com/2',
+        baseURL: 'https://api.dropboxapi.com/2',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.accessToken}`,
