@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://*.firebaseio.com/ https://unpkg.com; font-src 'self' https://fonts.gstatic.com/; style-src 'self' 'unsafe-inline' blob https://fonts.googleapis.com/; object-src 'none'; img-src 'self' https://content.dropboxapi.com/ https://www.gravatar.com/avatar/; connect-src 'self' *.firebaseio.com/ https://www.googleapis.com/ https://*.dropbox.com/; report-uri https://sjofartstidningen.report-uri.com/r/d/csp/reportOnly
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://*.firebaseio.com/ https://unpkg.com; font-src 'self' https://fonts.gstatic.com/; style-src 'self' 'unsafe-inline' blob: https://fonts.googleapis.com/; object-src 'none'; img-src 'self' blob: https://content.dropboxapi.com/ https://www.gravatar.com/avatar/; connect-src 'self' blob: wss://*.firebaseio.com/ https://www.googleapis.com/ https://*.dropboxapi.com/; worker-src: 'self' blob:; report-uri https://sjofartstidningen.report-uri.com/r/d/csp/reportOnly
   X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
