@@ -3,4 +3,4 @@
 
 [Build]
   Publish = "build/"
-  Command = "yarn build"
+  Command = "node scripts/netlify-prepare.js && yarn build"
