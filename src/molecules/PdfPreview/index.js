@@ -1,6 +1,7 @@
 // @flow
 import React, { PureComponent } from 'react';
 import { setOptions } from 'react-pdf';
+import axios, { CancelToken, isCancel } from 'axios';
 import PreviewControls from '../PreviewControls';
 import { Wrapper, Preview, Document, Page, CloseButton } from './components';
 import { Close } from '../../atoms/Icon';
@@ -37,6 +38,7 @@ class PdfPreview extends PureComponent<Props, State> {
     uri: null,
   };
 
+  cancelToken = CancelToken.source();
   cache: Cache<string, string, string> = create(x => x);
 
   componentDidMount() {
@@ -45,11 +47,14 @@ class PdfPreview extends PureComponent<Props, State> {
     });
 
     window.addEventListener('keydown', this.handleKeydown);
+
+    this.cancelToken.cancel();
     this.fetchPdf();
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
+    this.cancelToken.cancel();
     this.clearCache();
   }
 
@@ -81,17 +86,17 @@ class PdfPreview extends PureComponent<Props, State> {
     }
 
     try {
-      const response = await fetch(src);
-      const blob = await response.blob();
+      this.cancelToken = CancelToken.source();
+      const { data: blob } = await axios.get(src, {
+        responseType: 'blob',
+        cancelToken: this.cancelToken.token,
+      });
       const uri = URL.createObjectURL(blob);
 
       this.cache.set(src, uri);
       this.setState(() => ({ uri }));
     } catch (err) {
-      this.setState(() => ({
-        state: 'error',
-        message: 'Kunde inte hämta PDFen',
-      }));
+      if (!isCancel(err)) this.handleError('source')();
     }
   };
 

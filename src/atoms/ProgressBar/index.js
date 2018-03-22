@@ -2,7 +2,6 @@
 import React, { PureComponent } from 'react';
 import raf from 'raf-schd';
 import { Wrapper, Bar, Progress } from './components';
-import { clamp } from '../../utils';
 
 type Props = {
   done?: boolean,
@@ -13,19 +12,11 @@ type Props = {
 };
 
 type State = {
-  state: 'await' | 'run' | 'pause' | 'finish',
+  state: 'await' | 'run' | 'pause',
   progress: number,
 };
 
-const getNextStep = (progress: number): number => {
-  let add = 0;
-  if (progress < 0.2) add = 0.1;
-  else if (progress < 0.3) add = 0.03;
-  else if (progress < 0.5) add = 0.01;
-  else if (progress < 0.8) add = 0.005;
-
-  return clamp(0, 0.995, progress + add);
-};
+const ease = (t: number): number => --t * t * t + 1; // eslint-disable-line
 
 class ProgressBar extends PureComponent<Props, State> {
   static defaultProps = {
@@ -47,21 +38,16 @@ class ProgressBar extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { done } = this.props;
     const { state } = this.state;
+    const { done } = this.props;
     const equalStates = state === prevState.state;
 
-    if (!equalStates && state === 'run') {
-      this.start();
-    }
-
-    if (!equalStates && state === 'pause') {
-      this.clear();
-    }
+    if (!equalStates && state === 'run') this.start();
+    if (!equalStates && state === 'pause') this.clear();
 
     if (done) {
-      this.finalize();
       this.clear();
+      this.finalize();
     }
   }
 
@@ -70,53 +56,44 @@ class ProgressBar extends PureComponent<Props, State> {
   }
 
   clear = () => {
+    this.trickle.cancel();
     window.clearInterval(this.interval);
     window.clearTimeout(this.timeout);
   };
 
   initialize = () => {
     this.timeout = window.setTimeout(() => {
-      this.setState(() => ({ state: 'run', progress: 0 }));
+      this.setState(() => ({ state: 'run' }));
     }, this.props.delay);
   };
 
   start = () => {
-    const { trickleSpeed } = this.props;
-    this.interval = window.setInterval(
-      raf(() => {
-        const { progress } = this.state;
-        const nextProgress = getNextStep(progress);
-
-        if (nextProgress === progress) {
-          this.setState(() => ({ state: 'pause' }));
-        } else {
-          this.setState(() => ({ progress: nextProgress }));
-        }
-      }),
-      trickleSpeed,
-    );
+    this.interval = window.setInterval(this.trickle, this.props.trickleSpeed);
   };
 
-  finalize = () => {
-    this.setState(() => ({ state: 'finish' }));
-  };
+  trickle = raf(() => {
+    const { progress } = this.state;
+    const nextProgress = progress + 0.01;
+
+    if (nextProgress > 0.95) {
+      this.setState(() => ({ state: 'pause' }));
+    } else {
+      this.setState(() => ({ progress: nextProgress }));
+    }
+  });
+
+  finalize = () => this.setState(() => ({ progress: 1 }));
 
   render() {
-    const { width, background } = this.props;
+    const { done, width, background } = this.props;
     const { state, progress } = this.state;
-    const finalize = state === 'finish';
+    const scale = ease(progress);
 
     return (
-      <Wrapper show={!finalize}>
+      <Wrapper done={done}>
         {state === 'await' ? null : (
           <Bar width={width} background={background}>
-            <Progress
-              progress={progress}
-              style={{
-                transform: `scaleX(${finalize ? 1 : progress})`,
-              }}
-              show={!finalize}
-            />
+            <Progress style={{ transform: `scaleX(${scale})` }} />
           </Bar>
         )}
       </Wrapper>
