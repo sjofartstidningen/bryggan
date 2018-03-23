@@ -8,8 +8,7 @@ import { Close } from '../../atoms/Icon';
 import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
-import { create } from '../../utils/cache';
-import type { Cache } from '../../utils/cache';
+import { MinimalCache } from '../../utils/cache';
 
 function NoOp() {
   return null;
@@ -39,7 +38,9 @@ class PdfPreview extends PureComponent<Props, State> {
   };
 
   cancelToken = CancelToken.source();
-  cache: Cache<string, string, string> = create(x => x);
+  cache: MinimalCache<string, string, string> = new MinimalCache({
+    serializer: x => x,
+  });
 
   componentDidMount() {
     setOptions({
@@ -66,11 +67,13 @@ class PdfPreview extends PureComponent<Props, State> {
   }
 
   clearCache = () => {
-    this.cache.clear((_, value) => {
+    this.cache.forEach(value => {
       window.setTimeout(() => {
         URL.revokeObjectURL(value);
       }, 0);
     });
+
+    this.cache.clear();
   };
 
   fetchPdf = async () => {
