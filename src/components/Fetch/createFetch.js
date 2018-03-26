@@ -10,52 +10,58 @@ import type {
 } from 'axios';
 import { MinimalCache } from '../../utils/cache';
 
-interface Config<D> extends AxiosXHRConfigBase<D> {
-  cacheSerializer?: (AxiosXHRConfig<D>) => string;
+interface Config<RequestData> extends AxiosXHRConfigBase<RequestData> {
+  cacheSerializer?: (AxiosXHRConfig<RequestData>) => string;
   displayName?: string;
   cacheTTL?: number;
 }
 
 type States = 'initial' | 'fetching' | 'fetched' | 'error' | 'aborted';
 
-interface RenderProps<R> {
-  state: States;
-  data: ?R;
-  fromCache: boolean;
-}
-
 type VoidP = void | Promise<void>;
 
-type Props<D, R, F = R> = AxiosXHRConfig<D> & {
+type RenderProps<Response> = {
+  state: States,
+  response: ?Response,
+  fromCache: boolean,
+  error: ?Error,
+};
+
+type Props<RequestData, ResponseBody, ReducedResponse> = AxiosXHRConfig<
+  RequestData,
+> & {
   ignoreCache?: boolean,
   timeout?: number,
-  dataReducer?: R => F,
+  responseReducer: ResponseBody => ReducedResponse,
   onStart?: () => VoidP,
-  onSuccess?: ({ data: R, fromCache: boolean }) => VoidP,
+  onSuccess?: ({ response: ResponseBody, fromCache: boolean }) => VoidP,
   onError?: Error => VoidP,
   onAbort?: Error => VoidP,
-  component?: ComponentType<RenderProps<F>>,
-  render?: (RenderProps<F>) => Node,
-  children?: (RenderProps<F>) => Node,
+  component?: ComponentType<RenderProps<ReducedResponse>>,
+  render?: (RenderProps<ReducedResponse>) => Node,
+  children?: (RenderProps<ReducedResponse>) => Node,
 };
 
-type State<F> = {
+type State<Response> = {
   state: States,
-  data: ?F,
+  response: ?Response,
   fromCache: boolean,
+  error: ?Error,
 };
 
-function createFetch<D, R, F>({
+function createFetch<RequestData, ResponseBody, ReducedResponse>({
   cacheSerializer = x => JSON.stringify(x),
   displayName = 'Fetch',
   cacheTTL = 60 * 60 * 1000,
   ...conf
-}: Config<D>): ComponentType<Props<D, R, F>> {
-  const selectAxiosConfigProps = (props: Props<D, R, F>): AxiosXHRConfig<D> => {
+}: Config<RequestData>): ComponentType<
+  Props<RequestData, ResponseBody, ReducedResponse>,
+> {
+  const selectAxiosConfigProps = (props): AxiosXHRConfig<RequestData> => {
     const {
       ignoreCache,
       timeout,
-      dataReducer,
+      responseReducer,
       onStart,
       onSuccess,
       onError,
@@ -69,23 +75,30 @@ function createFetch<D, R, F>({
   };
 
   const http = axios.create(conf);
-  const cache: MinimalCache<AxiosXHRConfig<D>, string, R> = new MinimalCache({
+  const cache: MinimalCache<
+    AxiosXHRConfig<RequestData>,
+    string,
+    ResponseBody,
+  > = new MinimalCache({
     serializer: cacheSerializer,
   });
 
-  class FetchComp extends PureComponent<Props<D, R, F>, State<F>> {
+  class Fetch extends PureComponent<
+    Props<RequestData, ResponseBody, ReducedResponse>,
+    State<ReducedResponse>,
+  > {
     static displayName = displayName;
     static cache = cache;
     static defaultProps = {
-      method: 'get',
       ignoreCache: false,
-      dataReducer: x => x,
+      responseReducer: x => x,
     };
 
     state = {
       state: 'initial',
-      data: null,
+      response: null,
       fromCache: false,
+      error: null,
     };
 
     controller: CancelTokenSource;
@@ -130,12 +143,6 @@ function createFetch<D, R, F>({
       this.fetchData();
     }
 
-    reduceData(data) {
-      const { dataReducer } = this.props;
-      // $FlowFixMe
-      return dataReducer(data);
-    }
-
     fetchData() {
       const { ignoreCache } = this.props;
 
@@ -146,10 +153,10 @@ function createFetch<D, R, F>({
 
       // $FlowFixMe
       if (!ignoreCache && cache.has(requestConfig)) {
-        const data = cache.get(requestConfig);
+        const response = cache.get(requestConfig);
 
-        if (data) {
-          this.setFetched({ data, fromCache: true });
+        if (response) {
+          this.setFetched({ response, fromCache: true });
           return;
         }
       }
@@ -158,56 +165,51 @@ function createFetch<D, R, F>({
       if (this.props.onStart) this.props.onStart();
 
       // $FlowFixMe
-      (http(requestConfig): AxiosPromise<R>)
-        .then(({ data }) => {
-          this.setFetched({ data, fromCache: false });
-          cache.set(requestConfig, data, cacheTTL);
+      (http(requestConfig): AxiosPromise<ResponseBody>)
+        .then(({ data: response }) => {
+          this.setFetched({ response, fromCache: false });
+          cache.set(requestConfig, response, cacheTTL);
         })
         .catch(err => this.handleError(err));
     }
 
-    setFetched({ data, fromCache }) {
+    setFetched({ response, fromCache }) {
+      const { responseReducer } = this.props;
       this.setState(() => ({
         state: 'fetched',
-        data: this.reduceData(data),
+        response: responseReducer(response),
         fromCache,
+        error: null,
       }));
 
       this.clearTimeout();
       if (this.props.onSuccess) {
-        this.props.onSuccess({ data, fromCache: true });
+        this.props.onSuccess({ response, fromCache: true });
       }
     }
 
-    handleError(err: Error) {
-      if (isCancel(err) && err.message !== 'unmount') {
-        this.setState(() => ({ state: 'aborted' }));
-
-        if (this.props.onAbort) {
-          this.props.onAbort(err);
-        }
+    handleError(error: Error) {
+      if (isCancel(error) && error.message !== 'unmount') {
+        this.setState(() => ({ state: 'aborted', error }));
+        if (this.props.onAbort) this.props.onAbort(error);
       } else {
-        this.setState(() => ({ state: 'error' }));
-
-        if (this.props.onError) {
-          this.props.onError(err);
-        }
+        this.setState(() => ({ state: 'error', error }));
+        if (this.props.onError) this.props.onError(error);
       }
     }
 
     render() {
       const { component, render, children } = this.props;
-      const { state, fromCache, data } = this.state;
-      const renderProps = { state, fromCache, data };
 
-      if (component) return createElement(component, renderProps);
-      if (render) return render(renderProps);
-      if (children) return children(renderProps);
+      if (component) return createElement(component, this.state);
+      if (render) return render(this.state);
+      if (children) return children(this.state);
       return null;
     }
   }
 
-  return FetchComp;
+  return Fetch;
 }
 
 export { createFetch as default };
+export type { RenderProps };

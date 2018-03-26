@@ -43,27 +43,33 @@ describe('render props', () => {
   const Fetch = createFetch({});
 
   test('should render children prop', async () => {
-    const children = jest.fn(({ data }) => <p data-testid="data">{data}</p>);
+    const children = jest.fn(({ response }) => (
+      <p data-testid="response">{response}</p>
+    ));
     const { getByTestId } = render(<Fetch url="/">{children}</Fetch>);
     await flushPromises();
 
-    expect(getByTestId('data').textContent).toBe('hello');
+    expect(getByTestId('response').textContent).toBe('hello');
   });
 
   test('should render render prop', async () => {
-    const renderProp = jest.fn(({ data }) => <p data-testid="data">{data}</p>);
+    const renderProp = jest.fn(({ response }) => (
+      <p data-testid="response">{response}</p>
+    ));
     const { getByTestId } = render(<Fetch url="/" render={renderProp} />);
     await flushPromises();
 
-    expect(getByTestId('data').textContent).toBe('hello');
+    expect(getByTestId('response').textContent).toBe('hello');
   });
 
   test('should render component prop', async () => {
-    const Comp = jest.fn(({ data }) => <p data-testid="data">{data}</p>);
+    const Comp = jest.fn(({ response }) => (
+      <p data-testid="response">{response}</p>
+    ));
     const { getByTestId } = render(<Fetch url="/" component={Comp} />);
     await flushPromises();
 
-    expect(getByTestId('data').textContent).toBe('hello');
+    expect(getByTestId('response').textContent).toBe('hello');
   });
 });
 
@@ -79,11 +85,13 @@ test('should cache responses, and ignore if ignoreCache prop is present', async 
     const { getByTestId } = render(<FetchGreet url={url} render={renderP} />);
     await flushPromises();
     expect(getByTestId('cache').textContent).toBe('false');
+    expect(axiosMock).toHaveBeenCalledTimes(1);
   }
 
   {
     const { getByTestId } = render(<FetchGreet url={url} render={renderP} />);
     expect(getByTestId('cache').textContent).toBe('true');
+    expect(axiosMock).toHaveBeenCalledTimes(1);
   }
 
   {
@@ -92,6 +100,7 @@ test('should cache responses, and ignore if ignoreCache prop is present', async 
     );
     await flushPromises();
     expect(getByTestId('cache').textContent).toBe('false');
+    expect(axiosMock).toHaveBeenCalledTimes(2);
   }
 });
 
@@ -176,16 +185,18 @@ test('should apply headers', async () => {
   );
 });
 
-test('should reduce over data with dataReducerProp', async () => {
+test('should reduce over response with responseReducer prop', async () => {
   axiosMock.mockImplementationOnce(() => Promise.resolve({ data: 'hello' }));
 
   const FetchReducer = createFetch({});
-  const renderP = jest.fn(({ data }) => <p data-testid="data">{data}</p>);
-  const dataReducer = jest.fn(data => data.toUpperCase());
+  const renderP = jest.fn(({ response }) => (
+    <p data-testid="response">{response}</p>
+  ));
+  const responseReducer = jest.fn(response => response.toUpperCase());
   const { getByTestId } = render(
-    <FetchReducer url="/" dataReducer={dataReducer} render={renderP} />,
+    <FetchReducer url="/" responseReducer={responseReducer} render={renderP} />,
   );
   await flushPromises();
 
-  expect(getByTestId('data').textContent).toBe('HELLO');
+  expect(getByTestId('response').textContent).toBe('HELLO');
 });
