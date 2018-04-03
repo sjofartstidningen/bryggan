@@ -14,7 +14,7 @@ const initialState = {
 const cancelReasons = {
   UNMONT: 'Component unmounted',
   TIMEOUT: 'Request timed out',
-  UNKNOW: 'Request cancelled without reason',
+  UNKNOWN: 'Request cancelled without reason',
 };
 
 const Cache = new MinimalCache({ serializer: x => JSON.stringify(x) });
@@ -32,6 +32,7 @@ class Fetch extends PureComponent {
     headers: PropTypes.objectOf(PropTypes.string),
     data: PropTypes.object, // eslint-disable-line
     params: PropTypes.object, // eslint-disable-line
+    shouldFetch: PropTypes.bool,
     ignoreCache: PropTypes.bool,
     timeout: PropTypes.number,
     responseReducer: PropTypes.func,
@@ -47,11 +48,9 @@ class Fetch extends PureComponent {
     client: axios,
     cache: Cache,
     method: 'get',
+    shouldFetch: true,
     ignoreCache: false,
     timeout: 0,
-    component: null,
-    render: null,
-    children: null,
   };
 
   state = { ...initialState };
@@ -60,15 +59,27 @@ class Fetch extends PureComponent {
   timeout = null;
 
   componentDidMount() {
-    this.refetch();
+    const { shouldFetch } = this.props;
+    if (shouldFetch) this.refetch();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { shouldFetch } = this.props;
+    if (shouldFetch && shouldFetch !== prevProps.shouldFetch) this.refetch();
+  }
+
+  componentWillUnmount() {
+    this.clearTimeout();
+    this.abortController(cancelReasons.UNMOUNT);
   }
 
   setupTimeout() {
     const { timeout } = this.props;
     if (timeout > 0) {
-      this.timeout = setTimeout(() => {
-        if (this.controller) this.abortController(cancelReasons.TIMEOUT);
-      }, timeout);
+      this.timeout = setTimeout(
+        () => this.abortController(cancelReasons.TIMEOUT),
+        timeout,
+      );
     }
   }
 
@@ -80,7 +91,7 @@ class Fetch extends PureComponent {
     this.controller = CancelToken.source();
   }
 
-  abortController(reason = cancelReasons.UNKNOW) {
+  abortController(reason = cancelReasons.UNKNOWN) {
     if (this.controller) this.controller.cancel(reason);
   }
 
@@ -167,9 +178,7 @@ class Fetch extends PureComponent {
 
   cacheResponse({ response, config }) {
     const { cache, ignoreCache } = this.props;
-    if (ignoreCache) return;
-
-    cache.set(config, response);
+    if (!ignoreCache) cache.set(config, response);
   }
 
   getRenderProps = () => ({ ...this.state });

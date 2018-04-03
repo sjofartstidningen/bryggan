@@ -153,3 +153,24 @@ test('should use provided axios client if defined', async () => {
   expect(client).toHaveBeenCalledWith(expect.objectContaining({ url }));
   expect(axiosMock).toHaveBeenCalledWith(expect.objectContaining({ url }));
 });
+
+test('should await fetching until shouldFetch equals true', async () => {
+  const renderP = jest.fn(({ state }) => <p>{state}</p>);
+  const url = '/await';
+  const { getByText, container } = render(
+    <Fetch url={url} shouldFetch={false} render={renderP} />,
+  );
+
+  await delay(1);
+  expect(axiosMock).not.toHaveBeenCalled();
+  expect(getByText('idle').textContent).toBe('idle');
+
+  render(
+    <Fetch url={url} shouldFetch render={renderP} />,
+    {container},
+  );
+
+  await delay(10);
+  expect(axiosMock).toHaveBeenCalled();
+  expect(getByText('fetched').textContent).toBe('fetched');
+});
