@@ -4,15 +4,10 @@ import type { RouterHistory } from 'react-router-dom';
 import padStart from 'lodash.padstart';
 import RenderInPreview from '../../components/RenderInPreview';
 import PdfPreview from '../../molecules/PdfPreview';
-
-type Entry = {
-  name: string,
-  src: string,
-};
+import type { MappedListFolderResponse } from '../../types/dropbox';
 
 type Props = {
-  fetchPages: () => Promise<void>,
-  pages: Array<Entry>,
+  pages: MappedListFolderResponse,
   current: string,
   total: number,
   history: RouterHistory,
@@ -21,10 +16,6 @@ type Props = {
 type State = {};
 
 class PagePreview extends PureComponent<Props, State> {
-  componentDidMount() {
-    if (this.props.pages.length < 1) this.props.fetchPages();
-  }
-
   handleTransition = (val: number) => () => {
     const { current, history } = this.props;
     const { location: { pathname } } = history;
