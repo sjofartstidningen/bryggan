@@ -7,7 +7,6 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
-import { Provider as StateProvider } from 'unstated';
 import { ThemeProvider } from 'styled-components';
 import dropbox from './api/dropbox';
 import {
@@ -105,60 +104,57 @@ class App extends Component<*, State> {
     const authenticated = state === 'authenticated';
 
     return (
-      <StateProvider>
-        <ThemeProvider theme={theme}>
-          <div>
-            {state === 'loading' && <ProgressBar />}
-            {state !== 'loading' && (
-              <Fragment>
-                <Router>
-                  <Grid>
-                    <AreaSidebar>
-                      <Sidebar
-                        links={routes}
-                        onSignOut={this.handleSignOut}
-                        user={user}
-                      />
-                    </AreaSidebar>
+      <ThemeProvider theme={theme}>
+        <Fragment>
+          {state === 'loading' && <ProgressBar />}
+          {state !== 'loading' && (
+            <Fragment>
+              <Router>
+                <Grid>
+                  <AreaSidebar>
+                    <Sidebar
+                      links={routes}
+                      onSignOut={this.handleSignOut}
+                      user={user}
+                    />
+                  </AreaSidebar>
 
-                    <Switch>
-                      <Route
-                        path="/sign-in"
-                        render={({ location }) =>
-                          authenticated ? (
-                            <Redirect
-                              to={
-                                (location.state && location.state.referrer) ||
-                                '/'
-                              }
-                            />
-                          ) : (
-                            <SignIn
-                              onSignIn={this.handleSignIn}
-                              onSignInError={this.handleSignInError}
-                            />
-                          )
-                        }
-                      />
-
-                      <AreaMain>
-                        {routes.map(route => (
-                          <SecureRoute
-                            key={route.to}
-                            authenticated={authenticated}
-                            path={route.to}
-                            render={route.render}
+                  <Switch>
+                    <Route
+                      path="/sign-in"
+                      render={({ location }) =>
+                        authenticated ? (
+                          <Redirect
+                            to={
+                              (location.state && location.state.referrer) || '/'
+                            }
                           />
-                        ))}
-                      </AreaMain>
-                    </Switch>
-                  </Grid>
-                </Router>
-              </Fragment>
-            )}
-          </div>
-        </ThemeProvider>
-      </StateProvider>
+                        ) : (
+                          <SignIn
+                            onSignIn={this.handleSignIn}
+                            onSignInError={this.handleSignInError}
+                          />
+                        )
+                      }
+                    />
+
+                    <AreaMain>
+                      {routes.map(route => (
+                        <SecureRoute
+                          key={route.to}
+                          authenticated={authenticated}
+                          path={route.to}
+                          render={route.render}
+                        />
+                      ))}
+                    </AreaMain>
+                  </Switch>
+                </Grid>
+              </Router>
+            </Fragment>
+          )}
+        </Fragment>
+      </ThemeProvider>
     );
   }
 }
