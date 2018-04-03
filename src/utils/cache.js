@@ -3,18 +3,34 @@
 type Serializer<I, K> = I => K;
 
 class MinimalCache<I, K, V> {
+  ttl: ?number = null;
   serializer: Serializer<I, K>;
   cache: Map<K, V> = new Map();
 
-  constructor({ serializer }: { serializer: Serializer<I, K> }) {
+  constructor({
+    serializer,
+    ttl,
+  }: {
+    serializer: Serializer<I, K>,
+    ttl?: number,
+  }) {
     this.serializer = serializer;
+    if (ttl) this.ttl = ttl;
   }
 
-  set(input: I, value: V, ttl?: number) {
+  set(input: I, value: V, ttl?: number): () => void {
     const key = this.serializer(input);
     this.cache.set(key, value);
 
-    if (ttl) setTimeout(() => this.cache.delete(key), ttl);
+    const TTL = ttl || this.ttl;
+    let timeout;
+    if (TTL && Number.isFinite(TTL)) {
+      timeout = setTimeout(() => this.cache.delete(key), ttl);
+    }
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
   }
 
   get(input: I): ?V {
