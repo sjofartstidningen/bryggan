@@ -14,7 +14,9 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build": "REACT_APP_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') react-scripts build",
+    "build:headers": "node ./scripts/generate-headers.js",
+    "build:app": "REACT_APP_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') react-scripts build",
+    "build": "yarn run build:app &6 yarn run build:headers",
     "test": "react-scripts test --env=jsdom",
     "test:no-watch": "CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
