@@ -2,8 +2,7 @@
   "name": "bryggan",
   "version": "1.0.1",
   "license": "MIT",
-  "author":
-    "Adam Bergman <adam@fransvilhelm.com> (https://github.com/adambrgmn)",
+  "author": "Adam Bergman <adam@fransvilhelm.com> (https://github.com/adambrgmn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/sjofartstidningen/bryggan.git"
@@ -15,8 +14,7 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build":
-      "REACT_APP_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') react-scripts build",
+    "build": "REACT_APP_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "test:no-watch": "CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -80,7 +78,7 @@
     "nock": "^9.2.3",
     "prettier": "^1.11.1",
     "react-test-renderer": "^16.2.0",
-    "react-testing-library": "^1.5.0"
+    "react-testing-library": "^1.9.4"
   },
   "config": {
     "commitizen": {

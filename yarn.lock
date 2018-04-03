@@ -8189,9 +8189,11 @@ react-test-renderer@^16.0.0-0, react-test-renderer@^16.2.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-testing-library@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-testing-library/-/react-testing-library-1.5.0.tgz#efd677e16b3431318938f26eb6eef77801f4ee7a"
+react-testing-library@^1.9.4:
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/react-testing-library/-/react-testing-library-1.9.4.tgz#12871a1f2bd94d0a701afde4c04675d2e11d9aea"
+  dependencies:
+    wait-for-expect "0.4.0"
 
 react-transition-group@^1.1.2:
   version "1.2.1"
@@ -9872,6 +9874,10 @@ w3c-hr-time@^1.0.1:
   resolved "https://registry.yarnpkg.com/w3c-hr-time/-/w3c-hr-time-1.0.1.tgz#82ac2bff63d950ea9e3189a58a65625fedf19045"
   dependencies:
     browser-process-hrtime "^0.1.2"
+
+wait-for-expect@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/wait-for-expect/-/wait-for-expect-0.4.0.tgz#341c96ab89d6102a0169a9be6cd0de354de92c17"
 
 walker@~1.0.5:
   version "1.0.7"

@@ -2,7 +2,10 @@
 const axios = jest.fn().mockImplementation(() => Promise.resolve({ data: {} }));
 
 axios.post = jest.fn(() => Promise.resolve({ data: {} }));
-axios.create = base => conf => axios({ ...base, ...conf });
+axios.create = base =>
+  jest.fn(conf =>
+    axios({ ...base, ...conf, headers: { ...base.headers, ...conf.headers } }),
+  );
 
 class CancelToken {
   static source() {
