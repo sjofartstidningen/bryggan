@@ -23,9 +23,9 @@ class App extends Component<*, *> {
   render() {
     return (
       <UserProvider>
-        <UserConsumer>
-          {({ state, signIn, signOut, user }) => (
-            <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <UserConsumer>
+            {({ state, signIn, signOut, user }) => (
               <Fragment>
                 {state === 'loading' && <ProgressBar />}
                 {state !== 'loading' && (
@@ -77,9 +77,9 @@ class App extends Component<*, *> {
                   </Fragment>
                 )}
               </Fragment>
-            </ThemeProvider>
-          )}
-        </UserConsumer>
+            )}
+          </UserConsumer>
+        </ThemeProvider>
       </UserProvider>
     );
   }
