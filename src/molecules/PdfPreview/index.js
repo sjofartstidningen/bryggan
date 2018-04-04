@@ -1,6 +1,7 @@
 // @flow
 import React, { PureComponent } from 'react';
 import { setOptions } from 'react-pdf';
+import { dependencies as pdfDeps } from 'react-pdf/package.json';
 import axios, { CancelToken, isCancel } from 'axios';
 import PreviewControls from '../PreviewControls';
 import { Wrapper, Preview, Document, Page, CloseButton } from './components';
@@ -9,6 +10,11 @@ import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
 import { MinimalCache } from '../../utils/cache';
+
+const pdfJsVersion = pdfDeps['pdfjs-dist'].replace(/[^0-9|.]/g, '');
+setOptions({
+  workerSrc: `https://unpkg.com/pdfjs-dist@${pdfJsVersion}/build/pdf.worker.min.js`,
+});
 
 function NoOp() {
   return null;
@@ -43,10 +49,6 @@ class PdfPreview extends PureComponent<Props, State> {
   });
 
   componentDidMount() {
-    setOptions({
-      workerSrc: 'https://unpkg.com/pdfjs-dist@2.0.305/build/pdf.worker.min.js',
-    });
-
     window.addEventListener('keydown', this.handleKeydown);
 
     this.cancelToken.cancel();
