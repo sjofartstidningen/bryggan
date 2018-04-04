@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import type { Location } from 'react-router-dom';
 import { Formik } from 'formik';
 import format from 'date-fns/format';
-import type { Route as RouteType } from '../../types';
+import type { Breadcrumbs as BreadcrumbsType } from '../../types';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import { MainContentWrapper } from '../../molecules/Grid';
 import {
@@ -21,18 +21,12 @@ import { Download } from '../../atoms/Icon';
 import { ExternalLink } from '../../atoms/Link';
 import { version, bugs } from '../../../package.json';
 
-type WithSubroutes = {
-  routes?: Array<RouteType>,
-};
-
-type Routes = Array<RouteType & WithSubroutes>;
-
 type Props = {
   location: Location,
 };
 
 type State = {
-  breadcrumbs: Routes,
+  breadcrumbs: BreadcrumbsType,
   repos: Array<{ name: string, url: string }>,
 };
 

@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { Route } from 'react-router-dom';
 import { join } from 'path';
 import type { Location, Match } from 'react-router-dom';
-import type { Route as RouteType } from '../../types';
+import type { Breadcrumbs as BreadcrumbsType } from '../../types';
 import { sortByName } from '../../utils';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import PagePreview from './PagePreview';
@@ -12,19 +12,13 @@ import { Heading1 } from '../../atoms/Text';
 import FolderView from '../../molecules/FolderView';
 import { FilesListFolder } from '../../components/Fetch/dropbox';
 
-type WithSubroutes = {
-  routes?: Array<RouteType>,
-};
-
-type Routes = Array<RouteType & WithSubroutes>;
-
 type Props = {
   location: Location,
   match: Match,
 };
 
 type State = {
-  breadcrumbs: Routes,
+  breadcrumbs: BreadcrumbsType,
 };
 
 class Tidningen extends Component<Props, State> {

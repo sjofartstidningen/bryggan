@@ -2,7 +2,10 @@
 import React, { Fragment } from 'react';
 import { matchPath } from 'react-router-dom';
 import type { Location } from 'react-router-dom';
-import type { Route } from '../../types';
+import type {
+  BreadcrumbsRoute,
+  Breadcrumbs as BreadcrumbsType,
+} from '../../types';
 import {
   Wrapper,
   CrumbWrapper,
@@ -14,21 +17,20 @@ import {
   Icon,
 } from './components';
 
-type WithSubroutes = {
-  routes?: Array<Route>,
-};
-
-type Routes = Array<Route & WithSubroutes>;
-
 type Props = {
-  routes: Routes,
+  routes: BreadcrumbsType,
   location: Location,
 };
 
 function generateCrumbs(
-  routes: Routes,
+  routes: BreadcrumbsType,
   location: Location,
-): Array<{ to: string, title: string, exact: boolean, routes?: Array<Route> }> {
+): Array<{
+  to: string,
+  title: string,
+  exact: boolean,
+  routes?: Array<BreadcrumbsRoute>,
+}> {
   const items = routes.reduce((acc, route) => {
     const match = matchPath(location.pathname, route);
     if (match == null) return acc;

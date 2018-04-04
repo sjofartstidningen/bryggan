@@ -17,21 +17,11 @@ import {
   ProfileDataName,
   ProfileSignOutButton,
 } from './components';
-// import type { User } from '../../types';
-
-interface User {
-  email?: ?string;
-  displayName?: ?string;
-  photoURL?: ?string;
-}
-
-type NavLinkItem = {
-  to: string,
-  title: string,
-};
+import type { User } from '../../types/firebase';
+import type { GlobalRoute } from '../../types';
 
 type Props = {
-  links: Array<NavLinkItem>,
+  links: Array<GlobalRoute>,
   user: ?User,
   onSignOut: (user: User) => void | Promise<void>,
 };

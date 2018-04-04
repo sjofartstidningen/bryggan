@@ -11,7 +11,6 @@ import type {
 } from '../../types/dropbox';
 import pathRe, { page as pageRe } from '../../utils/regexp';
 import { UserConsumer } from '../../contexts/User';
-import type { UserContext } from '../../contexts/User';
 import { generateDownloadUrl, generatePreview } from '../../utils/dropbox';
 
 const client = axios.create({
@@ -66,7 +65,7 @@ type Props = {
 function FilesListFolder({ path, children, ...rest }: Props) {
   return (
     <UserConsumer>
-      {({ data }: UserContext) => (
+      {({ data }) => (
         <Fetch
           {...rest}
           client={client}

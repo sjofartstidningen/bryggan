@@ -17,7 +17,6 @@ import Sidebar from './molecules/Sidebar';
 import SignIn from './pages/SignIn';
 import { Grid, AreaSidebar, AreaMain } from './molecules/Grid';
 import { UserProvider, UserConsumer } from './contexts/User';
-import type { UserContext } from './contexts/User';
 import { validateAuthError } from './utils/firebase';
 
 class App extends Component<*, *> {
@@ -25,7 +24,7 @@ class App extends Component<*, *> {
     return (
       <UserProvider>
         <UserConsumer>
-          {({ state, signIn, signOut, user }: UserContext) => (
+          {({ state, signIn, signOut, user }) => (
             <ThemeProvider theme={theme}>
               <Fragment>
                 {state === 'loading' && <ProgressBar />}

@@ -8,7 +8,7 @@ import {
   signIn,
   signOut,
 } from '../utils/firebase';
-import type { User, AppData, SignInCredentials } from '../types';
+import type { User, AppData, SignInCredentials } from '../types/firebase';
 
 const { Provider, Consumer } = createContext();
 
@@ -93,5 +93,7 @@ class UserProvider extends PureComponent<Props, State> {
   }
 }
 
-export { UserProvider, Consumer as UserConsumer };
+const UserConsumer: Context => Node = Consumer;
+
+export { UserProvider, UserConsumer };
 export type { Context as UserContext };

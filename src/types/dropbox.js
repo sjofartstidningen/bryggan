@@ -51,12 +51,16 @@ export type PreviewWidth =
   | '1024'
   | '2048';
 
-export type MappedListFolderResponse = Array<{
+export type Previews = { [x: PreviewWidth]: string };
+
+export type Entry = {
   type: 'file' | 'folder',
   id: string,
   name: string,
   path: string,
   url: string,
-  previews: { [x: PreviewWidth]: string },
+  previews: Previews,
   src: string,
-}>;
+}
+
+export type MappedListFolderResponse = Array<Entry>;

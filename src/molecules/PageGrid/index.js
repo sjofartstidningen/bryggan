@@ -11,13 +11,7 @@ import {
   RefreshButton,
   RefreshIcon,
 } from './components';
-
-type PageEntry = {
-  id: string,
-  name: string,
-  url: string,
-  preview?: string,
-};
+import type { PageEntry } from '../../types';
 
 type Props = {
   pages: Array<PageEntry>,
