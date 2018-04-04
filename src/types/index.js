@@ -26,10 +26,12 @@ export type UserProfile = {
 };
 
 export interface User {
+  uid: string;
   email: ?string;
   displayName: ?string;
   photoURL: ?string;
   updateProfile(profile: UserProfile): Promise<void>;
+  emailVerified: boolean;
 }
 
 export type LinkItem = {

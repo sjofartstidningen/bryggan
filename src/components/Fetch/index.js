@@ -146,12 +146,12 @@ class Fetch extends PureComponent {
 
   handleResponse({ response, config }, fromCache = false) {
     const { responseReducer, onResponse } = this.props;
-    this.setState({
+    this.setState(() => ({
       ...initialState,
       state: 'fetched',
       response: responseReducer ? responseReducer(response) : response,
       fromCache,
-    });
+    }));
 
     if (onResponse) onResponse({ response, config });
   }

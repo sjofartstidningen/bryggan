@@ -27,7 +27,7 @@ type FormikSetErrors = (validation: {
 
 type Props = {
   onSignIn: (cred: SignInCredentials) => void | Promise<void>,
-  onSignInError: (err: Error) => { [x: 'email' | 'password']: string },
+  onSignInError: (err: Error) => { email?: string, password?: string },
 };
 
 type State = {};
