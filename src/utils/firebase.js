@@ -8,9 +8,6 @@ const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
   authDomain: getEnv('FIREBASE_AUTH_DOMAIN'),
   databaseURL: getEnv('FIREBASE_DATABASE_URL'),
-  projectId: getEnv('FIREBASE_PROJECT_ID'),
-  storageBucket: getEnv('FIREBASE_STORAGE_BUCKET'),
-  messagingSenderId: getEnv('FIREBASE_MESSAGING_SENDER_ID'),
 };
 
 const bryggan = initializeApp(config);
@@ -59,6 +56,41 @@ const updateUserData = async (data: UserProfile) => {
   return getUser();
 };
 
+type AuthCodes =
+  | 'auth/invalid-email'
+  | 'auth/user-disabled'
+  | 'auth/user-not-found'
+  | 'auth/wrong-password';
+
+interface FirebaseAuthError {
+  code?: AuthCodes;
+}
+
+const validateAuthError = (
+  err: FirebaseAuthError,
+): { email?: string, password?: string } => {
+  const { code } = err;
+  const ret = {};
+
+  switch (code) {
+    case 'auth/invalid-email':
+      ret.email = 'Emailadressen är felaktig';
+      break;
+    case 'auth/user-disabled':
+      ret.email = 'Det här kontot har stängts ner';
+      break;
+    case 'auth/user-not-found':
+      ret.email = 'Emailadressen finns inte registrerad';
+      break;
+    case 'auth/wrong-password':
+      ret.password = 'Felaktigt lösenord';
+      break;
+    default:
+  }
+
+  return ret;
+};
+
 export {
   bryggan as default,
   Auth,
@@ -69,4 +101,5 @@ export {
   getUser,
   getAppData,
   updateUserData,
+  validateAuthError,
 };
