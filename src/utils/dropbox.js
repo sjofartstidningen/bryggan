@@ -1,6 +1,7 @@
 // @flow
 import { join } from 'path';
 import qs from 'qs';
+import type { PreviewWidth, Previews } from '../types/dropbox';
 
 const apiRoot = 'https://api.dropboxapi.com/2/'; // eslint-disable-line
 const contentRoot = 'https://content.dropboxapi.com/2/';
@@ -39,7 +40,7 @@ function generatePreview({
   page?: string,
   accessToken: string,
   rootFolder: string,
-}) {
+}): Previews {
   const url = new URL('files/get_thumbnail', contentRoot);
   const authorization = `Bearer ${accessToken}`;
   const generateUrl = (path: string, size: string) =>
@@ -68,4 +69,23 @@ function generatePreview({
   };
 }
 
-export { generateDownloadUrl, generatePreview };
+function getBestPreviewWidth(containerWidth: number): PreviewWidth {
+  const widths = [
+    '32',
+    '64',
+    '128',
+    '256',
+    '480',
+    '640',
+    '960',
+    '1024',
+    '2048',
+  ];
+  const bestFit = widths.find(
+    w =>
+      Number.parseInt(w, 10) >= containerWidth * (window.devicePixelRatio || 1),
+  );
+  return bestFit || widths[widths.length - 1];
+}
+
+export { generateDownloadUrl, generatePreview, getBestPreviewWidth };

@@ -1,7 +1,7 @@
 // @flow
 import React, { PureComponent } from 'react';
 import { Formik } from 'formik';
-import type { SignInCredentials } from '../../types';
+import type { SignInCredentials } from '../../types/firebase';
 import {
   Wrapper,
   Container,

@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// @flow
 import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -17,7 +16,7 @@ const pages = Array.from({ length: 10 }, (_, i) => ({
 class Wrapper extends Component<*, *> {
   state = { index: 0 };
 
-  handleTransition = (val: number) => () =>
+  handleTransition = (val) => () =>
     this.setState(({ index }) => ({ index: index + val }));
 
   render() {

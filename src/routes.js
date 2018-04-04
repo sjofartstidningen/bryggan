@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import type { ContextRouter } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import ProgressBar from './atoms/ProgressBar';
+import type { GlobalRoute } from './types';
 
 const createLoader = loader =>
   // $FlowFixMe
@@ -12,21 +12,21 @@ const Tidningen = createLoader(() => import('./pages/Tidningen'));
 const Nyhetsbrevet = createLoader(() => import('./pages/Nyhetsbrevet'));
 const Installningar = createLoader(() => import('./pages/Installningar'));
 
-const routes = [
+const routes: Array<GlobalRoute> = [
   {
     to: '/tidningen',
     title: 'Tidningen',
-    render: (props: ContextRouter) => <Tidningen {...props} />,
+    render: props => <Tidningen {...props} />,
   },
   {
     to: '/nyhetsbrevet',
     title: 'Nyhetsbrevet',
-    render: (props: ContextRouter) => <Nyhetsbrevet {...props} />,
+    render: props => <Nyhetsbrevet {...props} />,
   },
   {
     to: '/installningar',
     title: 'Inställningar',
-    render: (props: ContextRouter) => <Installningar {...props} />,
+    render: props => <Installningar {...props} />,
   },
 ];
 

@@ -1,23 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import type { Location } from 'react-router-dom';
-import type { Route as RouteType } from '../../types';
+import type { Breadcrumbs as BreadcrumbsType } from '../../types';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import { MainContentWrapper } from '../../molecules/Grid';
-
-type WithSubroutes = {
-  routes?: Array<RouteType>,
-};
-
-type Routes = Array<RouteType & WithSubroutes>;
 
 type Props = {
   location: Location,
 };
 
 type State = {
-  breadcrumbs: Routes,
+  breadcrumbs: BreadcrumbsType,
 };
 
 class Nyhetsbrevet extends Component<Props, State> {

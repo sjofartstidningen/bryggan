@@ -10,6 +10,7 @@ import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
 import { MinimalCache } from '../../utils/cache';
+import type { Entry } from '../../types/dropbox';
 
 const pdfJsVersion = pdfDeps['pdfjs-dist'].replace(/[^0-9|.]/g, '');
 setOptions({
@@ -21,7 +22,7 @@ function NoOp() {
 }
 
 type Props = {
-  page: { src: string, name: string },
+  page: Entry,
   total: number,
   onNext: () => void,
   onPrev: () => void,

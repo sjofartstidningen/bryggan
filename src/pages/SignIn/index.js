@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import SignInForm from '../../molecules/SignInForm';
-import type { SignInCredentials } from '../../types';
+import type { SignInCredentials } from '../../types/firebase';
 
 type Props = {
   onSignIn: (cred: SignInCredentials) => void | Promise<void>,

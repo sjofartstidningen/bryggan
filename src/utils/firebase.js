@@ -2,7 +2,14 @@
 // @flow
 import { auth, database, initializeApp } from 'firebase';
 import { getEnv } from '../utils';
-import type { User, UserProfile, AppData, SignInCredentials } from '../types';
+import type {
+  User,
+  UserProfile,
+  AppData,
+  SignInCredentials,
+  AuthError,
+  AuthCheckEventHandler,
+} from '../types/firebase';
 
 const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
@@ -15,7 +22,6 @@ const bryggan = initializeApp(config);
 const Auth = auth();
 const Database = database();
 
-type AuthCheckEventHandler = (user: ?User) => void;
 const awaitInitialAuthCheckEvent = (cb: AuthCheckEventHandler) => {
   const unsubscribe = Auth.onAuthStateChanged(cb);
   return unsubscribe;
@@ -56,18 +62,8 @@ const updateUserData = async (data: UserProfile) => {
   return getUser();
 };
 
-type AuthCodes =
-  | 'auth/invalid-email'
-  | 'auth/user-disabled'
-  | 'auth/user-not-found'
-  | 'auth/wrong-password';
-
-interface FirebaseAuthError {
-  code?: AuthCodes;
-}
-
 const validateAuthError = (
-  err: FirebaseAuthError,
+  err: AuthError,
 ): { email?: string, password?: string } => {
   const { code } = err;
   const ret = {};

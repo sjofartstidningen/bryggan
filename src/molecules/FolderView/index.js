@@ -9,32 +9,9 @@ import type {
   PreviewWidth,
 } from '../../types/dropbox';
 import { sortByName } from '../../utils';
+import { getBestPreviewWidth } from '../../utils/dropbox';
 import ErrorMessage from '../../atoms/ErrorMessage';
-
-type PageEntry = {
-  id: string,
-  name: string,
-  url: string,
-  preview?: string,
-};
-
-const getWidth = (container: number): PreviewWidth => {
-  const widths = [
-    '32',
-    '64',
-    '128',
-    '256',
-    '480',
-    '640',
-    '960',
-    '1024',
-    '2048',
-  ];
-  const bestFit = widths.find(
-    w => Number.parseInt(w, 10) >= container * (window.devicePixelRatio || 1),
-  );
-  return bestFit || widths[widths.length - 1];
-};
+import type { PageEntry } from '../../types';
 
 const getPlaceholderIssues = (l: number) =>
   Array.from({ length: l }, (_, i) => ({
@@ -69,13 +46,13 @@ class FolderView extends PureComponent<Props, State> {
   }
 
   handleRef = (ref: ?HTMLDivElement) => {
-    if (ref) this.ref = ref;
+    this.ref = ref;
   };
 
   getContainerWidth = () => {
     if (this.ref) {
       const { width } = this.ref.getBoundingClientRect();
-      this.containerWidth = getWidth(width);
+      this.containerWidth = getBestPreviewWidth(width / 4);
     }
   };
 
