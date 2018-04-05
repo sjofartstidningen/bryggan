@@ -12,7 +12,7 @@ const initialState = {
 };
 
 const cancelReasons = {
-  UNMONT: 'Component unmounted',
+  UNMOUNT: 'Component unmounted',
   TIMEOUT: 'Request timed out',
   UNKNOWN: 'Request cancelled without reason',
 };
@@ -168,6 +168,7 @@ class Fetch extends PureComponent {
 
       if (onError) onError({ error, config });
     } else if (error.message !== cancelReasons.UNMOUNT) {
+      console.log(error);
       this.setState(() => ({
         ...initialState,
         state: 'aborted',
