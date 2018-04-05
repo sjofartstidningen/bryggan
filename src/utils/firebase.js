@@ -15,6 +15,7 @@ const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
   authDomain: getEnv('FIREBASE_AUTH_DOMAIN'),
   databaseURL: getEnv('FIREBASE_DATABASE_URL'),
+  projectId: getEnv('FIREBASE_PROJECT_ID'),
 };
 
 const bryggan = initializeApp(config);
@@ -48,7 +49,7 @@ const signIn = async ({
 
 const signOut = (): Promise<void> => Auth.signOut();
 
-const getUser = (): User => Auth.currentUser;
+const getUser = (): ?User => Auth.currentUser;
 
 const getAppData = async (): Promise<AppData> => {
   const snapshot = await Database.ref('data').once('value');
@@ -58,8 +59,12 @@ const getAppData = async (): Promise<AppData> => {
 
 const updateUserData = async (data: UserProfile) => {
   const user = getUser();
-  await user.updateProfile(data);
-  return getUser();
+  if (user) {
+    await user.updateProfile(data);
+    return getUser();
+  }
+
+  return null;
 };
 
 const validateAuthError = (
@@ -87,6 +92,15 @@ const validateAuthError = (
   return ret;
 };
 
+const sendValidationEmail = async () => {
+  try {
+    const user = getUser();
+    if (user) await user.sendEmailVerification();
+  } catch (err) {
+    // void
+  }
+};
+
 export {
   bryggan as default,
   Auth,
@@ -98,4 +112,5 @@ export {
   getAppData,
   updateUserData,
   validateAuthError,
+  sendValidationEmail,
 };

@@ -20,6 +20,8 @@ import { Paragraph, Tinted, Heading2 } from '../../atoms/Text';
 import { Download } from '../../atoms/Icon';
 import { ExternalLink } from '../../atoms/Link';
 import { version, bugs } from '../../../package.json';
+import { UserConsumer } from '../../contexts/User';
+import { getEnv } from '../../utils';
 
 type Props = {
   location: Location,
@@ -41,8 +43,6 @@ class Installningar extends Component<Props, State> {
       },
     ],
   };
-
-  handleSubmit = () => {};
 
   handleDownload = (repo: { name: string, url: string }) => {
     window.open(repo.url);
@@ -66,76 +66,63 @@ class Installningar extends Component<Props, State> {
       <MainContentWrapper>
         <Breadcrumbs location={location} routes={breadcrumbs} />
 
-        {false && (
-          <Section>
-            <Heading2>Användare</Heading2>
+        <UserConsumer>
+          {({ user, updateUser }) => (
+            <Section>
+              <Heading2>Användare</Heading2>
 
-            <Formik
-              initialValues={{ name: '', email: '' }}
-              onSubmit={this.handleSubmit}
-              render={({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                handleReset,
-                isSubmitting,
-              }) => (
-                <Form onSubmit={handleSubmit}>
-                  <FormFieldset>
-                    <FormGroup>
-                      <FormInputLabel>Namn</FormInputLabel>
-                      <FormInput
-                        type="text"
-                        name="name"
-                        id="name"
-                        value={values.name}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        autoCorrect="on"
-                        autoCapitalize="on"
-                        autoComplete="name"
-                      />
-                    </FormGroup>
+              <Formik
+                initialValues={{ name: user ? user.displayName : '' || '' }}
+                onSubmit={({ name }, { setSubmitting }) =>
+                  updateUser({ displayName: name }).then(
+                    () => setSubmitting(false),
+                    () => setSubmitting(false),
+                  )
+                }
+                render={({
+                  values,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  handleReset,
+                  isSubmitting,
+                }) => (
+                  <Form onSubmit={handleSubmit}>
+                    <FormFieldset>
+                      <FormGroup>
+                        <FormInputLabel>Namn</FormInputLabel>
+                        <FormInput
+                          type="text"
+                          name="name"
+                          id="name"
+                          value={values.name}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          autoCorrect="on"
+                          autoCapitalize="on"
+                          autoComplete="name"
+                        />
+                      </FormGroup>
+                    </FormFieldset>
 
-                    <FormGroup>
-                      <FormInputLabel>Email</FormInputLabel>
-                      <FormInput
-                        type="text"
-                        name="email"
-                        id="email"
-                        value={values.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        autoComplete="email"
-                        modifiers={[
-                          touched.email && errors.email && 'error',
-                        ].filter(Boolean)}
-                      />
-                    </FormGroup>
-                  </FormFieldset>
-
-                  <FormFieldset>
-                    <FormGroup>
-                      <Button
-                        type="submit"
-                        modifiers={['brand']}
-                        disabled={isSubmitting}
-                      >
-                        Spara
-                      </Button>
-                      <Button onClick={handleReset}>Ångra</Button>
-                    </FormGroup>
-                  </FormFieldset>
-                </Form>
-              )}
-            />
-          </Section>
-        )}
+                    <FormFieldset>
+                      <FormGroup>
+                        <Button
+                          type="submit"
+                          modifiers={['brand']}
+                          disabled={isSubmitting}
+                        >
+                          Spara
+                        </Button>
+                        <Button onClick={handleReset}>Ångra</Button>
+                      </FormGroup>
+                    </FormFieldset>
+                  </Form>
+                )}
+              />
+            </Section>
+          )}
+        </UserConsumer>
 
         <Section>
           <Heading2>Nedladdningar</Heading2>
@@ -150,14 +137,14 @@ class Installningar extends Component<Props, State> {
             />
           ))}
         </Section>
-
         <Section>
           <Heading2>Information</Heading2>
 
           <Paragraph>
             <Tinted>Aktuell version:</Tinted> {version} <br />
             <Tinted>Uppdaterad:</Tinted>{' '}
-            {this.parseDate(process.env.REACT_APP_BUILD_DATE || '')} <br />
+            {this.parseDate(getEnv('BUILD_DATE', ''))}
+            <br />
             <ExternalLink to={bugs.url}>Rapportera ett fel</ExternalLink>
           </Paragraph>
         </Section>
