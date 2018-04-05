@@ -10,19 +10,19 @@ export interface User {
   email: ?string;
   displayName: ?string;
   photoURL: ?string;
-  updateProfile(profile: UserProfile): Promise<void>;
   emailVerified: boolean;
+  updateProfile(profile: UserProfile): Promise<void>;
+  sendEmailVerification(): Promise<void>;
 }
 
-export type AuthCodes =
+export type AuthErrorCode =
   | 'auth/invalid-email'
   | 'auth/user-disabled'
   | 'auth/user-not-found'
   | 'auth/wrong-password';
 
-export interface AuthError {
-  code?: AuthCodes;
-  message: string;
+export interface AuthError extends Error {
+  code?: AuthErrorCode;
 }
 
 export type AppData = {

@@ -12,14 +12,12 @@ const compareByDesc = (prop: string) => (a: Object, b: Object) =>
 
 const sortByName = compareBy('name');
 
-const getEnv = (key: string): string => {
+const getEnv = (key: string, defaultRet: ?string = null): string => {
   const generatedKey = key.includes('REACT_APP') ? key : `REACT_APP_${key}`;
-  const value = process.env[generatedKey];
+  const value = process.env[generatedKey] || defaultRet;
 
-  if (value) return value;
-  throw new Error(
-    `Env variable ${generatedKey} is note defined on process.env`,
-  );
+  if (value != null) return value;
+  throw new Error(`Env variable ${generatedKey} is not defined on process.env`);
 };
 
 const adjust = <T>(i: number, fn: (x: T) => T, list: Array<T>): Array<T> => {
@@ -57,7 +55,6 @@ const unique = <T>(list: Array<T>): Array<T> =>
 
 const gravatarUrl = (email: string, fallback: string = '404') =>
   `https://www.gravatar.com/avatar/${md5(email)}?d=${fallback}`;
-
 
 export {
   compareBy,
