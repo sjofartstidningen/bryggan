@@ -6,11 +6,20 @@ import type { GlobalRoute } from './types';
 
 const createLoader = loader =>
   // $FlowFixMe
-  Loadable({ loader, loading: () => <ProgressBar /> });
+  Loadable({
+    loader,
+    loading: ({ isLoading }) => isLoading && <ProgressBar />,
+  });
 
-const Tidningen = createLoader(() => import('./pages/Tidningen'));
-const Nyhetsbrevet = createLoader(() => import('./pages/Nyhetsbrevet'));
-const Installningar = createLoader(() => import('./pages/Installningar'));
+const Tidningen = createLoader(() =>
+  import('./pages/Tidningen' /* webpackChunkName: "tidningen" */),
+);
+const Nyhetsbrevet = createLoader(() =>
+  import('./pages/Nyhetsbrevet' /* webpackChunkName: "nyhetsbrevet" */),
+);
+const Installningar = createLoader(() =>
+  import('./pages/Installningar' /* webpackChunkName: "installningar" */),
+);
 
 const routes: Array<GlobalRoute> = [
   {
