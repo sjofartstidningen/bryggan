@@ -1,5 +1,4 @@
 // @flow
-// $FlowFixMe
 import React, { createContext, PureComponent } from 'react';
 import type { ComponentType, Node } from 'react';
 import {
@@ -111,7 +110,8 @@ class UserProvider extends PureComponent<Props, State> {
   }
 }
 
-type UserConsumerProps = { children: Context => Node };
+type UserConsumerProps = { children: (value: Context) => Node };
+// $FlowFixMe
 const UserConsumer: ComponentType<UserConsumerProps> = Consumer;
 
 export { UserProvider, UserConsumer };

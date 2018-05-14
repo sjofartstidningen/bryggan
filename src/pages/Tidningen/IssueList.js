@@ -14,6 +14,7 @@ const getWidth = memoize((container: number): number => {
 });
 
 const placeholderIssues = (l: number) =>
+  // $FlowFixMe
   Array.from({ length: l }, (_, i) => ({
     id: `${i}`,
     name: '-',
