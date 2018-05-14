@@ -87,8 +87,8 @@ class UserProvider extends PureComponent<Props, State> {
   }
 
   async handleSignIn(values: SignInCredentials) {
-    const user = await signIn(values);
-    await this.authenticate(user);
+    const data = await signIn(values);
+    await this.authenticate(data.user);
   }
 
   async handleSignOut() {

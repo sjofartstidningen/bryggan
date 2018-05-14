@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary */
 // @flow
-import { auth, database, initializeApp } from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 import { getEnv } from '../utils';
 import type {
   User,
@@ -18,10 +20,14 @@ const config = {
   projectId: getEnv('FIREBASE_PROJECT_ID'),
 };
 
-const bryggan = initializeApp(config);
+// $FlowFixMe
+const bryggan = firebase.initializeApp(config);
 
-const Auth = auth();
-const Database = database();
+// $FlowFixMe
+const Auth = firebase.auth();
+
+// $FlowFixMe
+const Database = firebase.database();
 
 const awaitInitialAuthCheckEvent = (cb: AuthCheckEventHandler) => {
   const unsubscribe = Auth.onAuthStateChanged(cb);
@@ -32,13 +38,14 @@ const signIn = async ({
   email,
   password,
   remember,
-}: SignInCredentials): Promise<User> => {
+}: SignInCredentials): Promise<{ user: User }> => {
   try {
     const persistence = remember
       ? 'LOCAL'
       : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
 
-    await Auth.setPersistence(auth.Auth.Persistence[persistence]);
+    // $FlowFixMe
+    await Auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);
 
     const user = await Auth.signInWithEmailAndPassword(email, password);
     return user;
