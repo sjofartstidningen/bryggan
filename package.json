@@ -25,7 +25,6 @@
     "lint": "eslint src",
     "flow": "flow",
     "format": "prettier 'src/**/*' --write",
-    "precommit": "lint-staged",
     "validate": "yarn lint && yarn test && yarn build",
     "storybook": "start-storybook -p 9009 -s public"
   },
@@ -74,7 +73,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.8.2",
     "flow-bin": "^0.72.0",
-    "husky": "^0.14.3",
+    "husky": "^1.0.0-rc.4",
     "jest-enzyme": "^6.0.0",
     "jest-styled-components": "^5.0.1",
     "lint-staged": "^7.1.0",
@@ -86,6 +85,11 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
     }
   }
 }
