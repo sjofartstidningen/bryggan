@@ -7,7 +7,6 @@ export type GlobalRoute = {
   to: string,
   title: string,
   render: ContextRouter => Node,
-  exact?: boolean,
 };
 
 export type PageEntry = {
