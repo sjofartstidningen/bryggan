@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import Loadable from 'react-loadable';
-import { Redirect } from 'react-router-dom';
 import ProgressBar from './atoms/ProgressBar';
 import type { GlobalRoute } from './types';
 
@@ -23,12 +22,6 @@ const Installningar = createLoader(() =>
 );
 
 const routes: Array<GlobalRoute> = [
-  {
-    to: '/',
-    exact: true,
-    title: 'Hem',
-    render: () => <Redirect to="/tidningen" />,
-  },
   {
     to: '/tidningen',
     title: 'Tidningen',

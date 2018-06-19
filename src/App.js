@@ -62,12 +62,18 @@ class App extends Component<*, *> {
                           />
 
                           <AreaMain>
+                            <SecureRoute
+                              authenticated={state === 'authenticated'}
+                              path="/"
+                              exact
+                              render={() => <Redirect to="/tidningen" />}
+                            />
+
                             {routes.map(route => (
                               <SecureRoute
                                 key={route.to}
                                 authenticated={state === 'authenticated'}
                                 path={route.to}
-                                exact={route.exact}
                                 render={route.render}
                               />
                             ))}
