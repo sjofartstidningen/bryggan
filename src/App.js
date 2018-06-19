@@ -67,6 +67,7 @@ class App extends Component<*, *> {
                                 key={route.to}
                                 authenticated={state === 'authenticated'}
                                 path={route.to}
+                                exact={route.exact}
                                 render={route.render}
                               />
                             ))}
