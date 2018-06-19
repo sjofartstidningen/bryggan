@@ -1,5 +1,5 @@
-// flow-typed signature: ec81547c1cfe3020c9bbe9ff8dcbd82d
-// flow-typed version: 0caa283887/formik_v0.11.x/flow_>=v0.53.x
+// flow-typed signature: 5611f21d2cf7f4049f5e7ac100db47ba
+// flow-typed version: 21f5aed438/formik_v0.11.x/flow_>=v0.53.x
 
 declare module "formik" {
   import type { ComponentType } from "react";
@@ -158,7 +158,7 @@ declare module "formik" {
    */
   declare export type FormikHandlers = {
     /** Form submit handler */
-    handleSubmit: (e: SyntheticEvent<HTMLFormElement>) => any,
+    handleSubmit: (e: SyntheticEvent<any>) => any,
     /** Classic React change handler, keyed by input name */
     handleChange: (e: SyntheticEvent<any>) => any,
     /** Classic React blur handler */

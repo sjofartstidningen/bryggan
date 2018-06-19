@@ -1,5 +1,5 @@
-// flow-typed signature: b66d427155317cc19f2c21e60b0b7c34
-// flow-typed version: 03a2b580f4/firebase_v4.x.x/flow_>=v0.34.x
+// flow-typed signature: d0d53d3dca35c3a1c38f05c45ed84d3e
+// flow-typed version: 63cba5e9af/firebase_v5.x.x/flow_>=v0.34.x
 
 /* @flow */
 /** ** firebase ****/
@@ -94,7 +94,7 @@ declare type $npm$firebase$auth$Auth$Persistence$Enum = $Values<$npm$firebase$au
 declare class $npm$firebase$auth$Auth {
   static Persistence: $npm$firebase$auth$Auth$Persistence;
   app: $npm$firebase$App;
-  currentUser: $npm$firebase$auth$User;
+  currentUser: $npm$firebase$auth$User | null;
   applyActionCode(code: string): Promise<void>;
   checkActionCode(code: string): Promise<$npm$firebase$auth$ActionCodeInfo>;
   confirmPasswordReset(code: string, newPassword: string): Promise<void>;
@@ -102,15 +102,15 @@ declare class $npm$firebase$auth$Auth {
   createUserWithEmailAndPassword(
     email: string,
     password: string
-  ): Promise<$npm$firebase$auth$User>;
+  ): Promise<$npm$firebase$auth$UserCredential>;
   fetchProvidersForEmail(email: string): Promise<Array<string>>;
   onAuthStateChanged(
-    nextOrObserver: (?$npm$firebase$auth$User) => void,
+    nextOrObserver: (?$npm$firebase$auth$User) => void | Promise<void>,
     error?: (error: $npm$firebase$auth$Error) => void,
     completed?: () => void
   ): () => void;
   onIdTokenChanged(
-    nextOrObserver: Object | ((user?: $npm$firebase$auth$User) => void),
+    nextOrObserver: Object | ((user?: $npm$firebase$auth$User) => void | Promise<void>),
     error?: (error: $npm$firebase$auth$Error) => void,
     completed?: () => void
   ): () => void;
@@ -179,6 +179,17 @@ declare class $npm$firebase$auth$UserInfo {
   uid: string;
 }
 
+declare type $npm$firebase$actionCode$settings = {
+  url: string,
+  iOS?: { bundleId: string },
+  android?: {
+    packageName: string,
+    installApp?: boolean,
+    minimumVersion?: string,
+  },
+  handleCodeInApp?: boolean,
+}
+
 declare class $npm$firebase$auth$User extends $npm$firebase$auth$UserInfo {
   displayName: ?string;
   email: ?string;
@@ -217,7 +228,7 @@ declare class $npm$firebase$auth$User extends $npm$firebase$auth$UserInfo {
     applicationVerifier: $npm$firebase$auth$ApplicationVerifier
   ): Promise<$npm$firebase$auth$ConfirmationResult>;
   reload(): Promise<void>;
-  sendEmailVerification(): Promise<void>;
+  sendEmailVerification(actionCodeSettings?: $npm$firebase$actionCode$settings): Promise<void>;
   toJSON(): Object;
   unlink(providerId: string): Promise<$npm$firebase$auth$User>;
   updateEmail(newEmail: string): Promise<void>;
@@ -351,7 +362,7 @@ declare class $npm$firebase$database$OnDisconnect {
 declare type $npm$firebase$database$Callback = (
   $npm$firebase$database$DataSnapshot,
   ?string
-) => void;
+) => void | Promise<void>;
 
 declare class $npm$firebase$database$Query {
   ref: $npm$firebase$database$Reference;
@@ -468,8 +479,8 @@ declare interface $npm$firebase$firestore$QueryListenOptions {
   includeMetadataChanges: boolean;
   includeQueryMetadataChanges: boolean;
 }
-declare type $npm$firebase$firestore$observer = (snapshot: $npm$firebase$firestore$DocumentSnapshot) => void;
-declare type $npm$firebase$firestore$observerError = (error: $npm$firebase$Error) => void;
+declare type $npm$firebase$firestore$observer = (snapshot: $npm$firebase$firestore$DocumentSnapshot) => void | Promise<void>;
+declare type $npm$firebase$firestore$observerError = (error: $npm$firebase$Error) => void | Promise<void>;
 
 declare class $npm$firebase$firestore$Query {
   firestore: $npm$firebase$firestore$Firestore;
@@ -483,7 +494,7 @@ declare class $npm$firebase$firestore$Query {
     | $npm$firebase$firestore$observer
     | $npm$firebase$firestore$observerError,
     onError?: $npm$firebase$firestore$observerError
-  ): void;
+  ): Function;
   orderBy(
     fieldPath: $npm$firebase$firestore$FieldPath | string,
     directionStr: 'asc' | 'desc'
@@ -518,7 +529,7 @@ declare class $npm$firebase$firestore$DocumentReference {
     | $npm$firebase$firestore$observer
     | $npm$firebase$firestore$observerError,
     onError?: $npm$firebase$firestore$observerError
-  ): void;
+  ): Function;
   set(data: {}, options?: { merge: boolean } | null): Promise<void>;
   update(...args: Array<any>): Promise<void>;
 }
@@ -736,30 +747,32 @@ declare class $npm$firebase$storage$UploadTaskSnapshot {
   totalBytes: number;
 }
 
+declare type $npm$firebase$app$exports = {
+  +apps: Array<$npm$firebase$App>,
+  initializeApp(
+    options: $npm$firebase$Config,
+    name?: string
+  ): $npm$firebase$App,
+  SDK_VERSION: string,
+  FirebaseError: $npm$firebase$Error,
+  FirebaseConfig: $npm$firebase$Config,
+  FirebaseUser: typeof $npm$firebase$auth$User,
+  FirebaseUserInfo: typeof $npm$firebase$auth$UserInfo,
+  app: $Exports<'@firebase/app'>,
+  auth: $Exports<'@firebase/auth'>,
+  database: $Exports<'@firebase/database'>,
+  firestore: $Exports<'@firebase/firestore'>,
+  messaging: $Exports<'@firebase/messaging'>,
+  storage: $Exports<'@firebase/storage'>
+};
+
 // Exporting the types
 declare module 'firebase' {
-  declare module.exports: {
-    +apps: Array<$npm$firebase$App>,
-    initializeApp(
-      options: $npm$firebase$Config,
-      name?: string
-    ): $npm$firebase$App,
-    SDK_VERSION: string,
-    FirebaseError: $npm$firebase$Error,
-    FirebaseConfig: $npm$firebase$Config,
-    FirebaseUser: typeof $npm$firebase$auth$User,
-    FirebaseUserInfo: typeof $npm$firebase$auth$UserInfo,
-    app: $Exports<'@firebase/app'>,
-    auth: $Exports<'@firebase/auth'>,
-    database: $Exports<'@firebase/database'>,
-    firestore: $Exports<'@firebase/firestore'>,
-    messaging: $Exports<'@firebase/messaging'>,
-    storage: $Exports<'@firebase/storage'>
-  };
+  declare module.exports: $npm$firebase$app$exports;
 }
 
 declare module 'firebase/app' {
-  declare module.exports: $Exports<'@firebase/app'>;
+  declare module.exports: $npm$firebase$app$exports;
 }
 
 declare module 'firebase/auth' {
