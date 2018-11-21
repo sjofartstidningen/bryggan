@@ -112,7 +112,9 @@ const ProfileImage = styled(LazyImage)`
   overflow: hidden;
 `;
 
-const ProfileImageFallback = styled(Logotype).attrs({ baseline: false })`
+const ProfileImageFallback = styled(Logotype).attrs(() => ({
+  baseline: false,
+}))`
   position: absolute;
   top: 50%;
   left: 50%;

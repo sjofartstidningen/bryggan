@@ -27,9 +27,9 @@ const modifierConfig = {
   error: ({ theme }) => `${applyBgColor(theme.color.error)}`,
 };
 
-const Button = styled.button.attrs({
-  modifiers: props => props.modifiers || ['standard'],
-})`
+const Button = styled.button.attrs(props => ({
+  modifiers: props.modifiers || ['standard'],
+}))`
   margin: 0;
   margin-right: ${({ theme }) => theme.margin.standard};
   border: 0;

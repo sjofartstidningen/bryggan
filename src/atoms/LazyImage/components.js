@@ -5,9 +5,9 @@ import { Img as _Img } from '../Image';
 import { Close } from '../Icon';
 import { fadeIn } from '../../theme/animations';
 
-const Container = styled.div.attrs({
-  ratio: p => p.ratio || null,
-})`
+const Container = styled.div.attrs(props => ({
+  ratio: props.ratio || null,
+}))`
   position: relative;
   width: 100%;
   height: auto;

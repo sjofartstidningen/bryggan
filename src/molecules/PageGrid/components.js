@@ -56,7 +56,7 @@ const Placeholder = styled.div`
   padding-top: calc(100% * ${p => p.ratio});
 `;
 
-const EyeIcon = styled(Eye).attrs({ baseline: false })`
+const EyeIcon = styled(Eye).attrs(() => ({ baseline: false }))`
   position: absolute;
   margin-left: ${({ theme }) => theme.margin.fourth};
   transform: translateX(100%);
