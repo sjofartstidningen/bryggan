@@ -1,4 +1,3 @@
-// @flow
 import { css } from 'styled-components';
 import {
   getLuminance,
@@ -7,8 +6,7 @@ import {
 } from 'polished';
 import { color } from './index';
 
-const readableColor = (c: string): string =>
-  getLuminance(c) > 0.3 ? color.black : color.white;
+const readableColor = c => (getLuminance(c) > 0.3 ? color.black : color.white);
 
 const fontSmoothing = () => css`
   font-smooth: always;
@@ -17,7 +15,7 @@ const fontSmoothing = () => css`
 `;
 
 const transitions = {
-  short: (...props: Array<string>) => css`
+  short: (...props) => css`
     ${_transitions(
       ...props.map(p => `${p} 0.2s ${timingFunctions('easeInOutCubic')}`),
     )};

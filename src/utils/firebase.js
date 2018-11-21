@@ -1,17 +1,8 @@
 /* eslint-disable no-nested-ternary */
-// @flow
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import { getEnv } from '.';
-import type {
-  User,
-  UserProfile,
-  AppData,
-  SignInCredentials,
-  AuthError,
-  AuthCheckEventHandler,
-} from '../types/firebase';
 
 const config = {
   apiKey: getEnv('FIREBASE_API_KEY'),
@@ -20,25 +11,16 @@ const config = {
   projectId: getEnv('FIREBASE_PROJECT_ID'),
 };
 
-// $FlowFixMe
 const bryggan = firebase.initializeApp(config);
-
-// $FlowFixMe
 const Auth = firebase.auth();
-
-// $FlowFixMe
 const Database = firebase.database();
 
-const awaitInitialAuthCheckEvent = (cb: AuthCheckEventHandler) => {
+const awaitInitialAuthCheckEvent = cb => {
   const unsubscribe = Auth.onAuthStateChanged(cb);
   return unsubscribe;
 };
 
-const signIn = async ({
-  email,
-  password,
-  remember,
-}: SignInCredentials): Promise<{ user: User }> => {
+const signIn = async ({ email, password, remember }) => {
   try {
     const persistence = remember
       ? 'LOCAL'
@@ -46,7 +28,6 @@ const signIn = async ({
       ? 'SESSION'
       : 'NONE';
 
-    // $FlowFixMe
     await Auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);
 
     const user = await Auth.signInWithEmailAndPassword(email, password);
@@ -56,17 +37,17 @@ const signIn = async ({
   }
 };
 
-const signOut = (): Promise<void> => Auth.signOut();
+const signOut = () => Auth.signOut();
 
-const getUser = (): ?User => Auth.currentUser;
+const getUser = () => Auth.currentUser;
 
-const getAppData = async (): Promise<AppData> => {
+const getAppData = async () => {
   const snapshot = await Database.ref('data').once('value');
-  const data: AppData = snapshot.val();
+  const data = snapshot.val();
   return data;
 };
 
-const updateUserData = async (data: UserProfile) => {
+const updateUserData = async data => {
   const user = getUser();
   if (user) {
     await user.updateProfile(data);
@@ -76,9 +57,7 @@ const updateUserData = async (data: UserProfile) => {
   return null;
 };
 
-const validateAuthError = (
-  err: AuthError,
-): { email?: string, password?: string } => {
+const validateAuthError = err => {
   const { code } = err;
   const ret = {};
 

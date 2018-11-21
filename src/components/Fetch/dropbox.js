@@ -1,14 +1,9 @@
-// @flow
 import React from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import { join } from 'path';
 import axios from 'axios';
 import Fetch from '.';
 import { MinimalCache } from '../../utils/cache';
-import type {
-  ListFolderResponse,
-  MappedListFolderResponse,
-} from '../../types/dropbox';
 import pathRe, { page as pageRe } from '../../utils/regexp';
 import { UserConsumer } from '../../contexts/User';
 import { generateDownloadUrl, generatePreview } from '../../utils/dropbox';
@@ -20,9 +15,7 @@ const client = axios.create({
 
 const cache = new MinimalCache({ serializer: conf => conf.data.path });
 
-const responseReducer = ({ accessToken, rootFolder }) => (
-  res: ListFolderResponse,
-): MappedListFolderResponse =>
+const responseReducer = ({ accessToken, rootFolder }) => res =>
   res.entries.map(entry => {
     const [, year, issue, page] = pathRe().exec(entry.path_display);
     const pageName = page && pageRe().exec(`${page}.pdf`)[3];
@@ -50,19 +43,7 @@ const responseReducer = ({ accessToken, rootFolder }) => (
     };
   });
 
-type RenderProps = {
-  state: 'idle' | 'fetching' | 'fetched' | 'error' | 'aborted',
-  fromCache: boolean,
-  response: ?MappedListFolderResponse,
-  error: ?Error,
-};
-
-type Props = {
-  path: string,
-  children: RenderProps => Node,
-};
-
-function FilesListFolder({ path, children, ...rest }: Props) {
+function FilesListFolder({ path, children, ...rest }) {
   return (
     <UserConsumer>
       {({ data }) => (
@@ -85,5 +66,10 @@ function FilesListFolder({ path, children, ...rest }: Props) {
     </UserConsumer>
   );
 }
+
+FilesListFolder.propTypes = {
+  path: PropTypes.string.isRequired,
+  children: PropTypes.func.isRequired,
+};
 
 export { FilesListFolder };

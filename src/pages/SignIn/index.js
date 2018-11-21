@@ -1,15 +1,14 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import SignInForm from '../../molecules/SignInForm';
-import type { SignInCredentials } from '../../types/firebase';
 
-type Props = {
-  onSignIn: (cred: SignInCredentials) => void | Promise<void>,
-  onSignInError: (err: Error) => { email?: string, password?: string },
-};
-
-function SignIn({ onSignIn, onSignInError }: Props) {
+function SignIn({ onSignIn, onSignInError }) {
   return <SignInForm onSignIn={onSignIn} onSignInError={onSignInError} />;
 }
+
+SignIn.propTypes = {
+  onSignIn: PropTypes.func.isRequired,
+  onSignInError: PropTypes.func.isRequired,
+};
 
 export { SignIn as default };

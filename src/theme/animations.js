@@ -1,7 +1,6 @@
-// @flow
 import { css, keyframes } from 'styled-components';
 
-const animationBase = (anim: string) => () => css`
+const animationBase = anim => () => css`
   animation-name: ${anim};
   animation-duration: 0.5s;
   animation-fill-mode: both;

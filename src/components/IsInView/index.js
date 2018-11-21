@@ -1,27 +1,17 @@
-// @flow
 import { PureComponent } from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import getObserver, { emitter, events } from '../../atoms/LazyImage/observer';
 
-type RenderProps = {
-  inView: boolean,
-  getRef: (ref: ?HTMLElement) => void,
-};
+class IsInView extends PureComponent {
+  static propTypes = {
+    onEnter: PropTypes.func,
+    onLeave: PropTypes.func,
+    children: PropTypes.func.isRequired,
+  };
 
-type Props = {
-  onEnter?: () => void | Promise<void>,
-  onLeave?: () => void | Promise<void>,
-  children: RenderProps => Node,
-};
+  observer;
 
-type State = {
-  inView: boolean,
-};
-
-class IsInView extends PureComponent<Props, State> {
-  observer: IntersectionObserver;
-
-  ref: ?HTMLElement;
+  ref;
 
   state = {
     inView: false,
@@ -53,21 +43,21 @@ class IsInView extends PureComponent<Props, State> {
     }
   };
 
-  getRef = (ref: ?HTMLElement) => {
+  getRef = ref => {
     if (ref != null) {
       this.ref = ref;
       this.setupListeners();
     }
   };
 
-  handleInView = (entry: IntersectionObserverEntry) => {
+  handleInView = entry => {
     if (entry.target === this.ref) {
       this.setState({ inView: true });
       if (this.props.onEnter) this.props.onEnter();
     }
   };
 
-  handleOutOfView = (entry: IntersectionObserverEntry) => {
+  handleOutOfView = entry => {
     if (entry.target === this.ref) {
       this.setState({ inView: false });
       if (this.props.onLeave) this.props.onLeave();

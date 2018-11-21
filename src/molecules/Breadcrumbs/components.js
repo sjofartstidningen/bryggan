@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from '../../atoms/Link';
@@ -6,7 +5,7 @@ import { Paragraph } from '../../atoms/Text';
 import { ChevronRight, ChevronDown } from '../../atoms/Icon';
 import { transitions } from '../../theme/utils';
 
-const LinkWithoutExact = ({ exact, ...props }: Object) => <Link {...props} />;
+const LinkWithoutExact = ({ exact, ...props }) => <Link {...props} />;
 
 const Wrapper = styled(Paragraph.withComponent('div'))`
   max-width: 100%;

@@ -1,4 +1,3 @@
-// @flow
 import { css } from 'styled-components';
 
 const colors = {
@@ -21,12 +20,12 @@ const colors = {
   info: '#5aaafa',
 };
 
-export const getColor = (prop: $Keys<typeof colors>) => colors[prop];
+export const getColor = prop => colors[prop];
 
-export const colorMixin = (prop: $Keys<typeof colors>) => css`
+export const colorMixin = prop => css`
   color: ${colors[prop]};
 `;
 
-export const backgroundColorMixin = (prop: $Keys<typeof colors>) => css`
+export const backgroundColorMixin = prop => css`
   background-color: ${colors[prop]};
 `;

@@ -1,6 +1,5 @@
-// @flow
 import React, { createContext, PureComponent } from 'react';
-import type { ComponentType, Node } from 'react';
+import PropTypes from 'prop-types';
 import {
   awaitInitialAuthCheckEvent,
   getAppData,
@@ -9,47 +8,28 @@ import {
   updateUserData,
   sendValidationEmail,
 } from '../utils/firebase';
-import type {
-  User,
-  UserProfile,
-  AppData,
-  SignInCredentials,
-} from '../types/firebase';
 
 const { Provider, Consumer } = createContext();
 
-type Props = {
-  children: Node,
-};
-
-type Context = {
-  state: 'loading' | 'unauthenticated' | 'authenticated',
-  user: ?User,
-  data: $Shape<AppData>,
-  signIn: SignInCredentials => Promise<void>,
-  signOut: () => Promise<void>,
-  updateUser: UserProfile => Promise<void>,
-};
-
-type State = {
-  context: Context,
-};
-
 class UserProvider extends PureComponent<Props, State> {
-  unsubscribeListener: ?() => void;
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+  };
+
+  unsubscribeListener;
 
   state = {
     context: {
       state: 'loading',
       user: null,
       data: {},
-      signIn: (values: SignInCredentials) => this.handleSignIn(values),
+      signIn: values => this.handleSignIn(values),
       signOut: () => this.handleSignOut(),
-      updateUser: (newUser: UserProfile) => this.updateUser(newUser),
+      updateUser: newUser => this.updateUser(newUser),
     },
   };
 
-  setContext(contextUpdater: Context => $Shape<Context>) {
+  setContext(contextUpdater) {
     this.setState(({ context }) => ({
       context: { ...context, ...contextUpdater(context) },
     }));
@@ -69,7 +49,7 @@ class UserProvider extends PureComponent<Props, State> {
     });
   }
 
-  async authenticate(user: ?User) {
+  async authenticate(user) {
     if (user) {
       const data = await getAppData();
       this.setContext(() => ({ state: 'authenticated', data, user }));
@@ -85,7 +65,7 @@ class UserProvider extends PureComponent<Props, State> {
     if (this.unsubscribeListener) this.unsubscribeListener();
   }
 
-  async handleSignIn(values: SignInCredentials) {
+  async handleSignIn(values) {
     const data = await signIn(values);
     await this.authenticate(data.user);
   }
@@ -95,7 +75,7 @@ class UserProvider extends PureComponent<Props, State> {
     this.setContext(() => ({ state: 'unauthenticated', user: null, data: {} }));
   }
 
-  async updateUser({ displayName }: UserProfile) {
+  async updateUser({ displayName }) {
     const { user } = this.state.context;
     if (user) {
       const newUser = await updateUserData({ displayName });
@@ -110,9 +90,6 @@ class UserProvider extends PureComponent<Props, State> {
   }
 }
 
-type UserConsumerProps = { children: (value: Context) => Node };
-// $FlowFixMe
-const UserConsumer: ComponentType<UserConsumerProps> = Consumer;
+const UserConsumer = Consumer;
 
 export { UserProvider, UserConsumer };
-export type { Context as UserContext };

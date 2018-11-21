@@ -1,5 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-// @flow
+/* eslint-disable import/no-extraneous-dependencies, react/prop-types */
 import React from 'react';
 import { injectGlobal } from 'styled-components';
 import { storiesOf } from '@storybook/react';
@@ -13,7 +12,7 @@ injectGlobal`
   }
 `;
 
-const Wrapper = ({ children }: { children: any }) => (
+const Wrapper = ({ children }) => (
   <div className="lazy-image__wrapper" style={{ width: 300, margin: 'auto' }}>
     {children}
   </div>

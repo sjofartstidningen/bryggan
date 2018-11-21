@@ -1,15 +1,14 @@
-// @flow
 import { PureComponent } from 'react';
 import { createPortal } from 'react-dom';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 
 const previewRoot = document.getElementById('preview-root');
 
-type Props = {
-  children: Node,
-};
+class RenderInPreview extends PureComponent {
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+  };
 
-class RenderInPreview extends PureComponent<Props, *> {
   el = document.createElement('div');
 
   componentDidMount() {

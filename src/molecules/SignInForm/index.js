@@ -1,7 +1,6 @@
-// @flow
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import type { SignInCredentials } from '../../types/firebase';
 import {
   Wrapper,
   Container,
@@ -20,28 +19,15 @@ import {
 import ProfilePicture from './ProfilePicture';
 import ProgressBar from '../../atoms/ProgressBar';
 
-type FormikSetSubmitting = boolean => void;
-type FormikSetErrors = (validation: {
-  [x: 'email' | 'password']: string,
-}) => void;
+class SignInForm extends PureComponent {
+  static propTypes = {
+    onSignIn: PropTypes.func.isRequired,
+    onSignInError: PropTypes.func.isRequired,
+  };
 
-type Props = {
-  onSignIn: (cred: SignInCredentials) => void | Promise<void>,
-  onSignInError: (err: Error) => { email?: string, password?: string },
-};
-
-type State = {};
-
-class SignInForm extends PureComponent<Props, State> {
   state = {};
 
-  handleSubmit = async (
-    values: SignInCredentials,
-    {
-      setErrors,
-      setSubmitting,
-    }: { setSubmitting: FormikSetSubmitting, setErrors: FormikSetErrors },
-  ) => {
+  handleSubmit = async (values, { setErrors, setSubmitting }) => {
     try {
       await this.props.onSignIn(values);
     } catch (err) {
@@ -51,7 +37,7 @@ class SignInForm extends PureComponent<Props, State> {
     }
   };
 
-  handleValidation = (values: SignInCredentials) => {
+  handleValidation = values => {
     const errors = {};
     const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 

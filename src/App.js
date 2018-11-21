@@ -1,4 +1,3 @@
-// @flow
 import 'intersection-observer';
 import React, { Component, Fragment } from 'react';
 import {
@@ -19,7 +18,7 @@ import { Grid, AreaSidebar, AreaMain } from './molecules/Grid';
 import { UserProvider, UserConsumer } from './contexts/User';
 import { validateAuthError } from './utils/firebase';
 
-class App extends Component<*, *> {
+class App extends Component {
   render() {
     return (
       <UserProvider>

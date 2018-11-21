@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Logotype } from '../../atoms/Icon';
 import { gravatarUrl } from '../../utils';
@@ -83,17 +83,15 @@ const Cutout = styled.div`
   background-color: ${({ theme }) => theme.color.greyLight};
 `;
 
-type Props = {
-  email: string,
-  error: boolean,
-};
+class ProfilePicture extends Component {
+  static propTypes = {
+    email: PropTypes.string.isRequired,
+    error: PropTypes.bool.isRequired,
+  };
 
-type State = {};
-
-class ProfilePicture extends Component<Props, State> {
   state = {};
 
-  shouldComponentUpdate({ email, error }: Props) {
+  shouldComponentUpdate({ email, error }) {
     const { email: prevEmail, error: prevError } = this.props;
     return (
       (prevEmail !== email && emailRe().test(email)) || error !== prevError

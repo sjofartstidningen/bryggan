@@ -1,4 +1,3 @@
-// @flow
 import styled from 'styled-components';
 import {
   applyStyleModifiers,
@@ -7,7 +6,7 @@ import {
 import { darken } from 'polished';
 import { readableColor, fontSmoothing, transitions } from '../../theme/utils';
 
-const applyBgColor = (bg: string) => `
+const applyBgColor = bg => `
   color: ${readableColor(bg)};
   background-color: ${bg};
   

@@ -1,6 +1,5 @@
-// @flow
 import React from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import LogotypePaths from './Logotype';
 
@@ -36,24 +35,20 @@ const IconSvg = styled.svg`
     `};
 `;
 
-type IconProps = {
-  baseline: boolean,
-  className: string,
+const IconProps = {
+  baseline: PropTypes.bool,
+  className: PropTypes.string,
 };
 
-type BaseIconProps = IconProps & {
-  useFill?: boolean,
-  children: Node,
+const BaseIconProps = {
+  ...IconProps,
+  useFill: PropTypes.bool,
+  children: PropTypes.node.isRequired,
 };
 
 const defaultProps = { baseline: true, className: '' };
 
-function Icon({
-  baseline = true,
-  useFill,
-  className,
-  children,
-}: BaseIconProps) {
+function Icon({ baseline = true, useFill, className, children }) {
   return (
     <IconWrapper className={className}>
       <IconSvg
@@ -70,7 +65,9 @@ function Icon({
   );
 }
 
-function SignOut(props: IconProps) {
+Icon.propTypes = BaseIconProps;
+
+function SignOut(props) {
   return (
     <Icon {...props}>
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -80,9 +77,10 @@ function SignOut(props: IconProps) {
   );
 }
 
+SignOut.propTypes = IconProps;
 SignOut.defaultProps = defaultProps;
 
-function Eye(props: IconProps) {
+function Eye(props) {
   return (
     <Icon {...props}>
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -91,9 +89,10 @@ function Eye(props: IconProps) {
   );
 }
 
+Eye.propTypes = IconProps;
 Eye.defaultProps = defaultProps;
 
-function CloudRain(props: IconProps) {
+function CloudRain(props) {
   return (
     <Icon {...props}>
       {' '}
@@ -105,23 +104,22 @@ function CloudRain(props: IconProps) {
   );
 }
 
+CloudRain.propTypes = IconProps;
 CloudRain.defaultProps = defaultProps;
 
-function ChevronsRight({
-  baseline = true,
-  className,
-}: IconProps = defaultProps) {
+function ChevronsRight(props) {
   return (
-    <Icon baseline={baseline} className={className}>
+    <Icon {...props}>
       <polyline points="13 17 18 12 13 7" />
       <polyline points="6 17 11 12 6 7" />
     </Icon>
   );
 }
 
+ChevronsRight.propTypes = IconProps;
 ChevronsRight.defaultProps = defaultProps;
 
-function ChevronLeft(props: IconProps) {
+function ChevronLeft(props) {
   return (
     <Icon {...props}>
       {' '}
@@ -130,54 +128,56 @@ function ChevronLeft(props: IconProps) {
   );
 }
 
+ChevronLeft.propTypes = IconProps;
 ChevronLeft.defaultProps = defaultProps;
 
-function ChevronRight({
-  baseline = true,
-  className,
-}: IconProps = defaultProps) {
+function ChevronRight(props) {
   return (
-    <Icon baseline={baseline} className={className}>
+    <Icon {...props}>
       <polyline points="9 18 15 12 9 6" />
     </Icon>
   );
 }
 
+ChevronRight.propTypes = IconProps;
 ChevronRight.defaultProps = defaultProps;
 
-function ChevronDown({ baseline = true, className }: IconProps = defaultProps) {
+function ChevronDown(props) {
   return (
-    <Icon baseline={baseline} className={className}>
+    <Icon {...props}>
       <polyline points="6 9 12 15 18 9" />
     </Icon>
   );
 }
 
+ChevronDown.propTypes = IconProps;
 ChevronDown.defaultProps = defaultProps;
 
-function ArrowLeft({ baseline = true, className }: IconProps = defaultProps) {
+function ArrowLeft(props) {
   return (
-    <Icon baseline={baseline} className={className}>
+    <Icon {...props}>
       <line x1="19" y1="12" x2="5" y2="12" />
       <polyline points="12 19 5 12 12 5" />
     </Icon>
   );
 }
 
+ArrowLeft.propTypes = IconProps;
 ArrowLeft.defaultProps = defaultProps;
 
-function ArrowRight({ baseline = true, className }: IconProps = defaultProps) {
+function ArrowRight(props) {
   return (
-    <Icon baseline={baseline} className={className}>
+    <Icon {...props}>
       <line x1="5" y1="12" x2="19" y2="12" />
       <polyline points="12 5 19 12 12 19" />
     </Icon>
   );
 }
 
+ArrowRight.propTypes = IconProps;
 ArrowRight.defaultProps = defaultProps;
 
-function ZoomIn(props: IconProps) {
+function ZoomIn(props) {
   return (
     <Icon {...props}>
       {' '}
@@ -189,9 +189,10 @@ function ZoomIn(props: IconProps) {
   );
 }
 
+ZoomIn.propTypes = IconProps;
 ZoomIn.defaultProps = defaultProps;
 
-function ZoomOut(props: IconProps) {
+function ZoomOut(props) {
   return (
     <Icon {...props}>
       {' '}
@@ -202,9 +203,10 @@ function ZoomOut(props: IconProps) {
   );
 }
 
+ZoomOut.propTypes = IconProps;
 ZoomOut.defaultProps = defaultProps;
 
-function Refresh(props: IconProps) {
+function Refresh(props) {
   return (
     <Icon {...props}>
       {' '}
@@ -215,9 +217,10 @@ function Refresh(props: IconProps) {
   );
 }
 
+Refresh.propTypes = IconProps;
 Refresh.defaultProps = defaultProps;
 
-function Book(props: IconProps) {
+function Book(props) {
   return (
     <Icon {...props}>
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
@@ -226,9 +229,10 @@ function Book(props: IconProps) {
   );
 }
 
+Book.propTypes = IconProps;
 Book.defaultProps = defaultProps;
 
-function Sliders(props: IconProps) {
+function Sliders(props) {
   return (
     <Icon {...props}>
       {' '}
@@ -245,9 +249,10 @@ function Sliders(props: IconProps) {
   );
 }
 
+Sliders.propTypes = IconProps;
 Sliders.defaultProps = defaultProps;
 
-function Close(props: IconProps) {
+function Close(props) {
   return (
     <Icon {...props}>
       <line x1="18" y1="6" x2="6" y2="18" />
@@ -256,9 +261,10 @@ function Close(props: IconProps) {
   );
 }
 
+Close.propTypes = IconProps;
 Close.defaultProps = defaultProps;
 
-function ExternalLink(props: IconProps) {
+function ExternalLink(props) {
   return (
     <Icon {...props}>
       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -268,9 +274,10 @@ function ExternalLink(props: IconProps) {
   );
 }
 
+ExternalLink.propTypes = IconProps;
 ExternalLink.defaultProps = defaultProps;
 
-function Download(props: IconProps) {
+function Download(props) {
   return (
     <Icon {...props}>
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -280,9 +287,10 @@ function Download(props: IconProps) {
   );
 }
 
+Download.propTypes = IconProps;
 Download.defaultProps = defaultProps;
 
-function Plus(props: IconProps) {
+function Plus(props) {
   return (
     <Icon {...props}>
       <line x1="12" y1="5" x2="12" y2="19" />
@@ -291,9 +299,10 @@ function Plus(props: IconProps) {
   );
 }
 
+Plus.propTypes = IconProps;
 Plus.defaultProps = defaultProps;
 
-function Minus(props: IconProps) {
+function Minus(props) {
   return (
     <Icon {...props}>
       <line x1="5" y1="12" x2="19" y2="12" />
@@ -301,9 +310,10 @@ function Minus(props: IconProps) {
   );
 }
 
+Minus.propTypes = IconProps;
 Minus.defaultProps = defaultProps;
 
-function Logotype(props: IconProps) {
+function Logotype(props) {
   return (
     <Icon useFill {...props}>
       <LogotypePaths />
@@ -311,6 +321,7 @@ function Logotype(props: IconProps) {
   );
 }
 
+Logotype.propTypes = IconProps;
 Logotype.defaultProps = defaultProps;
 
 export {

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 
 const serializer = (k, v) => {
@@ -13,7 +12,7 @@ const serializer = (k, v) => {
   }
 };
 
-function PreProps(props: any) {
+function PreProps(props) {
   return <pre>{JSON.stringify(props, serializer, 2)}</pre>;
 }
 

@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import md5 from 'md5';
 import { Logotype } from '../../atoms/Icon';
 import {
@@ -17,18 +17,28 @@ import {
   ProfileDataName,
   ProfileSignOutButton,
 } from './components';
-import type { User } from '../../types/firebase';
-import type { GlobalRoute } from '../../types';
-
-type Props = {
-  links: Array<GlobalRoute>,
-  user: ?User,
-  onSignOut: (user: User) => void | Promise<void>,
-};
-
-type State = {};
 
 class Sidebar extends Component<Props, State> {
+  static propTypes = {
+    links: PropTypes.arrayOf(
+      PropTypes.shape({
+        to: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        render: PropTypes.func.isRequired,
+      }),
+    ).isRequired,
+    user: PropTypes.shape({
+      uid: PropTypes.string.isRequired,
+      email: PropTypes.string,
+      displayName: PropTypes.string,
+      photoURL: PropTypes.string,
+      emailVerified: PropTypes.bool.isRequired,
+      updateProfile: PropTypes.func.isRequired,
+      sendEmailVerification: PropTypes.func.isRequired,
+    }),
+    onSignOut: PropTypes.func.isRequired,
+  };
+
   state = {};
 
   render() {

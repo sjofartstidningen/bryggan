@@ -1,7 +1,5 @@
-// @flow
 import { join } from 'path';
 import qs from 'qs';
-import type { PreviewWidth, Previews } from '../types/dropbox';
 
 const apiRoot = 'https://api.dropboxapi.com/2/'; // eslint-disable-line
 const contentRoot = 'https://content.dropboxapi.com/2/';
@@ -9,15 +7,7 @@ const contentRoot = 'https://content.dropboxapi.com/2/';
 const getAbsolutePath = (path, rootFolder) =>
   path.toLowerCase().startsWith(rootFolder) ? path : join(rootFolder, path);
 
-function generateDownloadUrl({
-  path,
-  accessToken,
-  rootFolder,
-}: {
-  path: string,
-  accessToken: string,
-  rootFolder: string,
-}) {
+function generateDownloadUrl({ path, accessToken, rootFolder }) {
   const url = new URL('files/download', contentRoot);
   const authorization = `Bearer ${accessToken}`;
   const arg = JSON.stringify({
@@ -34,16 +24,10 @@ function generatePreview({
   page = '001',
   accessToken,
   rootFolder,
-}: {
-  year: string,
-  issue?: string,
-  page?: string,
-  accessToken: string,
-  rootFolder: string,
-}): Previews {
+}) {
   const url = new URL('files/get_thumbnail', contentRoot);
   const authorization = `Bearer ${accessToken}`;
-  const generateUrl = (path: string, size: string) =>
+  const generateUrl = (path, size) =>
     `${url.toString()}?${qs.stringify({
       authorization,
       arg: JSON.stringify({
@@ -69,7 +53,7 @@ function generatePreview({
   };
 }
 
-function getBestPreviewWidth(containerWidth: number): PreviewWidth {
+function getBestPreviewWidth(containerWidth) {
   const widths = [
     '32',
     '64',

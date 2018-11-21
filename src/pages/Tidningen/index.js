@@ -1,9 +1,7 @@
-// @flow
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import { join } from 'path';
-import type { Location, Match } from 'react-router-dom';
-import type { Breadcrumbs as BreadcrumbsType } from '../../types';
 import { sortByName } from '../../utils';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import PagePreview from './PagePreview';
@@ -12,22 +10,25 @@ import { Heading1 } from '../../atoms/Text';
 import FolderView from '../../molecules/FolderView';
 import { FilesListFolder } from '../../components/Fetch/dropbox';
 
-type Props = {
-  location: Location,
-  match: Match,
-};
-
-type State = {
-  breadcrumbs: BreadcrumbsType,
-};
-
 class Tidningen extends Component<Props, State> {
+  static propTypes = {
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.objectOf(PropTypes.string),
+      isExact: PropTypes.bool.isRequired,
+      path: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+    }).isRequired,
+  };
+
   state = {
     breadcrumbs: [
       { path: '/:root', title: 'Tidningen' },
-      { path: '/:root/:year', title: ({ year }: Object) => year },
-      { path: '/:root/:year/:issue', title: ({ issue }: Object) => issue },
-      { path: '/:root/:year/:issue/:page', title: ({ page }: Object) => page },
+      { path: '/:root/:year', title: ({ year }) => year },
+      { path: '/:root/:year/:issue', title: ({ issue }) => issue },
+      { path: '/:root/:year/:issue/:page', title: ({ page }) => page },
     ],
   };
 

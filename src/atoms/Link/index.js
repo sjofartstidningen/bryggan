@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-// @flow
 import React from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as _Link } from 'react-router-dom';
 import { darken } from 'polished';
@@ -20,18 +19,18 @@ const Link = styled(_Link)`
   }
 `;
 
-type Props = {
-  to: string,
-  target?: '_self' | '_blank' | '_parent' | '_top',
-  className: string,
-  children: Node,
-};
-
-const _ExternalLink = ({ to, target, className, children }: Props) => (
+const _ExternalLink = ({ to, target, className, children }) => (
   <a href={to} className={className} target={target} rel="noopener">
     {children} <ExternalIcon />
   </a>
 );
+
+_ExternalLink.propTypes = {
+  to: PropTypes.string.isRequired,
+  target: PropTypes.string,
+  className: PropTypes.string,
+  children: PropTypes.node,
+};
 
 _ExternalLink.defaultProps = {
   target: '_blank',

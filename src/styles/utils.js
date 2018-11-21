@@ -1,7 +1,6 @@
-// @flow
 import { css } from 'styled-components';
 
-export const transitionMixin = (...props: Array<string>) => css`
+export const transitionMixin = (...props) => css`
   transition: ${props.map(p => `${p} 0.2s ease`).join(', ')};
   will-change: ${props.map(p => p).join(', ')};
 `;
@@ -16,7 +15,7 @@ const layers = {
   popOut: { boxShadow: '0 12px 24px 0 rgba(0, 0, 0, 0.10)', zIndex: 6 },
 };
 
-export const layerMixin = (prop: $Keys<typeof layers>) => {
+export const layerMixin = prop => {
   const mixin = layers[prop];
 
   return css`

@@ -1,22 +1,9 @@
 /* eslint-disable react/require-default-props */
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
-import type { ComponentType, Node } from 'react';
-import type { ContextRouter } from 'react-router-dom';
 
-type Props = {
-  authenticated: boolean,
-  redirect?: string,
-  component?: ComponentType<*>,
-  render?: (router: ContextRouter) => Node,
-  children?: ComponentType<ContextRouter> | Node,
-  path?: string,
-  exact?: boolean,
-  strict?: boolean,
-};
-
-function SecureRoute({ authenticated, redirect, path, ...rest }: Props) {
+function SecureRoute({ authenticated, redirect, path, ...rest }) {
   return authenticated ? (
     <Route path={path} {...rest} />
   ) : (
@@ -24,6 +11,16 @@ function SecureRoute({ authenticated, redirect, path, ...rest }: Props) {
   );
 }
 
+SecureRoute.propTypes = {
+  authenticated: PropTypes.bool.isRequired,
+  redirect: PropTypes.string,
+  component: PropTypes.element,
+  render: PropTypes.func,
+  children: PropTypes.node,
+  path: PropTypes.string,
+  exact: PropTypes.bool,
+  strict: PropTypes.bool,
+};
 SecureRoute.defaultProps = { redirect: '/sign-in' };
 
 export { SecureRoute as default };

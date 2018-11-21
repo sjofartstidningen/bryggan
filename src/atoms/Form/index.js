@@ -5,9 +5,7 @@ import {
 } from 'styled-components-modifiers';
 import { fontSmoothing, transitions } from '../../theme/utils';
 
-const Form = styled.form`
-  
-`;
+const Form = styled.form``;
 
 const FormFieldset = styled.fieldset`
   margin: 0;

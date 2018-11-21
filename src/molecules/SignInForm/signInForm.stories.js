@@ -1,11 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import SignInForm from './index';
 
-const handleSignIn = (throwError: boolean) => (values: any) =>
+const handleSignIn = throwError => values =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       action(`sign in (${throwError ? 'fail' : 'success'})`)(values);

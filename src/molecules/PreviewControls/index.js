@@ -1,20 +1,20 @@
-// @flow
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import padStart from 'lodash.padstart';
 import { ArrowLeft, ArrowRight, Plus, Minus } from '../../atoms/Icon';
 import { Wrapper, Control, Indicator } from './components';
 
-type Props = {
-  current: number,
-  total: number,
-  onNext: () => void,
-  onPrev: () => void,
-  onZoomInc: () => void,
-  onZoomDec: () => void,
-  onZoomReset: () => void,
-};
-
 class PreviewControls extends PureComponent<Props, *> {
+  static propTypes = {
+    current: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired,
+    onNext: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    onZoomInc: PropTypes.func.isRequired,
+    onZoomDec: PropTypes.func.isRequired,
+    onZoomReset: PropTypes.func.isRequired,
+  };
+
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown);
   }
@@ -23,11 +23,10 @@ class PreviewControls extends PureComponent<Props, *> {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  handleKeyDown = (event: KeyboardEvent) => {
+  handleKeyDown = event => {
     const { current, total } = this.props;
     const { keyCode } = event;
 
-    // eslint-disable-next-line
     switch (keyCode) {
       case 39:
         if (current < total) this.props.onNext();
@@ -44,6 +43,7 @@ class PreviewControls extends PureComponent<Props, *> {
       case 48:
         this.props.onZoomReset();
         break;
+      default:
     }
   };
 

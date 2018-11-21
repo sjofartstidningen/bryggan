@@ -1,10 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
-// @flow
+/* eslint-disable import/no-extraneous-dependencies, react/prop-types */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import ErrorMessage from './index';
 
-const Wrapper = ({ children }: any) => (
+const Wrapper = ({ children }) => (
   <div
     style={{
       position: 'relative',
