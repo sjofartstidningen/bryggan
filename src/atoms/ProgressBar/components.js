@@ -26,9 +26,9 @@ const Wrapper = styled.div`
     `};
 `;
 
-const Bar = styled.div.attrs({
-  background: p => p.background || 'greyLight',
-})`
+const Bar = styled.div.attrs(props => ({
+  background: props.background || 'greyLight',
+}))`
   position: relative;
   width: ${p => p.width};
   height 2px;

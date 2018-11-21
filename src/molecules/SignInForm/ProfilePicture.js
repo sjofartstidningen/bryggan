@@ -53,7 +53,7 @@ const Image = styled(LazyImage)`
     `};
 `;
 
-const Logo = styled(Logotype).attrs({ baseline: false })`
+const Logo = styled(Logotype).attrs(() => ({ baseline: false }))`
   position: absolute;
   top: 50%;
   left: 50%;
