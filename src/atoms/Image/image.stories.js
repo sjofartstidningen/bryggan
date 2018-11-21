@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// @flow
 import React, { Fragment } from 'react';
 import { storiesOf } from '@storybook/react';
 import { Img } from './index';

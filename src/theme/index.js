@@ -1,4 +1,3 @@
-// @flow
 import { hsl, hsla, rem } from 'polished';
 
 const font = {

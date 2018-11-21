@@ -1,4 +1,3 @@
-// @flow
 import { css } from 'styled-components';
 
 const typeFamily = '"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif';
@@ -21,7 +20,7 @@ const typeSize = {
   legal: { fontSize: 0.6875, fontWeight: 400, lineHeight: 1.5, maxWidth: 24 },
 };
 
-export const typeMixin = (prop: $Keys<typeof typeSize>) => {
+export const typeMixin = prop => {
   const mixin = typeSize[prop];
   return css`
     max-width: ${mixin.maxWidth}rem;
@@ -30,4 +29,4 @@ export const typeMixin = (prop: $Keys<typeof typeSize>) => {
     font-weight: ${mixin.fontWeight};
     line-height: ${mixin.lineHeight};
   `;
-}
+};

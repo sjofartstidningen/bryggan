@@ -1,5 +1,3 @@
-// @flow
-
 const yearStr = '\\d{4}';
 const issueStr = '\\d{2}(?:(?: |-)(?:\\w| |-)*)*';
 const pageStr = '\\d{3}';

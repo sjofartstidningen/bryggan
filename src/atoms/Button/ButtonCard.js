@@ -1,6 +1,5 @@
-// @flow
 import React from 'react';
-import type { ComponentType } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { borderRadius } from 'polished';
 import { Button as _Button } from './index';
@@ -59,14 +58,7 @@ const Label = styled.span`
   }
 `;
 
-type Props = {
-  title: string,
-  label: string,
-  icon?: ComponentType<any>, // eslint-disable-line
-  onClick: (e: SyntheticMouseEvent<HTMLButtonElement>) => void | Promise<void>,
-};
-
-function ButtonCard({ title, label, icon: Icon, onClick }: Props) {
+function ButtonCard({ title, label, icon: Icon, onClick }) {
   return (
     <Button onClick={onClick}>
       <Title>{title}</Title>
@@ -76,5 +68,12 @@ function ButtonCard({ title, label, icon: Icon, onClick }: Props) {
     </Button>
   );
 }
+
+ButtonCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  onClick: PropTypes.func.isRequired,
+};
 
 export { ButtonCard as default };

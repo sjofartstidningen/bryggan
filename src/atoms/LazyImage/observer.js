@@ -1,4 +1,3 @@
-// @flow
 import mitt from 'mitt';
 
 const emitter = mitt();
@@ -8,9 +7,9 @@ const events = {
 };
 
 function createObserver() {
-  let observer: ?IntersectionObserver;
+  let observer;
 
-  return function getObserver(): IntersectionObserver {
+  return function getObserver() {
     if (observer) return observer;
 
     observer = new IntersectionObserver(

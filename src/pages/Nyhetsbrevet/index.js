@@ -1,20 +1,16 @@
-// @flow
 import React, { Component } from 'react';
-import type { Location } from 'react-router-dom';
-import type { Breadcrumbs as BreadcrumbsType } from '../../types';
+import PropTypes from 'prop-types';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import { MainContentWrapper } from '../../molecules/Grid';
 
-type Props = {
-  location: Location,
-};
-
-type State = {
-  breadcrumbs: BreadcrumbsType,
-};
-
 class Nyhetsbrevet extends Component<Props, State> {
+  static propTypes = {
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+  };
+
   state = {
     breadcrumbs: [{ path: '/:root', title: 'Nyhetsbrevet' }],
   };

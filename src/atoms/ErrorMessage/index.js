@@ -1,5 +1,5 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Paragraph } from '../Text';
 import { Close } from '../Icon';
@@ -24,8 +24,7 @@ const Message = styled(Paragraph)`
   max-width: 20rem;
 `;
 
-// eslint-disable-next-line
-function ErrorMessage({ message }: { message?: ?string }) {
+function ErrorMessage({ message }) {
   return (
     <Wrapper>
       <Icon />
@@ -33,5 +32,9 @@ function ErrorMessage({ message }: { message?: ?string }) {
     </Wrapper>
   );
 }
+
+ErrorMessage.propTypes = {
+  message: PropTypes.string,
+};
 
 export { ErrorMessage as default };

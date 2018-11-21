@@ -1,5 +1,5 @@
-// @flow
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { setOptions } from 'react-pdf';
 import { dependencies as pdfDeps } from 'react-pdf/package.json';
 import axios, { CancelToken, isCancel } from 'axios';
@@ -10,7 +10,6 @@ import ProgressBar from '../../atoms/ProgressBar';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import { clamp } from '../../utils';
 import { MinimalCache } from '../../utils/cache';
-import type { Entry } from '../../types/dropbox';
 
 const pdfJsVersion = pdfDeps['pdfjs-dist'].replace(/[^0-9|.]/g, '');
 setOptions({
@@ -21,22 +20,23 @@ function NoOp() {
   return null;
 }
 
-type Props = {
-  page: Entry,
-  total: number,
-  onNext: () => void,
-  onPrev: () => void,
-  onClose: () => void,
-};
+class PdfPreview extends PureComponent {
+  static propTypes = {
+    page: PropTypes.shape({
+      type: PropTypes.oneOf(['file', 'folder']),
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      previews: PropTypes.objectOf(PropTypes.string).isRequired,
+      src: PropTypes.string.isRequired,
+    }).isRequired,
+    total: PropTypes.number.isRequired,
+    onNext: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+  };
 
-type State = {
-  zoom: number,
-  state: 'loading' | 'success' | 'error',
-  message: ?string,
-  uri: ?string,
-};
-
-class PdfPreview extends PureComponent<Props, State> {
   state = {
     zoom: 1,
     state: 'loading',
@@ -46,7 +46,7 @@ class PdfPreview extends PureComponent<Props, State> {
 
   cancelToken = CancelToken.source();
 
-  cache: MinimalCache<string, string, string> = new MinimalCache({
+  cache = new MinimalCache({
     serializer: x => x,
   });
 
@@ -63,7 +63,7 @@ class PdfPreview extends PureComponent<Props, State> {
     this.clearCache();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps) {
     if (prevProps.page.src !== this.props.page.src) {
       this.setState(() => ({ state: 'loading', zoom: 1 })); // eslint-disable-line
       this.fetchPdf();
@@ -107,12 +107,12 @@ class PdfPreview extends PureComponent<Props, State> {
     }
   };
 
-  handleKeydown = (event: KeyboardEvent) => {
+  handleKeydown = event => {
     const { keyCode } = event;
     if (keyCode === 27) this.props.onClose();
   };
 
-  handleZoom = (val: number) => () => {
+  handleZoom = val => () => {
     const currentZoom = this.state.zoom;
     const nextZoom = clamp(0.1, 3, currentZoom * (1 + val));
     if (nextZoom !== currentZoom) this.setState(() => ({ zoom: nextZoom }));
@@ -125,7 +125,7 @@ class PdfPreview extends PureComponent<Props, State> {
     if (state !== 'success') this.setState(() => ({ state: 'success' }));
   };
 
-  handleError = (type: ?('load' | 'render' | 'source')) => () => {
+  handleError = type => () => {
     let message;
 
     switch (type) {

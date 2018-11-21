@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
-import type { Location } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import format from 'date-fns/format';
-import type { Breadcrumbs as BreadcrumbsType } from '../../types';
 import Breadcrumbs from '../../molecules/Breadcrumbs';
 import { MainContentWrapper } from '../../molecules/Grid';
 import {
@@ -23,16 +21,13 @@ import { version, bugs } from '../../../package.json';
 import { UserConsumer } from '../../contexts/User';
 import { getEnv } from '../../utils';
 
-type Props = {
-  location: Location,
-};
+class Installningar extends Component {
+  static propTypes = {
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+  };
 
-type State = {
-  breadcrumbs: BreadcrumbsType,
-  repos: Array<{ name: string, url: string }>,
-};
-
-class Installningar extends Component<Props, State> {
   state = {
     breadcrumbs: [{ path: '/:root', title: 'Inställningar' }],
     repos: [
@@ -44,11 +39,11 @@ class Installningar extends Component<Props, State> {
     ],
   };
 
-  handleDownload = (repo: { name: string, url: string }) => {
+  handleDownload = repo => {
     window.open(repo.url);
   };
 
-  parseDate = (date: string): string => {
+  parseDate = date => {
     try {
       const d = format(date, 'YYYY-MM-DD HH:mm:ss');
       if (d === 'Invalid Date') return '-';

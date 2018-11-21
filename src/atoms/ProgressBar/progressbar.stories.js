@@ -1,10 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
-// @flow
+/* eslint-disable import/no-extraneous-dependencies, react/prop-types */
 import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import ProgressBar from './index';
 
-const Container = ({ children }: any) => (
+const Container = ({ children }) => (
   <div
     style={{
       position: 'relative',
@@ -26,7 +25,7 @@ class Wrapper extends Component<*, *> {
 
   state = { done: false };
 
-  timeout: ?number;
+  timeout;
 
   componentDidMount() {
     this.timeout = window.setTimeout(

@@ -1,11 +1,6 @@
-// @flow
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { matchPath } from 'react-router-dom';
-import type { Location } from 'react-router-dom';
-import type {
-  BreadcrumbsRoute,
-  Breadcrumbs as BreadcrumbsType,
-} from '../../types';
 import {
   Wrapper,
   CrumbWrapper,
@@ -17,20 +12,7 @@ import {
   Icon,
 } from './components';
 
-type Props = {
-  routes: BreadcrumbsType,
-  location: Location,
-};
-
-function generateCrumbs(
-  routes: BreadcrumbsType,
-  location: Location,
-): Array<{
-  to: string,
-  title: string,
-  exact: boolean,
-  routes?: Array<BreadcrumbsRoute>,
-}> {
+function generateCrumbs(routes, location) {
   const items = routes.reduce((acc, route) => {
     const match = matchPath(location.pathname, route);
     if (match == null) return acc;
@@ -47,7 +29,7 @@ function generateCrumbs(
   return items;
 }
 
-function Breadcrumbs({ routes, location }: Props) {
+function Breadcrumbs({ routes, location }) {
   const crumbs = generateCrumbs(routes, location);
 
   return (
@@ -82,5 +64,25 @@ function Breadcrumbs({ routes, location }: Props) {
     </Wrapper>
   );
 }
+
+const BreadCrumbsRoute = {
+  path: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.func, PropTypes.string]).isRequired,
+  exact: PropTypes.bool,
+  strict: PropTypes.bool,
+  sensitive: PropTypes.bool,
+};
+
+Breadcrumbs.propTypes = {
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      ...BreadCrumbsRoute,
+      routes: PropTypes.arrayOf(PropTypes.shape(BreadCrumbsRoute)),
+    }),
+  ).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default Breadcrumbs;

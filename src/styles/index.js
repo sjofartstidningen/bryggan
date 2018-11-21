@@ -1,4 +1,3 @@
-// @flow
 import './fonts.css';
 
 const theme = {
@@ -21,13 +20,8 @@ const theme = {
   },
 };
 
-interface StyledProps {
-  theme: typeof theme;
-}
-
-const ax = (path: string) => (props: StyledProps) => {
+const ax = path => props => {
   const [initial, ...paths] = path.split('.');
-  // $FlowFixMe
   const val = paths.reduce((acc, p) => acc[p], props.theme[initial]);
   return val;
 };

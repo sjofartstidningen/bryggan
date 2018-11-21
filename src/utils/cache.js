@@ -1,26 +1,16 @@
-// @flow
+class MinimalCache {
+  ttl = null;
 
-type Serializer<I, K> = I => K;
+  serializer;
 
-class MinimalCache<I, K, V> {
-  ttl: ?number = null;
+  cache = new Map();
 
-  serializer: Serializer<I, K>;
-
-  cache: Map<K, V> = new Map();
-
-  constructor({
-    serializer,
-    ttl,
-  }: {
-    serializer: Serializer<I, K>,
-    ttl?: number,
-  }) {
+  constructor({ serializer, ttl }) {
     this.serializer = serializer;
     if (ttl) this.ttl = ttl;
   }
 
-  set(input: I, value: V, ttl?: number): () => void {
+  set(input, value, ttl) {
     const key = this.serializer(input);
     this.cache.set(key, value);
 
@@ -35,17 +25,17 @@ class MinimalCache<I, K, V> {
     };
   }
 
-  get(input: I): ?V {
+  get(input) {
     const key = this.serializer(input);
     return this.cache.get(key);
   }
 
-  delete(input: I): boolean {
+  delete(input) {
     const key = this.serializer(input);
     return this.cache.delete(key);
   }
 
-  has(input: I): boolean {
+  has(input) {
     const key = this.serializer(input);
     return this.cache.has(key);
   }
@@ -54,15 +44,15 @@ class MinimalCache<I, K, V> {
     this.cache.clear();
   }
 
-  size(): number {
+  size() {
     return this.cache.size;
   }
 
-  entries(): Iterator<[K, V]> {
+  entries() {
     return this.cache.entries();
   }
 
-  forEach(cb: (V, K) => void) {
+  forEach(cb) {
     this.cache.forEach(cb);
   }
 }

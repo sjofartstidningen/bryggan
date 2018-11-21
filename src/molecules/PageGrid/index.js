@@ -1,5 +1,5 @@
-// @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import LazyImage from '../../atoms/LazyImage';
 import {
   Wrapper,
@@ -11,16 +11,8 @@ import {
   RefreshButton,
   RefreshIcon,
 } from './components';
-import type { PageEntry } from '../../types';
 
-type Props = {
-  pages: Array<PageEntry>,
-  push?: boolean,
-  onRefreshClick?: ?(entry: PageEntry) => void | Promise<void>,
-  ratio?: number,
-};
-
-function PageGrid({ pages, push, onRefreshClick, ratio }: Props) {
+function PageGrid({ pages, push, onRefreshClick, ratio }) {
   return (
     <Wrapper>
       {push && <Page />}
@@ -48,6 +40,20 @@ function PageGrid({ pages, push, onRefreshClick, ratio }: Props) {
     </Wrapper>
   );
 }
+
+PageGrid.propTypes = {
+  pages: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      preview: PropTypes.string,
+    }),
+  ),
+  push: PropTypes.bool,
+  onRefreshClick: PropTypes.func,
+  ratio: PropTypes.number,
+};
 
 PageGrid.defaultProps = {
   push: false,

@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// @flow
 import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import Breadcrumbs from './index';
@@ -10,10 +9,10 @@ class Wrapper extends Component<*, *> {
   };
 
   routes = [
-    { path: '/:root', title: ({ root }: Object) => root },
+    { path: '/:root', title: ({ root }) => root },
     {
       path: '/:root/:year',
-      title: ({ year }: Object) => year,
+      title: ({ year }) => year,
       routes: [
         { path: '/blog/2015', title: '2015' },
         { path: '/blog/2016', title: '2016' },
@@ -23,7 +22,7 @@ class Wrapper extends Component<*, *> {
     },
     {
       path: '/:root/:year/:id',
-      title: ({ id }: Object) => id,
+      title: ({ id }) => id,
       routes: [
         { path: '/blog/2018/123', title: '123' },
         { path: '/blog/2018/456', title: '456' },
@@ -33,7 +32,7 @@ class Wrapper extends Component<*, *> {
     },
   ];
 
-  handleChange = (e: any) => {
+  handleChange = e => {
     const { value } = e.target;
     this.setState(() => ({ path: value }));
   };

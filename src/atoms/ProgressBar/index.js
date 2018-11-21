@@ -1,33 +1,28 @@
-// @flow
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import raf from 'raf-schd';
 import { Wrapper, Bar, Progress } from './components';
 
-type Props = {
-  done?: boolean,
-  trickleSpeed: number,
-  delay: number,
-  width: string,
-  background?: string,
-};
-
-type State = {
-  state: 'await' | 'run' | 'pause',
-  progress: number,
-};
-
 const ease = (t: number): number => --t * t * t + 1; // eslint-disable-line
 
-class ProgressBar extends PureComponent<Props, State> {
+class ProgressBar extends PureComponent {
+  static propTypes = {
+    done: PropTypes.bool,
+    trickleSpeed: PropTypes.number,
+    delay: PropTypes.number,
+    width: PropTypes.string,
+    background: PropTypes.string,
+  };
+
   static defaultProps = {
     trickleSpeed: 200,
     delay: 500,
     width: '75%',
   };
 
-  interval: ?number;
+  interval;
 
-  timeout: ?number;
+  timeout;
 
   state = {
     state: 'await',
@@ -38,7 +33,7 @@ class ProgressBar extends PureComponent<Props, State> {
     this.initialize();
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps, prevState) {
     const { state } = this.state;
     const { done } = this.props;
     const equalStates = state === prevState.state;

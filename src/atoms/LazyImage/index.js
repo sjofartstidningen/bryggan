@@ -1,27 +1,22 @@
-// @flow
 import React, { PureComponent, Fragment } from 'react';
-import type { Node } from 'react';
+import PropTypes from 'prop-types';
 import { Container, Img, HiddenImage, DefaultError } from './components';
 import getObserver, { emitter, events } from './observer';
 import ProgressBar from '../ProgressBar';
 
-type Props = {
-  src: string,
-  alt: string,
-  ratio: ?number,
-  className?: string,
-  onLoad?: (event: SyntheticEvent<HTMLImageElement>) => void,
-  onError?: (event: any) => void,
-  renderPlaceholder: () => Node,
-  renderLoading: () => Node,
-  renderError: () => Node,
-};
+class LazyImage extends PureComponent {
+  static propTypes = {
+    src: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    ratio: PropTypes.number,
+    className: PropTypes.string,
+    onLoad: PropTypes.func,
+    onError: PropTypes.func,
+    renderPlaceholder: PropTypes.func,
+    renderLoading: PropTypes.func,
+    renderError: PropTypes.func,
+  };
 
-type State = {
-  state: 'not-in-view' | 'loading' | 'loaded' | 'error',
-};
-
-class LazyImage extends PureComponent<Props, State> {
   static defaultProps = {
     ratio: null,
     renderPlaceholder: () => null,
@@ -29,9 +24,9 @@ class LazyImage extends PureComponent<Props, State> {
     renderError: () => <DefaultError />,
   };
 
-  ref: ?HTMLDivElement;
+  ref;
 
-  observer: IntersectionObserver;
+  observer;
 
   state = {
     state: 'not-in-view',
@@ -39,7 +34,7 @@ class LazyImage extends PureComponent<Props, State> {
 
   observer = getObserver();
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps) {
     const { src } = this.props;
     const { state } = this.state;
 
@@ -66,21 +61,21 @@ class LazyImage extends PureComponent<Props, State> {
     }
   };
 
-  handleRef = (ref: ?HTMLDivElement) => {
+  handleRef = ref => {
     if (ref) {
       this.ref = ref;
       this.setupListeners();
     }
   };
 
-  handleIntersect = (entry: IntersectionObserverEntry) => {
+  handleIntersect = entry => {
     if (entry.target === this.ref) {
       this.setState({ state: 'loading' });
       this.teardownListeners();
     }
   };
 
-  handleError = (event: any) => {
+  handleError = event => {
     const { onError } = this.props;
     this.setState(() => ({ state: 'error' }));
     if (onError) onError(event);

@@ -1,19 +1,14 @@
-// @flow
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { join } from 'path';
 import { FilesListFolder } from '../../components/Fetch/dropbox';
 import IsInView from '../../components/IsInView';
 import PageGrid from '../PageGrid';
-import type {
-  MappedListFolderResponse,
-  PreviewWidth,
-} from '../../types/dropbox';
 import { sortByName } from '../../utils';
 import { getBestPreviewWidth } from '../../utils/dropbox';
 import ErrorMessage from '../../atoms/ErrorMessage';
-import type { PageEntry } from '../../types';
 
-const getPlaceholderIssues = (l: number) =>
+const getPlaceholderIssues = l =>
   Array.from({ length: l }, (_, i) => ({
     id: `${i}`,
     name: '-',
@@ -21,25 +16,23 @@ const getPlaceholderIssues = (l: number) =>
     url: '#',
   }));
 
-type Props = {
-  path: string,
-  baseUrl: string,
-  expectedLength: number,
-  issue: boolean,
-};
-
-type State = {};
-
 class FolderView extends PureComponent<Props, State> {
+  static propTypes = {
+    path: PropTypes.string.isRequired,
+    baseUrl: PropTypes.string,
+    expectedLength: PropTypes.number,
+    issue: PropTypes.bool,
+  };
+
   static defaultProps = {
     baseUrl: '/',
     expectedLength: 11,
     issue: false,
   };
 
-  containerWidth: PreviewWidth = '640';
+  containerWidth = '640';
 
-  ref: ?HTMLDivElement;
+  ref;
 
   state = {};
 
@@ -47,7 +40,7 @@ class FolderView extends PureComponent<Props, State> {
     this.getContainerWidth();
   }
 
-  handleRef = (ref: ?HTMLDivElement) => {
+  handleRef = ref => {
     this.ref = ref;
   };
 
@@ -58,9 +51,7 @@ class FolderView extends PureComponent<Props, State> {
     }
   };
 
-  mapResponseToPages = (
-    response: ?MappedListFolderResponse,
-  ): Array<PageEntry> => {
+  mapResponseToPages = response => {
     const { path, baseUrl, expectedLength } = this.props;
 
     if (response) {
