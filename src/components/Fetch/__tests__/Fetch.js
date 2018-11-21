@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, wait } from 'react-testing-library';
 import axiosMock from 'axios';
-import Fetch, { Cache } from '../';
+import Fetch, { Cache } from '..';
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -165,10 +165,7 @@ test('should await fetching until shouldFetch equals true', async () => {
   expect(axiosMock).not.toHaveBeenCalled();
   expect(getByText('idle').textContent).toBe('idle');
 
-  render(
-    <Fetch url={url} shouldFetch render={renderP} />,
-    {container},
-  );
+  render(<Fetch url={url} shouldFetch render={renderP} />, { container });
 
   await delay(10);
   expect(axiosMock).toHaveBeenCalled();

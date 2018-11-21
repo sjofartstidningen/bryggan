@@ -56,6 +56,7 @@ class Fetch extends PureComponent {
   state = { ...initialState };
 
   controller = null;
+
   timeout = null;
 
   componentDidMount() {
@@ -168,7 +169,6 @@ class Fetch extends PureComponent {
 
       if (onError) onError({ error, config });
     } else if (error.message !== cancelReasons.UNMOUNT) {
-      console.log(error);
       this.setState(() => ({
         ...initialState,
         state: 'aborted',

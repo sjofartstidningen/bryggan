@@ -5,13 +5,15 @@ import memoize from 'lodash.memoize';
 import IsInView from '../../components/IsInView';
 import PageGrid from '../../molecules/PageGrid';
 
-const getWidth = memoize((container: number): number => {
-  const widths = [32, 64, 128, 256, 480, 640, 960, 1024, 2048];
-  const bestFit = widths.find(
-    w => w >= container * (window.devicePixelRatio || 1),
-  );
-  return bestFit || widths[widths.length - 1];
-});
+const getWidth = memoize(
+  (container: number): number => {
+    const widths = [32, 64, 128, 256, 480, 640, 960, 1024, 2048];
+    const bestFit = widths.find(
+      w => w >= container * (window.devicePixelRatio || 1),
+    );
+    return bestFit || widths[widths.length - 1];
+  },
+);
 
 const placeholderIssues = (l: number) =>
   // $FlowFixMe
@@ -57,6 +59,7 @@ type State = {};
 
 class IssueList extends PureComponent<Props, State> {
   containerWidth: number = 1000;
+
   ref: ?HTMLDivElement;
 
   componentDidMount() {

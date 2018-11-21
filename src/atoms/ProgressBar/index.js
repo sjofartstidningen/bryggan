@@ -26,6 +26,7 @@ class ProgressBar extends PureComponent<Props, State> {
   };
 
   interval: ?number;
+
   timeout: ?number;
 
   state = {

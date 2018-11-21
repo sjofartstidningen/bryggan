@@ -4,7 +4,9 @@ type Serializer<I, K> = I => K;
 
 class MinimalCache<I, K, V> {
   ttl: ?number = null;
+
   serializer: Serializer<I, K>;
+
   cache: Map<K, V> = new Map();
 
   constructor({
