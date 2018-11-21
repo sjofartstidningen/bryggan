@@ -1,7 +1,7 @@
 {
   "concurrent": false,
   "linters": {
-    "*.js": ["yarn test:no-watch", "eslint"],
+    "*.js": ["yarn test:staged", "eslint"],
     "*.{js,json,css,md}": ["prettier --write", "git add"]
   }
 }

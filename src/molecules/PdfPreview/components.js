@@ -40,7 +40,7 @@ const Document = styled(_Document)``;
 
 const Page = styled(_Page)``;
 
-const CloseButton = Button.extend`
+const CloseButton = styled(Button)`
   position: absolute;
   top: 0;
   left: 0;

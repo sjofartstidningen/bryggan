@@ -30,6 +30,7 @@ class LazyImage extends PureComponent<Props, State> {
   };
 
   ref: ?HTMLDivElement;
+
   observer: IntersectionObserver;
 
   state = {
@@ -80,50 +81,53 @@ class LazyImage extends PureComponent<Props, State> {
   };
 
   handleError = (event: any) => {
+    const { onError } = this.props;
     this.setState(() => ({ state: 'error' }));
-    if (this.props.onError) this.props.onError(event);
+    if (onError) onError(event);
   };
 
   handleLoad = () => {
     this.setState(() => ({ state: 'loaded' }));
   };
 
-  renderNotInView = () => this.props.renderPlaceholder();
+  renderNotInView = () => {
+    const { renderPlaceholder } = this.props;
+    return renderPlaceholder();
+  };
 
-  renderLoading = () => (
-    <Fragment>
-      {this.props.renderLoading()}
-      <HiddenImage
-        src={this.props.src}
-        alt=""
-        onLoad={this.handleLoad}
-        onError={this.handleError}
-        hidden
-        aria-hidden
-      />
-    </Fragment>
-  );
+  renderLoading = () => {
+    const { renderLoading, src } = this.props;
+    return (
+      <Fragment>
+        {renderLoading()}
+        <HiddenImage
+          src={src}
+          alt=""
+          onLoad={this.handleLoad}
+          onError={this.handleError}
+          hidden
+          aria-hidden
+        />
+      </Fragment>
+    );
+  };
 
   renderLoaded() {
-    const { src, alt, className } = this.props;
-    return (
-      <Img
-        src={src}
-        alt={alt}
-        className={className}
-        onLoad={this.props.onLoad}
-      />
-    );
+    const { src, alt, className, onLoad } = this.props;
+    return <Img src={src} alt={alt} className={className} onLoad={onLoad} />;
   }
 
-  renderError = () => this.props.renderError();
+  renderError = () => {
+    const { renderError } = this.props;
+    return renderError();
+  };
 
   render() {
     const { ratio } = this.props;
     const { state } = this.state;
 
     return (
-      <Container ratio={ratio} innerRef={this.handleRef}>
+      <Container ratio={ratio} ref={this.handleRef}>
         {state === 'not-in-view' && this.renderNotInView()}
         {state === 'loading' && this.renderLoading()}
         {state === 'loaded' && this.renderLoaded()}

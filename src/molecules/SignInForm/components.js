@@ -67,30 +67,30 @@ const SigninContainer = styled.div`
   width: 100%;
 `;
 
-const Form = _Form.extend`
+const Form = styled(_Form)`
   margin: 0;
   border: none;
   padding: 0;
 `;
 
-const FormGroup = _FormGroup.extend`
+const FormGroup = styled(_FormGroup)`
   padding: 0 ${({ theme }) => theme.padding.standard};
 `;
 
 const Label = FormInputLabel;
-const Input = FormInput.extend`
+const Input = styled(FormInput)`
   min-height: 2.25rem;
   background-color: ${({ theme }) => theme.color.greyLight};
 `;
 
-const InputDetail = FormInputDetail.extend``;
+const InputDetail = styled(FormInputDetail)``;
 
 const SubmitButtonContainer = styled.div`
   width: 100%;
   margin-top: 1.5rem;
 `;
 
-const SubmitButton = Button.extend`
+const SubmitButton = styled(Button)`
   position: relative;
   display: block;
   width: 100%;

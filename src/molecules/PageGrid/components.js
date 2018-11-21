@@ -19,7 +19,7 @@ const Page = styled.li`
   position: relative;
 `;
 
-const PageLink = Link.extend`
+const PageLink = styled(Link)`
   display: block;
   border: ${({ theme }) => theme.border.greyOpaque};
   border-radius: 4px;
@@ -34,7 +34,7 @@ const PageLink = Link.extend`
   }
 `;
 
-const Description = Paragraph.extend`
+const Description = styled(Paragraph)`
   display: block;
   width: 100%;
   max-width: 100%;
@@ -70,7 +70,7 @@ const EyeIcon = styled(Eye).attrs({ baseline: false })`
   }
 `;
 
-const RefreshButton = Button.extend`
+const RefreshButton = styled(Button)`
   position: absolute;
   top: ${({ theme }) => theme.margin.fourth};
   right: ${({ theme }) => theme.margin.fourth};
