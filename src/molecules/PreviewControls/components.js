@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   ${slideInDown};
 `;
 
-const Control = Button.extend`
+const Control = styled(Button)`
   flex: 1;
   margin: 0;
   padding: 0;
@@ -35,7 +35,7 @@ const Control = Button.extend`
   }
 `;
 
-const Indicator = Paragraph.withComponent('span').extend`
+const Indicator = styled(Paragraph.withComponent('span'))`
   flex: 0;
   width: auto;
   margin: 0;

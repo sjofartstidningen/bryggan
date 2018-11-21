@@ -58,7 +58,7 @@ const NavListItem = styled.li`
     ).join('')};
 `;
 
-const NavLink = Link.withComponent(_NavLink).extend`
+const NavLink = styled(Link.withComponent(_NavLink))`
   display: inline-block;
   width: 100%;
   padding: 0.75rem 0;

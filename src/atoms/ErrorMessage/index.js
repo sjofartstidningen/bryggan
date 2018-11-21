@@ -19,7 +19,7 @@ const Icon = styled(Close)`
   color: ${({ theme }) => theme.color.error};
 `;
 
-const Message = Paragraph.extend`
+const Message = styled(Paragraph)`
   text-align: center;
   max-width: 20rem;
 `;

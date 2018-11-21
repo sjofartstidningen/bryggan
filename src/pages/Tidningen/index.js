@@ -46,16 +46,18 @@ class Tidningen extends Component<Props, State> {
             <FilesListFolder path="/">
               {({ response }) =>
                 response &&
-                response.sort((a, b) => -sortByName(a, b)).map(year => (
-                  <Fragment key={year.id}>
-                    <Heading1>{year.name}</Heading1>
-                    <FolderView
-                      path={year.name}
-                      baseUrl={match.url}
-                      expectedLength={11}
-                    />
-                  </Fragment>
-                ))
+                response
+                  .sort((a, b) => -sortByName(a, b))
+                  .map(year => (
+                    <Fragment key={year.id}>
+                      <Heading1>{year.name}</Heading1>
+                      <FolderView
+                        path={year.name}
+                        baseUrl={match.url}
+                        expectedLength={11}
+                      />
+                    </Fragment>
+                  ))
               }
             </FilesListFolder>
           )}

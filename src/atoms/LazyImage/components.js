@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { hideVisually } from 'polished';
-import { Img as _Img } from '../../atoms/Image';
-import { Close } from '../../atoms/Icon';
+import { Img as _Img } from '../Image';
+import { Close } from '../Icon';
 import { fadeIn } from '../../theme/animations';
 
 const Container = styled.div.attrs({
@@ -20,7 +20,7 @@ const Container = styled.div.attrs({
     `};
 `;
 
-const Img = _Img.extend`
+const Img = styled(_Img)`
   ${fadeIn};
 `;
 

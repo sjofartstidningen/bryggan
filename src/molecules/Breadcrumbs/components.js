@@ -8,7 +8,7 @@ import { transitions } from '../../theme/utils';
 
 const LinkWithoutExact = ({ exact, ...props }: Object) => <Link {...props} />;
 
-const Wrapper = Paragraph.withComponent('div').extend`
+const Wrapper = styled(Paragraph.withComponent('div'))`
   max-width: 100%;
   font-size: ${({ theme }) => theme.typeSize.heading};
 `;

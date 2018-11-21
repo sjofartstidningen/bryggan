@@ -18,7 +18,7 @@
     "build:app": "REACT_APP_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') react-scripts build",
     "build": "yarn run build:app && yarn run build:headers",
     "test": "react-scripts test --env=jsdom",
-    "test:no-watch": "CI=true react-scripts test --env=jsdom",
+    "test:staged": "CI=true react-scripts test --env=jsdom --passWithNoTests",
     "eject": "react-scripts eject",
     "lint": "eslint src",
     "flow": "flow",

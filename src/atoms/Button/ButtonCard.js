@@ -3,11 +3,11 @@ import React from 'react';
 import type { ComponentType } from 'react';
 import styled from 'styled-components';
 import { borderRadius } from 'polished';
-import { Button as _Button } from '../../atoms/Button';
-import { Paragraph } from '../../atoms/Text';
+import { Button as _Button } from './index';
+import { Paragraph } from '../Text';
 import { transitions } from '../../theme/utils';
 
-const Button = _Button.extend`
+const Button = styled(_Button)`
   display: inline-flex;
   flex-flow: column nowrap;
   align-items: stretch;
@@ -25,7 +25,7 @@ const Button = _Button.extend`
   }
 `;
 
-const Title = Paragraph.extend`
+const Title = styled(Paragraph)`
   display: flex;
   justify-content: center;
   align-items: center;

@@ -23,7 +23,7 @@ const Tinted = styled.span`
   color: ${({ theme }) => theme.color.greyDark};
 `;
 
-const Heading1 = Paragraph.withComponent('h1').extend`
+const Heading1 = styled(Paragraph.withComponent('h1'))`
   margin: 0;
   margin-top: ${({ theme }) => theme.margin.extra};
   margin-bottom: ${({ theme }) => theme.margin.half};
@@ -31,7 +31,7 @@ const Heading1 = Paragraph.withComponent('h1').extend`
   font-weight: ${({ theme }) => theme.weight.bold};
 `;
 
-const Heading2 = Heading1.withComponent('h2').extend`
+const Heading2 = styled(Heading1.withComponent('h2'))`
   margin-bottom: ${({ theme }) => theme.margin.double};
   font-family: ${({ theme }) => theme.font.family};
   font-size: ${({ theme }) => theme.typeSize.body};
