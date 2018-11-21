@@ -3,7 +3,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { join } from 'path';
 import axios from 'axios';
-import Fetch from './';
+import Fetch from '.';
 import { MinimalCache } from '../../utils/cache';
 import type {
   ListFolderResponse,

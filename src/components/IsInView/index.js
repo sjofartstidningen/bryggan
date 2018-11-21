@@ -20,6 +20,7 @@ type State = {
 
 class IsInView extends PureComponent<Props, State> {
   observer: IntersectionObserver;
+
   ref: ?HTMLElement;
 
   state = {
@@ -27,6 +28,7 @@ class IsInView extends PureComponent<Props, State> {
   };
 
   listening = false;
+
   observer = getObserver();
 
   componentWillUnmount() {

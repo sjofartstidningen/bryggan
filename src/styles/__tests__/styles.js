@@ -1,4 +1,4 @@
-import { theme, ax } from '../';
+import { theme, ax } from '..';
 
 describe('styles.ax', () => {
   test('should access props in theme', () => {

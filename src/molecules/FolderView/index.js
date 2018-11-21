@@ -38,7 +38,9 @@ class FolderView extends PureComponent<Props, State> {
   };
 
   containerWidth: PreviewWidth = '640';
+
   ref: ?HTMLDivElement;
+
   state = {};
 
   componentDidMount() {
@@ -100,8 +102,8 @@ class FolderView extends PureComponent<Props, State> {
                   }}
                 >
                   <PageGrid
-                    pages={this.mapResponseToPages(response).sort(
-                      (a, b) => (issue ? sortByName(a, b) : -sortByName(a, b)),
+                    pages={this.mapResponseToPages(response).sort((a, b) =>
+                      issue ? sortByName(a, b) : -sortByName(a, b),
                     )}
                     ratio={2048 / 1589}
                     push={issue}

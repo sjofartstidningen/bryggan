@@ -3,7 +3,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
-import { getEnv } from '../utils';
+import { getEnv } from '.';
 import type {
   User,
   UserProfile,
@@ -42,7 +42,9 @@ const signIn = async ({
   try {
     const persistence = remember
       ? 'LOCAL'
-      : process.env.NODE_ENV === 'production' ? 'SESSION' : 'NONE';
+      : process.env.NODE_ENV === 'production'
+      ? 'SESSION'
+      : 'NONE';
 
     // $FlowFixMe
     await Auth.setPersistence(firebase.auth.Auth.Persistence[persistence]);

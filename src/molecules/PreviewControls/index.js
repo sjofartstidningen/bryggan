@@ -46,6 +46,7 @@ class PreviewControls extends PureComponent<Props, *> {
         break;
     }
   };
+
   render() {
     const { current, total, onNext, onPrev, onZoomInc, onZoomDec } = this.props;
 

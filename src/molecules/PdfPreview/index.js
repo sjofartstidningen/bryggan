@@ -45,6 +45,7 @@ class PdfPreview extends PureComponent<Props, State> {
   };
 
   cancelToken = CancelToken.source();
+
   cache: MinimalCache<string, string, string> = new MinimalCache({
     serializer: x => x,
   });

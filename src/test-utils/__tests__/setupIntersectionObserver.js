@@ -1,4 +1,4 @@
-import { setupIntersectionObserver } from '../';
+import { setupIntersectionObserver } from '..';
 
 describe('testUtil.IntersectionObserver', () => {
   let resetIntersectionObserver;
