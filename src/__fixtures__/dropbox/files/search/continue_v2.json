@@ -1,0 +1,236 @@
+{
+  "matches": [
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2011-06-074.pdf",
+          "path_lower": "/bryggan/2011/06/2011-06-074.pdf",
+          "path_display": "/Bryggan/2011/06/2011-06-074.pdf",
+          "id": "id:-eSOmzbdzPAAAAAAAAB2Cg",
+          "client_modified": "2018-02-28T08:55:55Z",
+          "server_modified": "2018-03-21T09:25:59Z",
+          "rev": "1d0a141e9b0",
+          "size": 4337761,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AACrh22Y3qGiQTCRwwE3IHv4GvbjqNoznG8"
+          },
+          "is_downloadable": true,
+          "content_hash": "f66cfb8f4ff9bba54a2e2e0294869c472d847dad703f84fc0a03e249a2727c0e"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2011-06-075.pdf",
+          "path_lower": "/bryggan/2011/06/2011-06-075.pdf",
+          "path_display": "/Bryggan/2011/06/2011-06-075.pdf",
+          "id": "id:-eSOmzbdzPAAAAAAAAB2CQ",
+          "client_modified": "2018-02-28T08:55:55Z",
+          "server_modified": "2018-03-21T09:25:59Z",
+          "rev": "1d1a141e9b0",
+          "size": 3964899,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AACrh22Y3qGiQTCRwwE3IHv4GvbjqNoznG8"
+          },
+          "is_downloadable": true,
+          "content_hash": "29f7998223ef1f751142471e85fafafd18e273c3321a4de1756914b5bb5bc9df"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2019-06-072.pdf",
+          "path_lower": "/bryggan/2019/06/2019-06-072.pdf",
+          "path_display": "/Bryggan/2019/06/2019-06-072.pdf",
+          "id": "id:CCayWPSE8kAAAAAAAABijA",
+          "client_modified": "2019-06-12T11:32:18Z",
+          "server_modified": "2019-06-12T11:32:21Z",
+          "rev": "6cf3a141e9b0",
+          "size": 1397441,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AAAD--pzSalcq73PGbc9Ch9fgh0YPSvL1vQ"
+          },
+          "is_downloadable": true,
+          "content_hash": "7b096d1d057752190559ec5b37cb36ac68a18f0773bd493eeb917ee5ab9cdc7c"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2019-06-041.pdf",
+          "path_lower": "/bryggan/2019/06/2019-06-041.pdf",
+          "path_display": "/Bryggan/2019/06/2019-06-041.pdf",
+          "id": "id:CCayWPSE8kAAAAAAAABheQ",
+          "client_modified": "2019-06-11T16:16:29Z",
+          "server_modified": "2019-06-11T16:16:34Z",
+          "rev": "6cb7a141e9b0",
+          "size": 2328445,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AAAD--pzSalcq73PGbc9Ch9fgh0YPSvL1vQ"
+          },
+          "is_downloadable": true,
+          "content_hash": "04384509fc0234e9b57ffeb6967b2e26a7cfa3f8238dc9c743628b0fd07876fd"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2012-07-047.pdf",
+          "path_lower": "/bryggan/2012/07/2012-07-047.pdf",
+          "path_display": "/Bryggan/2012/07/2012-07-047.pdf",
+          "id": "id:-eSOmzbdzPAAAAAAAAB3jA",
+          "client_modified": "2018-02-28T08:56:02Z",
+          "server_modified": "2018-03-21T09:26:23Z",
+          "rev": "505a141e9b0",
+          "size": 290177,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AACrh22Y3qGiQTCRwwE3IHv4GvbjqNoznG8"
+          },
+          "is_downloadable": true,
+          "content_hash": "3ee20a558f635cdbd6bb182abf2573b750e520585b3bb575809b733f2cd9aa9e"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2019-04-030.pdf",
+          "path_lower": "/bryggan/2019/04/2019-04-030.pdf",
+          "path_display": "/Bryggan/2019/04/2019-04-030.pdf",
+          "id": "id:CCayWPSE8kAAAAAAAABVng",
+          "client_modified": "2019-04-10T15:11:25Z",
+          "server_modified": "2019-04-10T15:11:29Z",
+          "rev": "5f56a141e9b0",
+          "size": 2928546,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AAAD--pzSalcq73PGbc9Ch9fgh0YPSvL1vQ"
+          },
+          "is_downloadable": true,
+          "content_hash": "261e1f8dc6859fb1b75395b6e63e0c634be9e63f29df19270a2a42f659c5d33d"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2019-04-031.pdf",
+          "path_lower": "/bryggan/2019/04/2019-04-031.pdf",
+          "path_display": "/Bryggan/2019/04/2019-04-031.pdf",
+          "id": "id:CCayWPSE8kAAAAAAAABXTw",
+          "client_modified": "2019-04-10T15:11:27Z",
+          "server_modified": "2019-04-10T15:11:32Z",
+          "rev": "5f59a141e9b0",
+          "size": 2737848,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AAAD--pzSalcq73PGbc9Ch9fgh0YPSvL1vQ"
+          },
+          "is_downloadable": true,
+          "content_hash": "5246f0e47cf99a62381ee6fbe501634df90c054fbbdad199a7fe2a1d6b6436a6"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2011-04-021.pdf",
+          "path_lower": "/bryggan/2011/04/2011-04-021.pdf",
+          "path_display": "/Bryggan/2011/04/2011-04-021.pdf",
+          "id": "id:-eSOmzbdzPAAAAAAAAB1gA",
+          "client_modified": "2018-02-28T08:55:58Z",
+          "server_modified": "2018-03-21T09:25:54Z",
+          "rev": "104a141e9b0",
+          "size": 1387192,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AACrh22Y3qGiQTCRwwE3IHv4GvbjqNoznG8"
+          },
+          "is_downloadable": true,
+          "content_hash": "6ca1d7467694e628489bda3315f0ea6989a07acd2b02dbc931faf0442eb6a06e"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2018-11-074.pdf",
+          "path_lower": "/bryggan/2018/11/2018-11-074.pdf",
+          "path_display": "/Bryggan/2018/11/2018-11-074.pdf",
+          "id": "id:CCayWPSE8kAAAAAAAABDTA",
+          "client_modified": "2018-12-04T15:57:53Z",
+          "server_modified": "2018-12-04T15:58:21Z",
+          "rev": "4ae5a141e9b0",
+          "size": 1665912,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AAAGsBZeMJWLDSD-bUhgCmyfDrXDDBlV-70"
+          },
+          "is_downloadable": true,
+          "content_hash": "00af570ad89f33e3626fff93ecbdfe240d88a8bc055ee5b1b4213ce1fb632eba"
+        }
+      }
+    },
+    {
+      "metadata": {
+        ".tag": "metadata",
+        "metadata": {
+          ".tag": "file",
+          "name": "2019-01-022.pdf",
+          "path_lower": "/bryggan/2019/01/2019-01-022.pdf",
+          "path_display": "/Bryggan/2019/01/2019-01-022.pdf",
+          "id": "id:CCayWPSE8kAAAAAAAABHhg",
+          "client_modified": "2019-01-15T15:18:30Z",
+          "server_modified": "2019-01-15T15:18:35Z",
+          "rev": "4e7ea141e9b0",
+          "size": 970183,
+          "sharing_info": {
+            "read_only": false,
+            "parent_shared_folder_id": "2705451440",
+            "modified_by": "dbid:AACCoALvX2HMOAqzduK1KNK1IPOb-MKGieI"
+          },
+          "is_downloadable": true,
+          "content_hash": "91f64cc330396755fbaefe34eb03d677d559b32385037ee149a630dd14796415"
+        }
+      }
+    }
+  ],
+  "has_more": true,
+  "cursor": "Ch0KCnN0ZW5hIGxpbmUSDwoIL2JyeWdnYW4QCjIBAxAU"
+}

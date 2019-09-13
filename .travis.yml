@@ -1,19 +1,27 @@
 language: node_js
+node_js:
+  - 10
+
+addons:
+  apt:
+    packages:
+      - libgconf-2-4
 
 cache:
   yarn: true
   directories:
     - node_modules
+    - ~/.cache
 
 notifications:
   email: false
 
-node_js:
-  - '8'
+install:
+  - yarn install
 
-script: yarn run validate
+script:
+  - yarn lint && yarn test && yarn cypress:ci && yarn build
 
 branches:
   only:
-  - master
-  - next
+    - master
