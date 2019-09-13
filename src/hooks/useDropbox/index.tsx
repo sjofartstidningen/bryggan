@@ -24,6 +24,8 @@ import { NavigateFn } from '@reach/router';
 import axios, { AxiosInstance } from 'axios';
 import { DropboxUser } from 'types/dropbox';
 import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
+import { safeEnv } from '../../env';
+import { trailingSlash, unleadingSlash } from 'utils';
 
 interface LocalStorageProps {
   accessToken?: string;
@@ -168,20 +170,22 @@ export const useDropboxAuth = (): UseDropboxAuthMethods & DropboxAuthState => {
   };
 
   const loginUrl = (query: { [key: string]: string } = {}) => {
+    const redirectUri =
+      trailingSlash(window.location.origin) +
+      unleadingSlash(safeEnv('REACT_APP_REDIRECT_URL'));
+
     return `https://www.dropbox.com/oauth2/authorize?${qs.stringify({
       ...query,
       response_type: 'code',
-      redirect_uri: process.env.REACT_APP_REDIRECT_URL,
-      client_id: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+      redirect_uri: redirectUri,
+      client_id: safeEnv('REACT_APP_DROPBOX_CLIENT_ID'),
     })}`;
   };
 
   const logout = async (): Promise<void> => {
     if (state.stage === DropboxAuthStage.authorized) {
       try {
-        if (!('Cypress' in window)) {
-          await api.post('/auth/token/revoke');
-        }
+        await api.post('/auth/token/revoke');
       } finally {
         dispatch({ type: DropboxAuthActionType.setUnauthorized });
       }

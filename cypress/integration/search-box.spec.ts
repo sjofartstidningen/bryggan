@@ -3,6 +3,12 @@ describe('Search Box', () => {
     cy.setAuthorized();
   });
 
+  it('should be hidden on smaller screens', () => {
+    cy.visit('/');
+    cy.viewport('iphone-6');
+    cy.queryByLabelText(/search/).should('not.exist');
+  });
+
   it('should search for content with the search box', () => {
     cy.visit('/');
     cy.search('stena line').within(() => {
@@ -22,20 +28,8 @@ describe('Search Box', () => {
       .scrollIntoView()
       .click({ force: true });
 
-    cy.findAllByTestId(/search-result-item/i).should(results => {
-      const fixtures: any[] = [];
-      Cypress.Promise.all([
-        cy
-          .fixture('dropbox/files/search_v2.json')
-          .then(fx => fixtures.push(fx)),
-        cy
-          .fixture('dropbox/files/search/continue_v2.json')
-          .then(fx => fixtures.push(fx)),
-      ]).then(() => {
-        const matches = fixtures.map(fix => fix.matches);
-        expect(results).to.have.length(matches.length);
-      });
-    });
+    // 20 is the total length of the responses from /search and /search/continue
+    cy.findAllByTestId(/search-result-item/i).should('have.length', 20);
   });
 
   it('should remove search result on blur', () => {

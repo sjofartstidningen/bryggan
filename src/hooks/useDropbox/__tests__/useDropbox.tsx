@@ -6,6 +6,7 @@ import nock from 'nock';
 import { useDropboxAuth } from '../index';
 import { DropboxAuthStage } from '../authReducer';
 import mockUser from '__fixtures__/dropbox/users/get_current_account.json';
+import { safeEnv } from 'env';
 
 const LOCALSTORAGE_KEY = 'auth-storage';
 
@@ -76,7 +77,10 @@ it('should provide a proper loginUrl', async () => {
   const link = await waitForElement(() => getByText(/login/i));
   expect(link).toHaveAttribute('href');
   expect(link.getAttribute('href')).toContain(
-    process.env.REACT_APP_DROPBOX_CLIENT_ID,
+    encodeURIComponent(safeEnv('REACT_APP_DROPBOX_CLIENT_ID')),
+  );
+  expect(link.getAttribute('href')).toContain(
+    encodeURIComponent(safeEnv('REACT_APP_REDIRECT_URL')),
   );
 });
 

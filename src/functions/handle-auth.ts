@@ -1,22 +1,12 @@
-import {
-  HttpError,
-  BadRequest,
-  InternalServerError,
-  Forbidden,
-} from 'http-errors';
+import { HttpError, BadRequest, Forbidden } from 'http-errors';
 import qs from 'qs';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import Cookies from 'universal-cookie';
 import { createResponse } from '../utils/create-response';
 import { Oauth2TokenResponse } from '../types/dropbox';
-import { OAUTH_STATE_COOKIE } from '../constants';
-
-const APP_URL = process.env.URL;
-const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL;
-const CLIENT_ID = process.env.REACT_APP_DROPBOX_CLIENT_ID;
-const CLIENT_SECRET = process.env.DROPBOX_CLIENT_SECRET;
-
-const APP_AUTH_HANDLER = `${APP_URL}/dropbox-auth-handler`;
+import { OAUTH_STATE_COOKIE, AUTH_HANDLER_PATH } from '../constants';
+import { safeEnv } from '../env';
+import { trailingSlash, unleadingSlash } from '../utils';
 
 /**
  * Handler to take care of authentication against Dropbox' Oauth2 interface.
@@ -31,19 +21,27 @@ const APP_AUTH_HANDLER = `${APP_URL}/dropbox-auth-handler`;
 export async function handler(
   event: AWSLambda.APIGatewayProxyEvent,
 ): Promise<AWSLambda.APIGatewayProxyResult> {
-  const cookie = new Cookies(event.headers.cookie);
+  const CONTEXT = safeEnv('CONTEXT', 'production');
+  const REDIRECT_URL = safeEnv('REACT_APP_REDIRECT_URL');
+  const CLIENT_ID = safeEnv('REACT_APP_DROPBOX_CLIENT_ID');
+  const CLIENT_SECRET = safeEnv('DROPBOX_CLIENT_SECRET');
+
+  let APP_URL: string;
+  switch (CONTEXT) {
+    case 'deploy-preview':
+    case 'branch-deploy':
+      APP_URL = safeEnv('DEPLOY_PRIME_URL');
+      break;
+    case 'production':
+    default:
+      APP_URL = safeEnv('URL');
+  }
+
+  const APP_AUTH_HANDLER =
+    trailingSlash(APP_URL) + unleadingSlash(AUTH_HANDLER_PATH);
 
   try {
-    if (
-      APP_URL == null ||
-      REDIRECT_URL == null ||
-      CLIENT_ID == null ||
-      CLIENT_SECRET == null
-    ) {
-      throw new InternalServerError(
-        'Environment variables not properly defined',
-      );
-    }
+    const cookie = new Cookies(event.headers.cookie);
 
     if (
       event.queryStringParameters == null ||
@@ -88,13 +86,15 @@ export async function handler(
      * from the initial step.
      */
     const { code } = query;
+    const redirectUri = trailingSlash(APP_URL) + unleadingSlash(REDIRECT_URL);
+
     const { data }: AxiosResponse<Oauth2TokenResponse> = await axios({
       url: 'https://api.dropboxapi.com/oauth2/token',
       method: 'POST',
       data: qs.stringify({
         code,
         grant_type: 'authorization_code',
-        redirect_uri: REDIRECT_URL,
+        redirect_uri: redirectUri,
       }),
       auth: { username: CLIENT_ID, password: CLIENT_SECRET },
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -105,17 +105,7 @@ export async function handler(
       state: query.state,
     })}`;
 
-    const body = `
-      <!doctype html>
-      <html>
-        <head>
-          <meta http-equiv="refresh" content="0; URL='${location}'" />
-        </head>
-        <body>
-          Redirecting...
-        </body>
-      </html>
-    `;
+    const body = redirectBody(location);
 
     return createResponse(body, {
       statusCode: 301,
@@ -131,11 +121,11 @@ export async function handler(
      */
     const err = error as AxiosError;
     if (err.response) {
-      return createResponse('', {
+      const location = APP_AUTH_HANDLER + '?' + qs.stringify(err.response.data);
+      return createResponse(redirectBody(location), {
         statusCode: 301,
-        headers: {
-          Location: `${APP_AUTH_HANDLER}?${qs.stringify(err.response.data)}`,
-        },
+        cache: false,
+        headers: { Location: location },
       });
     }
 
@@ -154,6 +144,51 @@ export async function handler(
     }
 
     if (process.env.NODE_ENV === 'test') throw error;
-    return createResponse(message, { statusCode, cache: false });
+    return createResponse(errorBody(message), {
+      statusCode,
+      cache: false,
+      headers: { 'Content-Type': 'text/html' },
+    });
   }
+}
+
+function redirectBody(redirectUrl: string) {
+  return `<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; URL='${redirectUrl}'" />
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>
+`;
+}
+
+function errorBody(message: string, errorData: any = {}) {
+  return `<!doctype html>
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>Message</h1>
+    <pre>${message}</pre>
+
+    <h2>Error Data</h2>
+    <pre>${JSON.stringify(errorData, null, 2)}</pre>
+
+    <h2>Variables</h2>
+    <pre>${JSON.stringify(
+      {
+        CONTEXT: safeEnv('CONTEXT', ''),
+        URL: safeEnv('URL', ''),
+        DEPLOY_PRIME_URL: safeEnv('DEPLOY_PRIME_URL', ''),
+        REDIRECT_URL: safeEnv('REACT_APP_REDIRECT_URL', ''),
+      },
+      null,
+      2,
+    )}</pre>
+  </body>
+</html>
+`;
 }

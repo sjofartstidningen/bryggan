@@ -1,6 +1,7 @@
 import nock from 'nock';
 import { handler } from '../handle-auth';
-import { OAUTH_STATE_COOKIE } from '../../constants';
+import { OAUTH_STATE_COOKIE, AUTH_HANDLER_PATH } from '../../constants';
+import { safeEnv } from 'env';
 
 const dropbox = nock('https://api.dropboxapi.com');
 
@@ -8,8 +9,14 @@ it('should handle successful auth and retrieve a token', async () => {
   const code = 'abc123';
   const accessToken = 'def456';
   const state = 'oauth_state_key';
+
   dropbox
-    .post('/oauth2/token', body => body.code === code)
+    .post('/oauth2/token', body => {
+      return (
+        body.code === code &&
+        body.redirect_uri.includes(safeEnv('REACT_APP_REDIRECT_URL'))
+      );
+    })
     .reply(200, {
       access_token: accessToken,
       token_type: 'bearer',
@@ -25,7 +32,7 @@ it('should handle successful auth and retrieve a token', async () => {
   const location = response.headers ? response.headers.Location || '' : '';
 
   expect(location).toContain(process.env.URL);
-  expect(location).toContain('/dropbox-auth-handler');
+  expect(location).toContain(AUTH_HANDLER_PATH);
   expect(location).toContain(accessToken);
   expect(response.statusCode).toBe(301);
 });
@@ -45,7 +52,7 @@ it('should handle an errored auth process', async () => {
   const response = await handler(event);
   const location = response.headers ? response.headers.Location || '' : '';
 
-  expect(location).toContain('/dropbox-auth-handler');
+  expect(location).toContain(AUTH_HANDLER_PATH);
   expect(location).toContain(error);
 });
 

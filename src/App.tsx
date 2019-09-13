@@ -11,6 +11,7 @@ import {
   ErrorBoundary,
   ErrorBoundaryWithRefresh,
 } from 'components/ErrorBoundary';
+import { AUTH_HANDLER_PATH } from './constants';
 
 const Landing = lazy(() => import('pages/Landing'));
 const SignIn = lazy(() => import('pages/SignIn'));
@@ -35,7 +36,7 @@ const App: React.FC = () => {
             </Authenticated>
             <SignIn path="sign-in" />
             <DropboxAuthHandler
-              path="dropbox-auth-handler"
+              path={AUTH_HANDLER_PATH}
               fallback={<LoaderOverlay />}
             />
           </Router>

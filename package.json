@@ -1,7 +1,19 @@
 {
-  "name": "foo",
+  "name": "@sjofartstidningen/bryggan",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://bryggan.sjofartstidningen.se",
+  "author": "Adam Bergman <adam@fransvilhelm.com>",
+  "keywords": [
+    "react",
+    "cypress",
+    "jest"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjofartstidningen/bryggan.git"
+  },
   "scripts": {
     "start": "concurrently 'yarn start:app' 'yarn start:lambda'",
     "start:app": "react-scripts start",
