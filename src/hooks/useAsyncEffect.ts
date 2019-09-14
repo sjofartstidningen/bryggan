@@ -1,15 +1,18 @@
 import { useEffect, useLayoutEffect } from 'react';
 
 interface AsyncFn {
-  (): Promise<void>;
+  (hasCancelled: () => boolean): Promise<void>;
   cancel?: () => void;
 }
 
 export const useAsyncEffect = (asyncFn: AsyncFn, deps?: any[]) => {
   useEffect(() => {
-    asyncFn();
+    const has = { cancelled: false };
+    const hasCancelled = () => has.cancelled;
+    asyncFn(hasCancelled);
 
     return () => {
+      has.cancelled = true;
       if (asyncFn.cancel) asyncFn.cancel();
     };
   }, deps); // eslint-disable-line
@@ -17,9 +20,12 @@ export const useAsyncEffect = (asyncFn: AsyncFn, deps?: any[]) => {
 
 export const useAsyncLayoutEffect = (asyncFn: AsyncFn, deps?: any[]) => {
   useLayoutEffect(() => {
-    asyncFn();
+    const has = { cancelled: false };
+    const hasCancelled = () => has.cancelled;
+    asyncFn(hasCancelled);
 
     return () => {
+      has.cancelled = true;
       if (asyncFn.cancel) asyncFn.cancel();
     };
   }, deps); // eslint-disable-line
