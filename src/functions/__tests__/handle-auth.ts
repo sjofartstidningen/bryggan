@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { handler } from '../handle-auth';
-import { OAUTH_STATE_COOKIE, AUTH_HANDLER_PATH } from '../../constants';
+import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../../constants';
 import { safeEnv } from 'env';
 
 const dropbox = nock('https://api.dropboxapi.com');
@@ -32,7 +32,7 @@ it('should handle successful auth and retrieve a token', async () => {
   const location = response.headers ? response.headers.Location || '' : '';
 
   expect(location).toContain(process.env.URL);
-  expect(location).toContain(AUTH_HANDLER_PATH);
+  expect(location).toContain(PATH_AUTH_HANDLER);
   expect(location).toContain(accessToken);
   expect(response.statusCode).toBe(301);
 });
@@ -52,7 +52,7 @@ it('should handle an errored auth process', async () => {
   const response = await handler(event);
   const location = response.headers ? response.headers.Location || '' : '';
 
-  expect(location).toContain(AUTH_HANDLER_PATH);
+  expect(location).toContain(PATH_AUTH_HANDLER);
   expect(location).toContain(error);
 });
 

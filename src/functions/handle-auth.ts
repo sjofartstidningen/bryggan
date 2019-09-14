@@ -4,7 +4,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import Cookies from 'universal-cookie';
 import { createResponse } from '../utils/create-response';
 import { Oauth2TokenResponse } from '../types/dropbox';
-import { OAUTH_STATE_COOKIE, AUTH_HANDLER_PATH } from '../constants';
+import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../constants';
 import { safeEnv } from '../env';
 import { trailingSlash, unleadingSlash } from '../utils';
 
@@ -38,7 +38,7 @@ export async function handler(
   }
 
   const APP_AUTH_HANDLER =
-    trailingSlash(APP_URL) + unleadingSlash(AUTH_HANDLER_PATH);
+    trailingSlash(APP_URL) + unleadingSlash(PATH_AUTH_HANDLER);
 
   try {
     const cookie = new Cookies(event.headers.cookie);

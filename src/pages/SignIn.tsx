@@ -14,7 +14,7 @@ import { DropboxAuthStage } from 'hooks/useDropbox/authReducer';
 import { VisuallyHidden } from 'components/VisuallyHidden';
 import { Dropbox, ArrowRightCircle } from 'components/Icons';
 import { useAsyncLayoutEffect } from 'hooks/useAsyncEffect';
-import { OAUTH_STATE_COOKIE, AUTH_HANDLER_PATH } from '../constants';
+import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../constants';
 import { leadingSlash } from 'utils';
 
 const Wrapper = styled.div`
@@ -155,7 +155,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     navigate(
-      `${leadingSlash(AUTH_HANDLER_PATH)}?${qs.stringify({
+      `${leadingSlash(PATH_AUTH_HANDLER)}?${qs.stringify({
         access_token: input.value,
         state: uid,
       })}`,
