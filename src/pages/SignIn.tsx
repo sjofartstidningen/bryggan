@@ -15,6 +15,7 @@ import { VisuallyHidden } from 'components/VisuallyHidden';
 import { Dropbox, ArrowRightCircle } from 'components/Icons';
 import { useAsyncLayoutEffect } from 'hooks/useAsyncEffect';
 import { OAUTH_STATE_COOKIE, AUTH_HANDLER_PATH } from '../constants';
+import { leadingSlash } from 'utils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -154,7 +155,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     navigate(
-      `${AUTH_HANDLER_PATH}?${qs.stringify({
+      `${leadingSlash(AUTH_HANDLER_PATH)}?${qs.stringify({
         access_token: input.value,
         state: uid,
       })}`,

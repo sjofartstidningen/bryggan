@@ -121,14 +121,12 @@ export async function handler(
      */
     const err = error as AxiosError;
     if (err.response) {
-      return createResponse(
-        errorBody('Failed to retrieve access token', err.response.data),
-        {
-          statusCode: err.response.status,
-          cache: false,
-          headers: { 'Content-Type': 'text/html' },
-        },
-      );
+      const location = APP_AUTH_HANDLER + '?' + qs.stringify(err.response.data);
+      return createResponse(redirectBody(location), {
+        statusCode: 301,
+        cache: false,
+        headers: { Location: location },
+      });
     }
 
     let statusCode: number;
