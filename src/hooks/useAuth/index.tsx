@@ -4,11 +4,11 @@ import React, {
   Dispatch,
   createContext,
   PropsWithChildren,
+  useContext,
 } from 'react';
 import localforage from 'localforage';
 import { DropboxUser } from 'types/dropbox';
 import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
-import { useAsyncEffect } from 'hooks/useAsyncEffect';
 
 enum AuthStage {
   unknown = 'unknown',
@@ -295,6 +295,9 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     </AuthDispatchContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);
+export const useAuthDispatch = () => useContext(AuthDispatchContext);
 
 async function revokeToken(accesToken: string): Promise<void> {}
 
