@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
-import { useDropboxAuth } from 'hooks/useDropbox';
-import { DropboxAuthStage } from 'hooks/useDropbox/authReducer';
 import { useRect } from 'hooks/useRect';
 import { spacing, color, size } from 'styles/theme';
 import { animated, fadeIn } from 'styles/animations';
 import { truncate } from 'styles/utils';
 import { PopUpOverlay } from './PopUpOverlay';
 import { VisuallyHidden } from './VisuallyHidden';
+import { useAuth, AuthStage, useAuthSignOut } from 'hooks/useAuth';
 
 const Profile = styled.div`
   position: relative;
@@ -149,12 +148,13 @@ const ContextMenuContent = styled.span<ContextMenuContentProps>`
 `;
 
 export const ProfileBox: React.FC = () => {
-  const auth = useDropboxAuth();
+  const auth = useAuth();
+  const signOut = useAuthSignOut();
   const [showContext, setShowContext] = useState(false);
   const profilePictureRef = useRef<HTMLButtonElement>(null);
   const rect = useRect(profilePictureRef);
 
-  if (auth.stage !== DropboxAuthStage.authorized) return null;
+  if (auth.stage !== AuthStage.authorized) return null;
 
   const contextPosition = rect && {
     top: rect.top + rect.height + 16,
@@ -183,11 +183,7 @@ export const ProfileBox: React.FC = () => {
             </ContextMenuContent>
           </ContextMenuItem>
           <ContextMenuItem>
-            <ContextMenuContent
-              as="button"
-              mode="warning"
-              onClick={auth.logout}
-            >
+            <ContextMenuContent as="button" mode="warning" onClick={signOut}>
               Sign out
             </ContextMenuContent>
           </ContextMenuItem>

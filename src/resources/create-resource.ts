@@ -1,5 +1,4 @@
-const identityHash = <I, K extends number | string>(input: I) =>
-  (input as unknown) as K;
+import { createLRU, LRUEntry } from 'utils/lru';
 
 enum AsyncState {
   pending,
@@ -7,7 +6,9 @@ enum AsyncState {
   rejected,
 }
 
-export function createResource<I, K extends number | string, V>(
+const lru = createLRU<Result<any>>(500);
+
+export function createResource<I, K extends Key, V = any>(
   fetch: Fetch<I, V>,
   hashInput: Hash<I, K> = identityHash,
 ): Resource<I, V> {
@@ -28,59 +29,92 @@ export function createResource<I, K extends number | string, V>(
           return value;
       }
     },
-    preload: () => {},
+    preload: (input: I): void => {
+      const key = hashInput(input);
+      accessResult(resource, fetch, input, key);
+    },
   };
+
+  return resource;
 }
 
-const entries = new Map<
-  Resource<any, any>,
-  Map<string | number, Result<any>>
->();
+const entries = new Map<Resource<any, any>, Map<Key, LRUEntry<Result<any>>>>();
 
-function accessResult<I, K extends number | string, V>(
+function accessResult<I, K extends Key, V>(
   resource: Resource<I, V>,
   fetch: Fetch<I, V>,
   input: I,
   key: K,
 ): Result<V> {
   let entriesForResource = entries.get(resource);
+
   if (!entriesForResource) {
-    entriesForResource = new Map();
+    entriesForResource = new Map<Key, LRUEntry<Result<V>>>();
     entries.set(resource, entriesForResource);
   }
 
-  const entry: Result<V> | undefined = entriesForResource.get(key);
+  const entry = entriesForResource.get(key);
 
   if (!entry) {
     const thenable = fetch(input);
 
-    const newEntry = {
+    let newResult = {
       status: AsyncState.pending,
       value: thenable,
     };
 
     thenable.then(
       value => {
-        if (newEntry.status === AsyncState.pending) {
-          newEntry.status = AsyncState.resolved;
-          newEntry.value = (value as unknown) as any;
+        if (newResult.status === AsyncState.pending) {
+          newResult.status = AsyncState.resolved;
+          newResult.value = (value as unknown) as any;
         }
       },
       error => {
-        if (newEntry.status === AsyncState.pending) {
-          newEntry.status = AsyncState.rejected;
-          newEntry.value = error;
+        if (newResult.status === AsyncState.pending) {
+          newResult.status = AsyncState.rejected;
+          newResult.value = error;
         }
       },
     );
 
+    const newEntry: LRUEntry<Result<V>> = lru.add(newResult, () =>
+      deleteEntry(resource, key),
+    );
     entriesForResource.set(key, newEntry);
 
-    return newEntry as Result<V>;
+    return newResult as Result<V>;
   }
 
-  return entry;
+  return lru.access(entry) as Result<V>;
 }
+
+function deleteEntry(resource: Resource<any, any>, key: string | number) {
+  const entriesForResource = entries.get(resource);
+  if (entriesForResource !== undefined) {
+    entriesForResource.delete(key);
+    if (entriesForResource.size === 0) {
+      entries.delete(resource);
+    }
+  }
+}
+
+function identityHash<I, K extends Key>(input: I) {
+  const isValid =
+    typeof input === 'string' ||
+    typeof input === 'number' ||
+    typeof input === 'boolean' ||
+    input === undefined ||
+    input === null;
+  if (!isValid) {
+    throw new Error(
+      'Trying to access a resource with a non primitive input is not accepted without passing a hashInput function.',
+    );
+  }
+  return (input as unknown) as K;
+}
+
+type Key = string | number;
 
 interface Resource<I, V> {
   read(input: I): V;

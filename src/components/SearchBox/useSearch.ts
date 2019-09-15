@@ -3,9 +3,9 @@ import Axios, { AxiosError } from 'axios';
 import { useDebounce } from '@fransvilhelm/hooks';
 import { SearchV2Result } from 'types/dropbox';
 import { Page } from 'types/bryggan';
-import { useDropboxApi } from 'hooks/useDropbox';
 import { filterFileMetadata, mapMetadata } from 'utils/files';
 import { keepFirst } from 'utils/array';
+import { api } from 'api/dropbox';
 
 type SearchState =
   | { state: 'idle' }
@@ -68,7 +68,6 @@ export const useSearch = (
 ): [SearchState, () => Promise<void>] => {
   const [state, dispatch] = useReducer(searchReducer, { state: 'idle' });
 
-  const { api } = useDropboxApi();
   const delayedQuery = useDebounce(query, 500);
 
   const cancelTokenRef = useRef(Axios.CancelToken.source());
@@ -90,7 +89,7 @@ export const useSearch = (
     } catch (error) {
       handleError(error, dispatch);
     }
-  }, [state, api]);
+  }, [state]);
 
   useEffect(() => {
     if (delayedQuery.length < 5) return;
@@ -127,7 +126,7 @@ export const useSearch = (
     return () => {
       tokenSource.cancel();
     };
-  }, [api, delayedQuery]);
+  }, [delayedQuery]);
 
   useEffect(() => {
     return () => {

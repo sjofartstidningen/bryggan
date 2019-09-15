@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDropboxAuth } from 'hooks/useDropbox';
-import { DropboxAuthStage } from 'hooks/useDropbox/authReducer';
 import { spacing, font, size, color, tracking, useScreens } from 'styles/theme';
 import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
 import { Link } from '@reach/router';
+import { useAuth, AuthStage } from 'hooks/useAuth';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -46,7 +45,7 @@ const ProfileContainer = styled.div`
 `;
 
 export const Header: React.FC = () => {
-  const auth = useDropboxAuth();
+  const auth = useAuth();
   const screenSm = useScreens('sm');
 
   return (
@@ -55,7 +54,7 @@ export const Header: React.FC = () => {
         <Link to="/">Bryggan</Link>
       </Title>
 
-      {auth.stage === DropboxAuthStage.authorized && (
+      {auth.stage === AuthStage.authorized && (
         <>
           <ScreenMinWidth width={Number.parseInt(screenSm, 10)}>
             <SearchContainer>

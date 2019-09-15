@@ -2,35 +2,21 @@ import React from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../styles/theme';
-import { DropboxProvider } from '../hooks/useDropbox';
+import { AuthProvider } from '../hooks/useAuth';
 
-type Navigate = (path: string) => void;
-
-const Providers: React.FC<{ navigate?: Navigate }> = ({
-  navigate = jest.fn(),
-  children,
-}) => {
+const Providers: React.FC = ({ children }) => {
   return (
     <React.Suspense fallback={<p>Loading</p>}>
       <ThemeProvider theme={theme}>
-        <DropboxProvider navigate={navigate}>{children}</DropboxProvider>
+        <AuthProvider>{children}</AuthProvider>
       </ThemeProvider>
     </React.Suspense>
   );
 };
 
-interface ExtendedRenderOptions extends RenderOptions {
-  navigate?: Navigate;
-}
-
-const customRender = (
-  ui: React.ReactElement,
-  options?: ExtendedRenderOptions,
-) =>
+const customRender = (ui: React.ReactElement, options?: RenderOptions) =>
   render(ui, {
-    wrapper: ({ children }) => (
-      <Providers navigate={options && options.navigate}>{children}</Providers>
-    ),
+    wrapper: ({ children }) => <Providers>{children}</Providers>,
     ...options,
   });
 

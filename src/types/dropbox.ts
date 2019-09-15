@@ -183,6 +183,12 @@ export interface SearchV2Result {
   cursor?: string;
 }
 
+export interface ListFolderResult {
+  entries: (FileMetadata | FolderMetadata | DeletedMetadata)[];
+  cursor?: string;
+  has_more: boolean;
+}
+
 export type ThumbnailFormat = 'jpeg' | 'png';
 
 export type ThumbnailSize =

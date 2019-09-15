@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import qs from 'qs';
-import { useDropboxApi } from 'hooks/useDropbox';
 import { ThumbnailSize, ThumbnailMode, ThumbnailFormat } from 'types/dropbox';
 import { Intersect } from './Intersect';
 import styled from 'styled-components';
 import { color } from 'styles/theme';
+import { content } from 'api/dropbox';
 
 const StyledIntersect = styled(Intersect)`
   background-color: ${color('shade')};
@@ -51,12 +51,11 @@ export const DropboxPreview: React.FC<DropboxPreviewProps> = ({
   parentRef,
   ...imageProps
 }) => {
-  const { content } = useDropboxApi();
   const [load, setLoad] = useState(false);
 
   const [width, height] = getExpectedDimensions(size, aspectRatio);
   const url = `${content.defaults.baseURL}files/get_thumbnail?${qs.stringify({
-    authorization: content.defaults.headers.Authorization,
+    authorization: content.defaults.headers.common.Authorization,
     arg: JSON.stringify({ path, format, size, mode }),
   })}`;
 

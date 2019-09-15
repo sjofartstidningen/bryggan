@@ -1,21 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, navigate } from '@reach/router';
-import qs from 'qs';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 import { useInput, usePersistedState } from '@fransvilhelm/hooks';
-import Cookies from 'universal-cookie';
-import nanoid from 'nanoid';
 import localforage from 'localforage';
 import { spacing, font, size, color } from 'styles/theme';
 import { transition } from 'styles/utils';
-import { useDropboxAuth } from 'hooks/useDropbox';
-import { DropboxAuthStage } from 'hooks/useDropbox/authReducer';
 import { VisuallyHidden } from 'components/VisuallyHidden';
 import { Dropbox, ArrowRightCircle } from 'components/Icons';
-import { useAsyncLayoutEffect } from 'hooks/useAsyncEffect';
-import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../constants';
-import { leadingSlash } from 'utils';
+import { LOCALSTORAGE_POST_SIGN_IN_KEY } from '../constants';
+import { useAuthSignIn, AuthStage, useAuth } from 'hooks/useAuth';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -130,43 +124,49 @@ enum SignInMethod {
   paste,
 }
 
-const cookies = new Cookies();
-
 const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
-  const auth = useDropboxAuth();
+  const auth = useAuth();
+  const { handleOauth, handleDirectInput } = useAuthSignIn();
   const [signInMethod, setSignInMethod] = usePersistedState(SignInMethod.link);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const input = useInput('');
-  const uid = useMemo(() => nanoid(), []);
 
-  useAsyncLayoutEffect(async () => {
-    const run = async () => {
-      cookies.set(OAUTH_STATE_COOKIE, uid, {
-        path: '/',
-        maxAge: 1000 * 60 * 60,
+  const handleClick = async () => {
+    if (location && location.state && location.state.from) {
+      await localforage.setItem(LOCALSTORAGE_POST_SIGN_IN_KEY, {
+        from: location.state.from,
       });
-      if (location && location.state && location.state.from) {
-        await localforage.setItem(uid, { from: location.state.from });
-      }
-    };
+    }
 
-    run();
-  }, [uid, location]);
+    handleOauth();
+  };
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    navigate(
-      `${leadingSlash(PATH_AUTH_HANDLER)}?${qs.stringify({
-        access_token: input.value,
-        state: uid,
-      })}`,
-    );
+    setIsSubmitting(true);
+    handleDirectInput(input.value);
   };
+
+  useEffect(() => {
+    if (!isSubmitting) return;
+
+    switch (auth.stage) {
+      case AuthStage.unauthorized:
+        setIsSubmitting(false);
+        break;
+
+      case AuthStage.authorized:
+        const to = (location && location.state && location.state.from) || '/';
+        navigate(to, { replace: true });
+        break;
+    }
+  }, [isSubmitting, auth.stage, location]);
 
   return (
     <Wrapper>
       {signInMethod === SignInMethod.link && (
         <>
-          <DropboxLink href={auth.loginUrl({ state: uid })}>
+          <DropboxLink as="button" onClick={handleClick}>
             <DropboxIcon /> Sign in with Dropbox
           </DropboxLink>
           <ToggleMethodButton
@@ -189,7 +189,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
                 {...input}
               />
             </TokenLabel>
-            <SubmitButton type="submit">
+            <SubmitButton type="submit" disabled={isSubmitting}>
               <VisuallyHidden>Sign in </VisuallyHidden>
               <ArrowRightCircle />
             </SubmitButton>
@@ -199,7 +199,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
           >
             Or sign in via link
           </ToggleMethodButton>
-          {auth.stage === DropboxAuthStage.unauthorized && auth.error && (
+          {auth.stage === AuthStage.unauthorized && auth.error && (
             <AuthError>
               Could not sign in, access token probably invalid{' '}
               <small>(Reason: {auth.error})</small>

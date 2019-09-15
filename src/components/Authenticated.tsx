@@ -1,47 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
-import { useDropboxAuth } from 'hooks/useDropbox';
-import { DropboxAuthStage } from 'hooks/useDropbox/authReducer';
 import { useTimeout } from 'hooks/useTimeout';
+import { useAuth, AuthStage } from 'hooks/useAuth';
+import { PATH_SIGN_IN } from '../constants';
 
 interface AuthenticatedProps extends RouteComponentProps {
-  signInUri: string;
   fallback?: React.ReactElement;
   timeout?: number;
 }
 
 export const Authenticated: React.FC<AuthenticatedProps> = ({
-  signInUri,
   fallback = null,
   timeout = 300,
   navigate,
   location,
   children,
 }) => {
-  const auth = useDropboxAuth();
+  const auth = useAuth();
   const [showFallback, setShowFallback] = useState(false);
 
   useTimeout(() => setShowFallback(true), timeout);
 
   useEffect(() => {
-    if (auth.stage === DropboxAuthStage.unauthorized && navigate) {
+    if (auth.stage === AuthStage.unauthorized && navigate) {
       const from = location && location.pathname;
-      navigate(signInUri, { state: { from }, replace: true });
+      navigate(PATH_SIGN_IN, { state: { from }, replace: true });
     }
-  }, [signInUri, auth.stage, navigate, location]);
+  }, [auth.stage, navigate, location]);
 
   switch (auth.stage) {
-    case DropboxAuthStage.authorized:
+    case AuthStage.authorized:
       return <>{children}</>;
 
-    case DropboxAuthStage.unknown:
+    case AuthStage.unknown:
+    case AuthStage.checking:
+    case AuthStage.checkingToken:
       if (!showFallback) return null;
       return <>{fallback}</>;
 
-    case DropboxAuthStage.unauthorized:
+    case AuthStage.unauthorized:
     default:
       return (
-        <Link to={signInUri} state={{ from: location && location.pathname }}>
+        <Link to={PATH_SIGN_IN} state={{ from: location && location.pathname }}>
           You need to sign in
         </Link>
       );

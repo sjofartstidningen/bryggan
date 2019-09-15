@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { RouteComponentProps, navigate, WindowLocation } from '@reach/router';
-import qs from 'qs';
+import { RouteComponentProps, navigate } from '@reach/router';
 import localforage from 'localforage';
-import { useDropboxAuth } from 'hooks/useDropbox';
-import { DropboxAuthStage } from 'hooks/useDropbox/authReducer';
 import { useTimeout } from 'hooks/useTimeout';
+import { useAuthReciever, useAuth, AuthStage } from 'hooks/useAuth';
+import { leadingSlash } from 'utils';
+import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 
 interface AuthHandlerProps extends RouteComponentProps {
   fallback: React.ReactElement;
@@ -14,55 +14,42 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({
   fallback,
   location,
 }) => {
-  const auth = useDropboxAuth();
+  const auth = useAuth();
   const [showFallback, setShowFallback] = useState(false);
 
+  useAuthReciever(location);
+
   useTimeout(() => setShowFallback(true), 300);
-  useEffect(() => {
-    const run = async () => {
-      const state = await getStoredState(location);
-      auth.handleAuthentication(state.from);
-    };
-
-    run();
-  });
 
   useEffect(() => {
-    const run = async () => {
-      const state = await getStoredState(location);
+    let hasCancelled = false;
+    switch (auth.stage) {
+      case AuthStage.unauthorized:
+        navigate(leadingSlash(PATH_SIGN_IN), { replace: true });
+        break;
 
-      switch (auth.stage) {
-        case DropboxAuthStage.unauthorized:
-          navigate('/sign-in', { state, replace: true });
-          break;
-      }
+      case AuthStage.authorized:
+        (async () => {
+          const data = await localforage.getItem<{ from: string } | undefined>(
+            LOCALSTORAGE_POST_SIGN_IN_KEY,
+          );
+
+          if (hasCancelled) return;
+          const to = (data && data.from) || '/';
+          navigate(to, { replace: true });
+        })();
+    }
+
+    return () => {
+      hasCancelled = true;
     };
+  }, [auth.stage]);
 
-    run();
-  }, [location, auth.stage]);
-
-  if (auth.stage === DropboxAuthStage.unknown && showFallback) {
+  if (showFallback) {
     return <>{fallback}</>;
   }
 
-  if (auth.stage === DropboxAuthStage.authorized) {
-    return <p>Sucess</p>;
-  }
-
   return null;
-};
-
-const getStoredState = async (location?: WindowLocation) => {
-  const query: { state?: string } =
-    qs.parse((location && location.search) || '', {
-      ignoreQueryPrefix: true,
-    }) || {};
-
-  const state: { from?: string } = query.state
-    ? await localforage.getItem(query.state)
-    : {};
-
-  return state;
 };
 
 export default DropboxAuthHandler;

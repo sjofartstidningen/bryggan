@@ -7,16 +7,23 @@ import {
   LocationProvider,
   RouteComponentProps,
 } from '@reach/router';
+import nock from 'nock';
 import { render, act } from 'utils/test-utils';
-import { Authenticated } from 'components/Authenticated';
-import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
 import mockUser from '__fixtures__/dropbox/users/get_current_account.json';
+import { LOCALSTORAGE_AUTH_KEY, PATH_SIGN_IN } from '../../constants';
+import { Authenticated } from 'components/Authenticated';
+
+const dropboxApi = nock('https://api.dropboxapi.com', {
+  reqheaders: { authorization: /^bearer .+/i },
+});
 
 afterEach(async () => {
   await localforage.clear();
 });
 
 it('should render children if authenticated', async () => {
+  dropboxApi.post('/2/users/get_current_account').reply(200, mockUser);
+
   await localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
     accessToken: 'abc123',
     user: mockUser,
@@ -26,40 +33,38 @@ it('should render children if authenticated', async () => {
 
   const { findByText } = renderWithLocationProvider(
     <Router>
-      <Authenticated path="/" signInUri="/sign-in">
+      <Authenticated path="/">
         <Page path="/" />
       </Authenticated>
     </Router>,
   );
 
-  const text = await findByText(/authenticated/i);
+  const text = await findByText(/^authenticated$/i);
   expect(text).toBeInTheDocument();
 });
 
 it('should redirect to signInUri if not authenticated', async () => {
-  const signInUri = '/sign-in';
-
   const ProtectedPage = (_: RouteComponentProps) => <p>Authenticated</p>;
   const SignIn = (_: RouteComponentProps) => <p>Sign In</p>;
 
   const { findByText, history } = renderWithLocationProvider(
     <Router>
-      <Authenticated path="/" signInUri={signInUri}>
+      <Authenticated path="/">
         <ProtectedPage path="/" />
       </Authenticated>
-      <SignIn path={signInUri} />
+      <SignIn path={PATH_SIGN_IN} />
     </Router>,
   );
 
   await findByText(/sign in/i);
-  expect(history.location.pathname).toEqual(signInUri);
+  expect(history.location.pathname).toContain(PATH_SIGN_IN);
 });
 
 it('should display loading state while auth state is unknown', async () => {
   jest.useFakeTimers();
 
   const { findByText } = render(
-    <Authenticated signInUri="/sign-in" fallback={<p>Loading</p>}>
+    <Authenticated fallback={<p>Loading</p>}>
       <p>Authenticated</p>
     </Authenticated>,
   );
@@ -74,7 +79,6 @@ it('should display loading state while auth state is unknown', async () => {
 });
 
 it('should redirect to signInUri with previous uri in state', async () => {
-  const signInUri = '/sign-in';
   const initialPath = '/foo';
 
   const ProtectedPage = (_: RouteComponentProps) => <p>Authenticated</p>;
@@ -84,10 +88,10 @@ it('should redirect to signInUri with previous uri in state', async () => {
 
   const { findByText } = renderWithLocationProvider(
     <Router>
-      <Authenticated path="/" signInUri={signInUri}>
+      <Authenticated path="/">
         <ProtectedPage path={initialPath} />
       </Authenticated>
-      <SignIn path={signInUri} />
+      <SignIn path={PATH_SIGN_IN} />
     </Router>,
     { route: initialPath },
   );
