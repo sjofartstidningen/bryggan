@@ -7,15 +7,12 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import localforage from 'localforage';
 import qs from 'qs';
 import nanoid from 'nanoid';
 import Cookie from 'universal-cookie';
-import { trailingSlash, unleadingSlash } from 'utils';
-import { safeEnv } from 'env';
 import { DropboxUser } from 'types/dropbox';
-import { LOCALSTORAGE_AUTH_KEY, OAUTH_STATE_COOKIE } from '../../constants';
-import * as dropbox from 'api/dropbox';
+import { OAUTH_STATE_COOKIE } from '../../constants';
+import { handleStateChange } from './state-handler';
 
 export enum AuthStage {
   unknown = 'unknown',
@@ -36,6 +33,10 @@ export enum AuthActionType {
   unauthorize = 'unauthorize',
 }
 
+/**
+ * A user can choose to authorize using either direct input, e.g. pasting in an
+ * access token recieved, or by using standard oauth redirect method.
+ */
 export enum SignInMethod {
   oauth = 'oauth',
   directInput = 'direct-input',
@@ -70,6 +71,10 @@ export type SigningInState =
   | { method: SignInMethod.oauth; oauthState?: string }
   | { method: SignInMethod.directInput; accessToken: string };
 
+/**
+ * The Auth state can be in only n placec at a given point in time, and
+ * different props are attached to it at that time.
+ */
 export type AuthState =
   | {
       stage: AuthStage.unknown;
@@ -109,6 +114,11 @@ export interface StateChart {
   };
 }
 
+/**
+ * The state chart describes which states can transition to each other, and by
+ * which event. This is used to prevent state updates from colliding an taking
+ * precedence over each other.
+ */
 const stateChart: StateChart = {
   initial: AuthStage.unknown,
   states: {
@@ -156,6 +166,18 @@ const stateChart: StateChart = {
   },
 };
 
+/**
+ * The reudecer handles every finitely possible state transition. If an action
+ * happening on the current state doesn't exists on that states chart on the
+ * state chart the state transition will be prevented.
+ *
+ * This will prevent action overriding other actions and securing the use of
+ * async updates.
+ *
+ * @param {AuthState} state
+ * @param {AuthAction} action
+ * @returns {AuthState}
+ */
 export const reducer = (state: AuthState, action: AuthAction): AuthState => {
   const currentStage = state.stage;
   const nextStage = stateChart.states[currentStage].on[action.type];
@@ -222,143 +244,24 @@ export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(
   null as any,
 );
 
-export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
+/**
+ * Provide the global auth context to all it's children.
+ *
+ * @param {PropsWithChildren<{}>} { children }
+ * @returns {JSX.Element}
+ */
+export const AuthProvider = ({
+  children,
+}: PropsWithChildren<{}>): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     let hasCancelled = false;
-
     const safeDispatch: Dispatch<AuthAction> = action => {
       if (!hasCancelled) dispatch(action);
     };
 
-    switch (state.stage) {
-      case AuthStage.unknown:
-        safeDispatch({ type: AuthActionType.checkAuth });
-        break;
-
-      case AuthStage.checking:
-        handleChecking();
-        break;
-
-      case AuthStage.checkingToken:
-        handleCheckingToken();
-        break;
-
-      case AuthStage.authorized:
-        handleAuthorized();
-        break;
-
-      case AuthStage.unauthorized:
-        handleUnauthorized();
-        break;
-
-      case AuthStage.signingIn:
-        handleSigningIn();
-        break;
-
-      case AuthStage.signingOut:
-        handleSigningOut();
-        break;
-    }
-
-    async function handleChecking() {
-      if (state.stage !== AuthStage.checking) return;
-
-      try {
-        const data = await localforage.getItem<
-          { accessToken: string } | undefined
-        >(LOCALSTORAGE_AUTH_KEY);
-        const accessToken = data ? data.accessToken : undefined;
-
-        if (accessToken) {
-          const user = await getCurrentAccount(accessToken);
-          safeDispatch({
-            type: AuthActionType.authorize,
-            payload: { accessToken, user },
-          });
-        } else {
-          safeDispatch({ type: AuthActionType.unauthorize });
-        }
-      } catch (error) {
-        safeDispatch({ type: AuthActionType.unauthorize });
-      }
-    }
-
-    async function handleCheckingToken() {
-      if (state.stage !== AuthStage.checkingToken) return;
-
-      try {
-        const user = await getCurrentAccount(state.accessToken);
-        safeDispatch({
-          type: AuthActionType.authorize,
-          payload: { accessToken: state.accessToken, user },
-        });
-      } catch (err) {
-        safeDispatch({
-          type: AuthActionType.unauthorize,
-          payload: { reason: 'Authorization failed' },
-        });
-      }
-    }
-
-    async function handleAuthorized() {
-      if (state.stage !== AuthStage.authorized) return;
-
-      try {
-        await localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
-          accessToken: state.accessToken,
-        });
-      } catch (err) {}
-    }
-
-    async function handleUnauthorized() {
-      if (state.stage !== AuthStage.unauthorized) return;
-
-      try {
-        await localforage.removeItem(LOCALSTORAGE_AUTH_KEY);
-      } catch (err) {}
-    }
-
-    async function handleSigningIn() {
-      if (state.stage !== AuthStage.signingIn) return;
-
-      switch (state.method) {
-        case SignInMethod.directInput:
-          try {
-            const user = await getCurrentAccount(state.accessToken);
-            return safeDispatch({
-              type: AuthActionType.authorize,
-              payload: { accessToken: state.accessToken, user },
-            });
-          } catch (err) {
-            return safeDispatch({
-              type: AuthActionType.unauthorize,
-              payload: {
-                reason: 'Failed to authorize you with provided access token',
-              },
-            });
-          }
-
-        case SignInMethod.oauth:
-          if (!hasCancelled) {
-            safeDispatch({ type: AuthActionType.unauthorize });
-            return window.location.replace(loginUrl(state.oauthState));
-          }
-      }
-    }
-
-    async function handleSigningOut() {
-      if (state.stage !== AuthStage.signingOut) return;
-
-      try {
-        await revokeToken(state.accessToken);
-      } catch (err) {
-        // No need to act on this. Revoking the token is not critical.
-      } finally {
-        safeDispatch({ type: AuthActionType.unauthorize });
-      }
-    }
+    handleStateChange(state, safeDispatch);
 
     return () => {
       hasCancelled = true;
@@ -448,38 +351,3 @@ export const useAuthReciever = (location?: Location) => {
     hasHandled.current = true;
   }, [auth.stage, location, dispatch]);
 };
-
-/**
- * =========== HELPER FUNCTIONS ===========
- */
-async function revokeToken(accessToken: string): Promise<void> {
-  await dropbox.api.post('/auth/token/revoke', undefined, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-}
-
-async function getCurrentAccount(accessToken: string): Promise<DropboxUser> {
-  const { data: user } = await dropbox.api.post(
-    '/users/get_current_account',
-    undefined,
-    { headers: { Authorization: `Bearer ${accessToken}` } },
-  );
-
-  return user;
-}
-
-const REACT_APP_REDIRECT_URL = safeEnv('REACT_APP_REDIRECT_URL');
-const REACT_APP_DROPBOX_CLIENT_ID = safeEnv('REACT_APP_DROPBOX_CLIENT_ID');
-
-function loginUrl(state?: string) {
-  const redirectUri =
-    trailingSlash(window.location.origin) +
-    unleadingSlash(REACT_APP_REDIRECT_URL);
-
-  return `https://www.dropbox.com/oauth2/authorize?${qs.stringify({
-    response_type: 'code',
-    redirect_uri: redirectUri,
-    client_id: REACT_APP_DROPBOX_CLIENT_ID,
-    state,
-  })}`;
-}
