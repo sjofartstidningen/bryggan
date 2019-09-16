@@ -11,17 +11,6 @@ declare global {
   namespace Cypress {
     interface Chainable<Subject = any> {
       /**
-       * Short hand to sign in to the application.
-       *
-       * @example
-       * cy.signIn();
-       *
-       * @returns {Chainable<void>}
-       * @memberof Chainable
-       */
-      signIn(): Chainable<void>;
-
-      /**
        * Set the curret session as signed in by populating the local storage
        * with correct data.
        *

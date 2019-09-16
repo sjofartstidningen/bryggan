@@ -2,19 +2,6 @@ import '@testing-library/cypress/add-commands';
 import localforage from 'localforage';
 import { LOCALSTORAGE_AUTH_KEY } from '../../src/constants';
 
-Cypress.Commands.add('signIn', () => {
-  cy.log('Sign In');
-
-  cy.mockDropbox('users/get_current_account');
-  cy.mockDropbox('auth/token/revoke');
-
-  cy.findByText(/paste/i).click();
-  cy.findByLabelText(/access token/i).focus();
-  cy.findByLabelText(/access token/i).type(Cypress.env('DROPBOX_ACCESS_TOKEN'));
-
-  cy.get('form').submit();
-});
-
 Cypress.Commands.add('setAuthorized', () => {
   cy.log('Set session as authorized');
 
