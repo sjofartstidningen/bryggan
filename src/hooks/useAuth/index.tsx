@@ -294,7 +294,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
           type: AuthActionType.authorize,
           payload: { accessToken: state.accessToken, user },
         });
-      } catch {
+      } catch (err) {
         safeDispatch({
           type: AuthActionType.unauthorize,
           payload: { reason: 'Authorization failed' },
@@ -309,7 +309,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         await localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
           accessToken: state.accessToken,
         });
-      } catch {}
+      } catch (err) {}
     }
 
     async function handleUnauthorized() {
@@ -317,7 +317,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
       try {
         await localforage.removeItem(LOCALSTORAGE_AUTH_KEY);
-      } catch {}
+      } catch (err) {}
     }
 
     async function handleSigningIn() {
@@ -331,7 +331,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
               type: AuthActionType.authorize,
               payload: { accessToken: state.accessToken, user },
             });
-          } catch {
+          } catch (err) {
             return safeDispatch({
               type: AuthActionType.unauthorize,
               payload: {
@@ -353,7 +353,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
       try {
         await revokeToken(state.accessToken);
-      } catch {
+      } catch (err) {
         // No need to act on this. Revoking the token is not critical.
       } finally {
         safeDispatch({ type: AuthActionType.unauthorize });
