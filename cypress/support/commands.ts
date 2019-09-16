@@ -6,6 +6,7 @@ Cypress.Commands.add('signIn', () => {
   cy.log('Sign In');
 
   cy.mockDropbox('users/get_current_account');
+  cy.mockDropbox('auth/token/revoke');
 
   cy.findByText(/paste/i).click();
   cy.findByLabelText(/access token/i).focus();
@@ -16,14 +17,15 @@ Cypress.Commands.add('signIn', () => {
 
 Cypress.Commands.add('setAuthorized', () => {
   cy.log('Set session as authorized');
-  cy.fixture('dropbox/users/get_current_account.json').then(user => {
-    cy.localforage(localforage =>
-      localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
-        accessToken: Cypress.env('DROPBOX_ACCESS_TOKEN'),
-        user: user,
-      }),
-    );
-  });
+
+  cy.mockDropbox('users/get_current_account');
+  cy.mockDropbox('auth/token/revoke');
+
+  cy.localforage(localforage =>
+    localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
+      accessToken: Cypress.env('DROPBOX_ACCESS_TOKEN'),
+    }),
+  );
 });
 
 Cypress.Commands.add('localforage', handler => handler(localforage));

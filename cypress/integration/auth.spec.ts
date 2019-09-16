@@ -6,7 +6,6 @@ describe('Auth Flow', () => {
   });
 
   it('should be possible to sign out', () => {
-    cy.mockDropbox('auth/token/revoke');
     cy.setAuthorized();
     cy.visit('/');
 
