@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { render, fireEvent } from 'utils/test-utils';
-import {
-  ErrorBoundary,
-  ErrorBoundaryWithRefresh,
-} from 'components/ErrorBoundary';
+import { render, fireEvent } from '../../utils/test-utils';
+import { ErrorBoundary, ErrorBoundaryWithRefresh } from '../ErrorBoundary';
 
 beforeEach(() => {
   console.error = jest.fn();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from './Icons';
 import styled, { keyframes } from 'styled-components';
-import { animated } from 'styles/animations';
+import { animated } from '../styles/animations';
 
 const fade = keyframes`
   from {

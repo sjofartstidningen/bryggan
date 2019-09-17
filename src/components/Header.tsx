@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { spacing, font, size, color, tracking } from 'styles/theme';
+import { Link } from '@reach/router';
+import { spacing, font, size, color, tracking } from '../styles/theme';
+import { useAuth, AuthStatus } from '../hooks/use-auth';
+import { useScreens } from '../hooks/use-theme';
 import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
-import { Link } from '@reach/router';
-import { useAuth, AuthStatus } from 'hooks/use-auth';
-import { useScreens } from 'hooks/use-theme';
 
 const HeaderContainer = styled.header`
   display: flex;

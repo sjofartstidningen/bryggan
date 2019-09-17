@@ -8,10 +8,10 @@ import {
   RouteComponentProps,
 } from '@reach/router';
 import nock from 'nock';
-import { render, act } from 'utils/test-utils';
-import mockUser from '__fixtures__/dropbox/users/get_current_account.json';
+import { render, act } from '../../utils/test-utils';
+import mockUser from '../../__fixtures__/dropbox/users/get_current_account.json';
 import { LOCALSTORAGE_AUTH_KEY, PATH_SIGN_IN } from '../../constants';
-import { Authenticated } from 'components/Authenticated';
+import { Authenticated } from '../Authenticated';
 
 const dropboxApi = nock('https://api.dropboxapi.com', {
   reqheaders: { authorization: /^bearer .+/i },

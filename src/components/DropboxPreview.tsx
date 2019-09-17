@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import qs from 'qs';
-import { ThumbnailSize, ThumbnailMode, ThumbnailFormat } from 'types/dropbox';
-import { Intersect } from './Intersect';
 import styled from 'styled-components';
-import { color } from 'styles/theme';
-import { content } from 'api/dropbox';
+import qs from 'qs';
+import {
+  ThumbnailSize,
+  ThumbnailMode,
+  ThumbnailFormat,
+} from '../types/dropbox';
+import { Intersect } from './Intersect';
+import { color } from '../styles/theme';
+import { content } from '../api/dropbox';
 
 const StyledIntersect = styled(Intersect)`
   background-color: ${color('shade')};

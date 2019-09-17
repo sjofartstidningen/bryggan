@@ -1,10 +1,11 @@
 import { Dispatch } from 'react';
 import localforage from 'localforage';
 import qs from 'qs';
-import { trailingSlash, unleadingSlash } from 'utils';
-import { safeEnv } from 'env';
-import { DropboxUser } from 'types/dropbox';
+import { trailingSlash, unleadingSlash } from '../../utils';
+import { safeEnv } from '../../env';
+import { DropboxUser } from '../../types/dropbox';
 import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
+import * as dropbox from '../../api/dropbox';
 import {
   AuthState,
   AuthAction,
@@ -12,7 +13,6 @@ import {
   AuthActionType,
   SignInMethod,
 } from '.';
-import * as dropbox from 'api/dropbox';
 
 /**
  * The auth reducer will produce lots of different states and all of them must

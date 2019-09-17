@@ -11,15 +11,15 @@ import {
   ComboboxOption,
   ComboboxPopover,
 } from '@reach/combobox';
-import { size, font, spacing, color } from 'styles/theme';
-import { animated, fadeIn } from 'styles/animations';
-import { transition } from 'styles/utils';
-import { Loader } from 'components/Loader';
-import { DropboxPreview } from 'components/DropboxPreview';
-import { ChevronRight, AlertCircle } from 'components/Icons';
-import { Spinner } from 'components/Spinner';
-import { Intersect } from 'components/Intersect';
-import { useSearch } from './useSearch';
+import { size, font, spacing, color } from '../../styles/theme';
+import { animated, fadeIn } from '../../styles/animations';
+import { transition } from '../../styles/utils';
+import { Loader } from '../Loader';
+import { DropboxPreview } from '../DropboxPreview';
+import { ChevronRight, AlertCircle } from '../Icons';
+import { Spinner } from '../Spinner';
+import { Intersect } from '../Intersect';
+import { useSearch } from './use-search';
 
 /**
  * Display a search box with the ability to search for pdf content and navigate

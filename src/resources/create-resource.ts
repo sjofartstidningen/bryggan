@@ -1,4 +1,4 @@
-import { createLRU, LRUEntry } from 'utils/lru';
+import { createLRU, LRUEntry } from '../utils/lru';
 
 enum AsyncState {
   pending,

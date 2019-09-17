@@ -1,11 +1,11 @@
 import { useEffect, useCallback, useRef, useReducer } from 'react';
 import Axios, { AxiosError } from 'axios';
 import { useDebounce } from '@fransvilhelm/hooks';
-import { SearchV2Result } from 'types/dropbox';
-import { Page } from 'types/bryggan';
-import { filterFileMetadata, mapMetadata } from 'utils/files';
-import { keepFirst } from 'utils/array';
-import { api } from 'api/dropbox';
+import { SearchV2Result } from '../../types/dropbox';
+import { Page } from '../../types/bryggan';
+import { filterFileMetadata, mapMetadata } from '../../utils/files';
+import { keepFirst } from '../../utils/array';
+import { api } from '../../api/dropbox';
 
 type SearchState =
   | { state: 'idle' }

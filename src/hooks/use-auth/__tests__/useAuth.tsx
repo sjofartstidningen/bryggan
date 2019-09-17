@@ -11,8 +11,8 @@ import {
 } from '@reach/router';
 import qs from 'qs';
 import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
-import mockUser from '__fixtures__/dropbox/users/get_current_account.json';
-import { safeEnv } from 'env';
+import mockUser from '../../../__fixtures__/dropbox/users/get_current_account.json';
+import { safeEnv } from '../../../env';
 import {
   useAuth,
   AuthProvider,

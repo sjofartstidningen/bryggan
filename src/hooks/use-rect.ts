@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useRef } from 'react';
-import { RectObserver, createObserver } from 'utils/observe-rect';
+import { RectObserver, createObserver } from '../utils/observe-rect';
 
 export const useRect = (
   ref: React.RefObject<Element>,

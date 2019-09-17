@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, navigate } from '@reach/router';
 import localforage from 'localforage';
-import { useTimeout } from 'hooks/use-timeout';
-import { useAuthReciever, useAuth, AuthStatus } from 'hooks/use-auth';
-import { leadingSlash } from 'utils';
+import { useTimeout } from '../hooks/use-timeout';
+import { useAuthReciever, useAuth, AuthStatus } from '../hooks/use-auth';
+import { leadingSlash } from '../utils';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 
 interface AuthHandlerProps extends RouteComponentProps {

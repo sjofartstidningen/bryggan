@@ -1,4 +1,4 @@
-import { DropboxUser } from 'types/dropbox';
+import { DropboxUser } from '../../types/dropbox';
 
 export enum AuthStatus {
   unknown = 'unknown',

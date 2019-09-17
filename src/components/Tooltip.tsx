@@ -3,8 +3,8 @@ import React, { cloneElement } from 'react';
 import { useTooltip, TooltipPopup, TooltipProps } from '@reach/tooltip';
 import Portal from '@reach/portal';
 import styled from 'styled-components';
-import { color } from 'styles/theme';
-import { useTheme } from 'hooks/use-theme';
+import { color } from '../styles/theme';
+import { useTheme } from '../hooks/use-theme';
 
 const Triangle = styled.div`
   position: absolute;

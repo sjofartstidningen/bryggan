@@ -1,13 +1,13 @@
 import React from 'react';
 import localforage from 'localforage';
 import nock from 'nock';
-import { render, waitForElement, fireEvent } from 'utils/test-utils';
-import { SearchBox } from '../index';
+import { render, waitForElement, fireEvent } from '../../../utils/test-utils';
 import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
-import searchResponse from '__fixtures__/dropbox/files/search_v2.json';
-import moreResponse from '__fixtures__/dropbox/files/search/continue_v2.json';
-import mockUser from '__fixtures__/dropbox/users/get_current_account.json';
-import { last, first } from 'utils/array';
+import searchResponse from '../../../__fixtures__/dropbox/files/search_v2.json';
+import moreResponse from '../../../__fixtures__/dropbox/files/search/continue_v2.json';
+import mockUser from '../../../__fixtures__/dropbox/users/get_current_account.json';
+import { last, first } from '../../../utils/array';
+import { SearchBox } from '../index';
 
 const scope = nock('https://api.dropboxapi.com');
 

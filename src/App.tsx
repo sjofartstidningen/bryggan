@@ -1,24 +1,24 @@
 import React, { Suspense, lazy, StrictMode, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Router } from '@reach/router';
-import { theme } from 'styles/theme';
-import { GlobalStyle } from 'styles/GlobalStyle';
-import { Header } from 'components/Header';
-import { Authenticated } from 'components/Authenticated';
-import { LoaderOverlay } from 'components/Loader';
+import { theme } from './styles/theme';
+import { GlobalStyle } from './styles/GlobalStyle';
+import { Header } from './components/Header';
+import { Authenticated } from './components/Authenticated';
+import { LoaderOverlay } from './components/Loader';
 import {
   ErrorBoundary,
   ErrorBoundaryWithRefresh,
-} from 'components/ErrorBoundary';
+} from './components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
-import { AuthProvider, useAuth, AuthStatus } from 'hooks/use-auth';
-import { content, api } from 'api/dropbox';
+import { AuthProvider, useAuth, AuthStatus } from './hooks/use-auth';
+import { content, api } from './api/dropbox';
 
-const Landing = lazy(() => import('pages/Landing'));
-const User = lazy(() => import('pages/User'));
+const Landing = lazy(() => import('./pages/Landing'));
+const User = lazy(() => import('./pages/User'));
 
-const SignIn = lazy(() => import('pages/SignIn'));
-const DropboxAuthHandler = lazy(() => import('pages/DropboxAuthHandler'));
+const SignIn = lazy(() => import('./pages/SignIn'));
+const DropboxAuthHandler = lazy(() => import('./pages/DropboxAuthHandler'));
 
 const App: React.FC = () => {
   const auth = useAuth();

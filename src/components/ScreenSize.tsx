@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { useWindowDimensions } from 'hooks/use-window-dimensions';
+import { useWindowDimensions } from '../hooks/use-window-dimensions';
 
 interface ScreenSizeProps {
   width: number;

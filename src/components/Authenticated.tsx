@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
-import { useTimeout } from 'hooks/use-timeout';
-import { useAuth, AuthStatus } from 'hooks/use-auth';
+import { useTimeout } from '../hooks/use-timeout';
+import { useAuth, AuthStatus } from '../hooks/use-auth';
 import { PATH_SIGN_IN } from '../constants';
 
 interface AuthenticatedProps extends RouteComponentProps {

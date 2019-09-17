@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
-import { spacing } from 'styles/theme';
-import { animated, fadeIn } from 'styles/animations';
+import { spacing } from '../styles/theme';
+import { animated, fadeIn } from '../styles/animations';
+import { useSize } from '../hooks/use-theme';
 import { PopUpOverlay } from './PopUpOverlay';
 import { Spinner } from './Spinner';
-import { useSize } from 'hooks/use-theme';
 
 const Overlay = styled(PopUpOverlay)`
   backdrop-filter: blur(2px);

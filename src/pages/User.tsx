@@ -1,10 +1,10 @@
 import React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import bytes from 'bytes';
-import { useAuthorized } from 'hooks/use-auth';
-import { CheckCircle, XCircle } from 'components/Icons';
-import { spaceUsage } from 'resources/dropbox';
-import { Tooltip } from 'components/Tooltip';
+import { useAuthorized } from '../hooks/use-auth';
+import { CheckCircle, XCircle } from '../components/Icons';
+import { spaceUsage } from '../resources/dropbox';
+import { Tooltip } from '../components/Tooltip';
 
 const User: React.FC<RouteComponentProps> = () => {
   const { user } = useAuthorized();

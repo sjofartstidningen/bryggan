@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 import { useInput, usePersistedState } from '@fransvilhelm/hooks';
 import localforage from 'localforage';
-import { spacing, font, size, color } from 'styles/theme';
-import { transition } from 'styles/utils';
-import { VisuallyHidden } from 'components/VisuallyHidden';
-import { Dropbox, ArrowRightCircle } from 'components/Icons';
+import { spacing, font, size, color } from '../styles/theme';
+import { transition } from '../styles/utils';
+import { VisuallyHidden } from '../components/VisuallyHidden';
+import { Dropbox, ArrowRightCircle } from '../components/Icons';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY } from '../constants';
-import { useAuthSignIn, AuthStatus, useAuth } from 'hooks/use-auth';
+import { useAuthSignIn, AuthStatus, useAuth } from '../hooks/use-auth';
 
 const Wrapper = styled.div`
   width: 100%;
