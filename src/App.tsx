@@ -15,6 +15,8 @@ import { AuthProvider, useAuth, AuthStatus } from 'hooks/use-auth';
 import { content, api } from 'api/dropbox';
 
 const Landing = lazy(() => import('pages/Landing'));
+const User = lazy(() => import('pages/User'));
+
 const SignIn = lazy(() => import('pages/SignIn'));
 const DropboxAuthHandler = lazy(() => import('pages/DropboxAuthHandler'));
 
@@ -46,6 +48,7 @@ const App: React.FC = () => {
           <Router>
             <Authenticated path="/" fallback={<LoaderOverlay />}>
               <Landing path="/" />
+              <User path="user" />
             </Authenticated>
             <SignIn path={PATH_SIGN_IN} />
             <DropboxAuthHandler

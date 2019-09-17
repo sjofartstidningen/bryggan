@@ -5,7 +5,6 @@ import {
   SimpleInterpolation,
   CSSObject,
 } from 'styled-components';
-import useStyledTheme from './utils';
 
 const createSelector = <
   R extends keyof DefaultTheme,
@@ -21,23 +20,6 @@ export const size = createSelector('size');
 export const spacing = createSelector('spacing');
 export const tracking = createSelector('tracking');
 export const screens = createSelector('screens');
-
-const createHook = <
-  R extends keyof DefaultTheme,
-  K extends keyof DefaultTheme[R]
->(
-  rootKey: R,
-) => (key: K) => {
-  const theme = useStyledTheme();
-  return theme[rootKey][key];
-};
-
-export const useColor = createHook('color');
-export const useFont = createHook('font');
-export const useSize = createHook('size');
-export const useSpacing = createHook('spacing');
-export const useTracking = createHook('tracking');
-export const useScreens = createHook('screens');
 
 export const screen = (scr: keyof DefaultTheme['screens']) => {
   return (

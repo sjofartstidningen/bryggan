@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
+import { Link, LinkProps } from '@reach/router';
 import { useRect } from 'hooks/use-rect';
 import { spacing, color, size } from 'styles/theme';
 import { animated, fadeIn } from 'styles/animations';
@@ -92,9 +93,9 @@ const ContextMenuItem = styled.li`
   }
 `;
 
-interface ContextMenuContentProps {
-  as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
+interface ContextMenuContentProps extends LinkProps<any> {
   mode?: 'warning';
+  interactive?: boolean;
 }
 const ContextMenuContent = styled.span<ContextMenuContentProps>`
   position: relative;
@@ -106,19 +107,21 @@ const ContextMenuContent = styled.span<ContextMenuContentProps>`
   padding: ${spacing('2')};
   font-size: ${size('xs')};
   text-align: left;
+  text-decoration: none;
+  color: ${color('black')};
   background-color: ${color('white')};
   transition: background 0.3s ease-in-out;
 
   ${truncate};
 
-  ${p =>
-    p.mode === 'warning' &&
+  ${({ mode }) =>
+    mode === 'warning' &&
     css`
       color: ${color('warning')};
     `}
 
-  ${p =>
-    p.as === 'button' &&
+  ${({ interactive }) =>
+    interactive &&
     css`
       cursor: pointer;
       &:hover,
@@ -178,12 +181,17 @@ export const ProfileBox: React.FC = () => {
       >
         <ContextMenu style={contextPosition}>
           <ContextMenuItem>
-            <ContextMenuContent>
+            <ContextMenuContent as={Link} to="user" interactive>
               {auth.user.name.display_name}
             </ContextMenuContent>
           </ContextMenuItem>
           <ContextMenuItem>
-            <ContextMenuContent as="button" mode="warning" onClick={signOut}>
+            <ContextMenuContent
+              as="button"
+              interactive
+              mode="warning"
+              onClick={signOut}
+            >
               Sign out
             </ContextMenuContent>
           </ContextMenuItem>

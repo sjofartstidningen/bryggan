@@ -1,10 +1,4 @@
-import { css, ThemeContext, DefaultTheme } from 'styled-components';
-import { useContext } from 'react';
-
-export default function useStyledTheme(): DefaultTheme {
-  const theme = useContext(ThemeContext);
-  return theme || {};
-}
+import { css } from 'styled-components';
 
 export const truncate = () => css`
   overflow: hidden;

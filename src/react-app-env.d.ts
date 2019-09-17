@@ -53,3 +53,12 @@ interface ResizeObserverEntry {
    */
   readonly contentRect: DOMRectReadOnly;
 }
+
+declare module '@reach/portal' {
+  export interface PortalProps {
+    children: React.ReactNode;
+    type?: string;
+  }
+
+  export default function Portal(props: PortalProps): JSX.Element;
+}

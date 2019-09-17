@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { spacing, font, size, color, tracking, useScreens } from 'styles/theme';
+import { spacing, font, size, color, tracking } from 'styles/theme';
 import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
 import { Link } from '@reach/router';
 import { useAuth, AuthStatus } from 'hooks/use-auth';
+import { useScreens } from 'hooks/use-theme';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -46,7 +47,7 @@ const ProfileContainer = styled.div`
 
 export const Header: React.FC = () => {
   const auth = useAuth();
-  const screenSm = useScreens('sm');
+  const screens = useScreens();
 
   return (
     <HeaderContainer>
@@ -56,7 +57,7 @@ export const Header: React.FC = () => {
 
       {auth.status === AuthStatus.authorized && (
         <>
-          <ScreenMinWidth width={Number.parseInt(screenSm, 10)}>
+          <ScreenMinWidth width={Number.parseInt(screens.sm, 10)}>
             <SearchContainer>
               <SearchBox />
             </SearchContainer>

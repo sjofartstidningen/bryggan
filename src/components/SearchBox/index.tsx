@@ -189,7 +189,7 @@ const StyledComboboxList = styled(ComboboxList)`
   background-color: ${color('white')};
 
   @supports (backdrop-filter: blur(2px)) {
-    background-color: ${p => transparentize(0.25, color('white')(p))};
+    background-color: ${p => transparentize(0.025, color('white')(p))};
     backdrop-filter: blur(2px);
   }
 `;

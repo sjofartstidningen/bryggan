@@ -210,3 +210,11 @@ export interface GetThumbnailArgs {
   size: ThumbnailSize;
   mode: ThumbnailMode;
 }
+
+export interface SpaceUsage {
+  used: number;
+  allocation: {
+    '.tag': 'individual';
+    allocated: number;
+  };
+}
