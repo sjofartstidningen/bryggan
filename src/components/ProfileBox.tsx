@@ -1,13 +1,13 @@
 import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
-import { useRect } from 'hooks/useRect';
+import { useRect } from 'hooks/use-rect';
 import { spacing, color, size } from 'styles/theme';
 import { animated, fadeIn } from 'styles/animations';
 import { truncate } from 'styles/utils';
 import { PopUpOverlay } from './PopUpOverlay';
 import { VisuallyHidden } from './VisuallyHidden';
-import { useAuth, AuthStatus, useAuthSignOut } from 'hooks/useAuth';
+import { useAuth, AuthStatus, useAuthSignOut } from 'hooks/use-auth';
 
 const Profile = styled.div`
   position: relative;

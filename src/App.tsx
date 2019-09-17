@@ -11,7 +11,7 @@ import {
   ErrorBoundaryWithRefresh,
 } from 'components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
-import { AuthProvider, useAuth, AuthStatus } from 'hooks/useAuth';
+import { AuthProvider, useAuth, AuthStatus } from 'hooks/use-auth';
 import { content, api } from 'api/dropbox';
 
 const Landing = lazy(() => import('pages/Landing'));

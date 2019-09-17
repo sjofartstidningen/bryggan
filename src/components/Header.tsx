@@ -5,7 +5,7 @@ import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
 import { Link } from '@reach/router';
-import { useAuth, AuthStatus } from 'hooks/useAuth';
+import { useAuth, AuthStatus } from 'hooks/use-auth';
 
 const HeaderContainer = styled.header`
   display: flex;

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../styles/theme';
-import { AuthProvider } from '../hooks/useAuth';
+import { AuthProvider } from '../hooks/use-auth';
 
 const Providers: React.FC = ({ children }) => {
   return (
