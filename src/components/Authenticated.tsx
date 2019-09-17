@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
 import { useTimeout } from 'hooks/useTimeout';
-import { useAuth, AuthStage } from 'hooks/useAuth';
+import { useAuth, AuthStatus } from 'hooks/useAuth';
 import { PATH_SIGN_IN } from '../constants';
 
 interface AuthenticatedProps extends RouteComponentProps {
@@ -22,23 +22,23 @@ export const Authenticated: React.FC<AuthenticatedProps> = ({
   useTimeout(() => setShowFallback(true), timeout);
 
   useEffect(() => {
-    if (auth.stage === AuthStage.unauthorized && navigate) {
+    if (auth.status === AuthStatus.unauthorized && navigate) {
       const from = location && location.pathname;
       navigate(PATH_SIGN_IN, { state: { from }, replace: true });
     }
-  }, [auth.stage, navigate, location]);
+  }, [auth.status, navigate, location]);
 
-  switch (auth.stage) {
-    case AuthStage.authorized:
+  switch (auth.status) {
+    case AuthStatus.authorized:
       return <>{children}</>;
 
-    case AuthStage.unknown:
-    case AuthStage.checking:
-    case AuthStage.checkingToken:
+    case AuthStatus.unknown:
+    case AuthStatus.checking:
+    case AuthStatus.checkingToken:
       if (!showFallback) return null;
       return <>{fallback}</>;
 
-    case AuthStage.unauthorized:
+    case AuthStatus.unauthorized:
     default:
       return (
         <Link to={PATH_SIGN_IN} state={{ from: location && location.pathname }}>

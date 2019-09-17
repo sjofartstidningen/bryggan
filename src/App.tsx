@@ -11,7 +11,7 @@ import {
   ErrorBoundaryWithRefresh,
 } from 'components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
-import { AuthProvider, useAuth, AuthStage } from 'hooks/useAuth';
+import { AuthProvider, useAuth, AuthStatus } from 'hooks/useAuth';
 import { content, api } from 'api/dropbox';
 
 const Landing = lazy(() => import('pages/Landing'));
@@ -22,8 +22,8 @@ const App: React.FC = () => {
   const auth = useAuth();
 
   useEffect(() => {
-    switch (auth.stage) {
-      case AuthStage.authorized:
+    switch (auth.status) {
+      case AuthStatus.authorized:
         const token = `Bearer ${auth.accessToken}`;
         content.defaults.headers.common['Authorization'] = token;
         api.defaults.headers.common['Authorization'] = token;

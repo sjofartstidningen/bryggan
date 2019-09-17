@@ -16,7 +16,7 @@ import { safeEnv } from 'env';
 import {
   useAuth,
   AuthProvider,
-  AuthStage,
+  AuthStatus,
   useAuthSignIn,
   useAuthSignOut,
   useAuthReciever,
@@ -37,10 +37,10 @@ it('should check for initial auth status (authorized)', async () => {
   const Comp = () => {
     const auth = useAuth();
 
-    switch (auth.stage) {
-      case AuthStage.authorized:
+    switch (auth.status) {
+      case AuthStatus.authorized:
         return <p>Authorized</p>;
-      case AuthStage.unauthorized:
+      case AuthStatus.unauthorized:
         return <p>Unauthorized</p>;
       default:
         return <p>Waiting</p>;
@@ -60,10 +60,10 @@ it('should check for initial auth status (unauthorized)', async () => {
   const Comp = () => {
     const auth = useAuth();
 
-    switch (auth.stage) {
-      case AuthStage.authorized:
+    switch (auth.status) {
+      case AuthStatus.authorized:
         return <p>Authorized</p>;
-      case AuthStage.unauthorized:
+      case AuthStatus.unauthorized:
         return <p>Unauthorized</p>;
       default:
         return <p>Waiting</p>;
@@ -86,10 +86,10 @@ it('should be possible to provide access token directly to sign in', async () =>
     const auth = useAuth();
     const { handleDirectInput } = useAuthSignIn();
 
-    switch (auth.stage) {
-      case AuthStage.authorized:
+    switch (auth.status) {
+      case AuthStatus.authorized:
         return <p>Authorized</p>;
-      case AuthStage.unauthorized:
+      case AuthStatus.unauthorized:
         return (
           <button onClick={() => handleDirectInput('abc123')}>Sign in</button>
         );
@@ -120,10 +120,10 @@ it('should redirect user to dropbox oauth when signing in with oauth method', as
     const auth = useAuth();
     const { handleOauth } = useAuthSignIn();
 
-    switch (auth.stage) {
-      case AuthStage.authorized:
+    switch (auth.status) {
+      case AuthStatus.authorized:
         return <p>Authorized</p>;
-      case AuthStage.unauthorized:
+      case AuthStatus.unauthorized:
         return <button onClick={handleOauth}>Sign in</button>;
       default:
         return <p>Waiting</p>;
@@ -159,10 +159,10 @@ it('should be possible to sign out', async () => {
     const auth = useAuth();
     const handleSignOut = useAuthSignOut();
 
-    switch (auth.stage) {
-      case AuthStage.authorized:
+    switch (auth.status) {
+      case AuthStatus.authorized:
         return <button onClick={handleSignOut}>Sign out</button>;
-      case AuthStage.unauthorized:
+      case AuthStatus.unauthorized:
         return <p>Unauthorized</p>;
       default:
         return <p>Waiting</p>;
@@ -190,13 +190,13 @@ it('should handle recieving access token from server', async () => {
     const auth = useAuth();
     useAuthReciever(location);
 
-    useEffect(onAuthStageChange, [auth.stage]);
+    useEffect(onAuthStageChange, [auth.status]);
 
-    switch (auth.stage) {
-      case AuthStage.unauthorized:
+    switch (auth.status) {
+      case AuthStatus.unauthorized:
         return <p>Unauthorized</p>;
 
-      case AuthStage.authorized:
+      case AuthStatus.authorized:
         return <p>Authorized</p>;
 
       default:
@@ -221,7 +221,7 @@ it('should handle recieving access token from server', async () => {
   );
 
   await findByText(/^authorized$/i);
-  expect(onAuthStageChange).not.toHaveBeenCalledWith(AuthStage.unauthorized);
+  expect(onAuthStageChange).not.toHaveBeenCalledWith(AuthStatus.unauthorized);
 });
 
 function renderWithLocationProvider(

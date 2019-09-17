@@ -9,7 +9,7 @@ import { transition } from 'styles/utils';
 import { VisuallyHidden } from 'components/VisuallyHidden';
 import { Dropbox, ArrowRightCircle } from 'components/Icons';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY } from '../constants';
-import { useAuthSignIn, AuthStage, useAuth } from 'hooks/useAuth';
+import { useAuthSignIn, AuthStatus, useAuth } from 'hooks/useAuth';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -150,17 +150,17 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
   useEffect(() => {
     if (!isSubmitting) return;
 
-    switch (auth.stage) {
-      case AuthStage.unauthorized:
+    switch (auth.status) {
+      case AuthStatus.unauthorized:
         setIsSubmitting(false);
         break;
 
-      case AuthStage.authorized:
+      case AuthStatus.authorized:
         const to = (location && location.state && location.state.from) || '/';
         navigate(to, { replace: true });
         break;
     }
-  }, [isSubmitting, auth.stage, location]);
+  }, [isSubmitting, auth.status, location]);
 
   return (
     <Wrapper>
@@ -199,7 +199,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
           >
             Or sign in via link
           </ToggleMethodButton>
-          {auth.stage === AuthStage.unauthorized && auth.error && (
+          {auth.status === AuthStatus.unauthorized && auth.error && (
             <AuthError>
               Could not sign in, access token probably invalid{' '}
               <small>(Reason: {auth.error})</small>

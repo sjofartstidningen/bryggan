@@ -7,7 +7,7 @@ import { animated, fadeIn } from 'styles/animations';
 import { truncate } from 'styles/utils';
 import { PopUpOverlay } from './PopUpOverlay';
 import { VisuallyHidden } from './VisuallyHidden';
-import { useAuth, AuthStage, useAuthSignOut } from 'hooks/useAuth';
+import { useAuth, AuthStatus, useAuthSignOut } from 'hooks/useAuth';
 
 const Profile = styled.div`
   position: relative;
@@ -154,7 +154,7 @@ export const ProfileBox: React.FC = () => {
   const profilePictureRef = useRef<HTMLButtonElement>(null);
   const rect = useRect(profilePictureRef);
 
-  if (auth.stage !== AuthStage.authorized) return null;
+  if (auth.status !== AuthStatus.authorized) return null;
 
   const contextPosition = rect && {
     top: rect.top + rect.height + 16,

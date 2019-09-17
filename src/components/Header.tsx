@@ -5,7 +5,7 @@ import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
 import { Link } from '@reach/router';
-import { useAuth, AuthStage } from 'hooks/useAuth';
+import { useAuth, AuthStatus } from 'hooks/useAuth';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -54,7 +54,7 @@ export const Header: React.FC = () => {
         <Link to="/">Bryggan</Link>
       </Title>
 
-      {auth.stage === AuthStage.authorized && (
+      {auth.status === AuthStatus.authorized && (
         <>
           <ScreenMinWidth width={Number.parseInt(screenSm, 10)}>
             <SearchContainer>

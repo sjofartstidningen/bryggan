@@ -8,7 +8,7 @@ import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
 import {
   AuthState,
   AuthAction,
-  AuthStage,
+  AuthStatus,
   AuthActionType,
   SignInMethod,
 } from '.';
@@ -27,32 +27,32 @@ export function handleStateChange(
   state: AuthState,
   dispatch: Dispatch<AuthAction>,
 ): void {
-  switch (state.stage) {
-    case AuthStage.unknown:
+  switch (state.status) {
+    case AuthStatus.unknown:
       dispatch({ type: AuthActionType.checkAuth });
       break;
 
-    case AuthStage.checking:
+    case AuthStatus.checking:
       handleChecking(state, dispatch);
       break;
 
-    case AuthStage.checkingToken:
+    case AuthStatus.checkingToken:
       handleCheckingToken(state, dispatch);
       break;
 
-    case AuthStage.authorized:
+    case AuthStatus.authorized:
       handleAuthorized(state, dispatch);
       break;
 
-    case AuthStage.unauthorized:
+    case AuthStatus.unauthorized:
       handleUnauthorized(state, dispatch);
       break;
 
-    case AuthStage.signingIn:
+    case AuthStatus.signingIn:
       handleSigningIn(state, dispatch);
       break;
 
-    case AuthStage.signingOut:
+    case AuthStatus.signingOut:
       handleSigningOut(state, dispatch);
       break;
   }
@@ -71,7 +71,7 @@ async function handleChecking(
   state: AuthState,
   dispatch: Dispatch<AuthAction>,
 ) {
-  if (state.stage !== AuthStage.checking) return;
+  if (state.status !== AuthStatus.checking) return;
 
   try {
     const data = await localforage.getItem<{ accessToken: string } | undefined>(
@@ -105,7 +105,7 @@ async function handleCheckingToken(
   state: AuthState,
   dispatch: Dispatch<AuthAction>,
 ) {
-  if (state.stage !== AuthStage.checkingToken) return;
+  if (state.status !== AuthStatus.checkingToken) return;
 
   try {
     const user = await getCurrentAccount(state.accessToken);
@@ -129,7 +129,7 @@ async function handleCheckingToken(
  * @param {Dispatch<AuthAction>} _
  */
 async function handleAuthorized(state: AuthState, _: Dispatch<AuthAction>) {
-  if (state.stage !== AuthStage.authorized) return;
+  if (state.status !== AuthStatus.authorized) return;
 
   try {
     await localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
@@ -146,7 +146,7 @@ async function handleAuthorized(state: AuthState, _: Dispatch<AuthAction>) {
  * @param {Dispatch<AuthAction>} _
  */
 async function handleUnauthorized(state: AuthState, _: Dispatch<AuthAction>) {
-  if (state.stage !== AuthStage.unauthorized) return;
+  if (state.status !== AuthStatus.unauthorized) return;
 
   try {
     await localforage.removeItem(LOCALSTORAGE_AUTH_KEY);
@@ -167,7 +167,7 @@ async function handleSigningIn(
   state: AuthState,
   dispatch: Dispatch<AuthAction>,
 ) {
-  if (state.stage !== AuthStage.signingIn) return;
+  if (state.status !== AuthStatus.signingIn) return;
 
   switch (state.method) {
     case SignInMethod.directInput:
@@ -203,7 +203,7 @@ async function handleSigningOut(
   state: AuthState,
   dispatch: Dispatch<AuthAction>,
 ) {
-  if (state.stage !== AuthStage.signingOut) return;
+  if (state.status !== AuthStatus.signingOut) return;
 
   try {
     await revokeToken(state.accessToken);

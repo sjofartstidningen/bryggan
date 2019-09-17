@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, navigate } from '@reach/router';
 import localforage from 'localforage';
 import { useTimeout } from 'hooks/useTimeout';
-import { useAuthReciever, useAuth, AuthStage } from 'hooks/useAuth';
+import { useAuthReciever, useAuth, AuthStatus } from 'hooks/useAuth';
 import { leadingSlash } from 'utils';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 
@@ -23,12 +23,12 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({
 
   useEffect(() => {
     let hasCancelled = false;
-    switch (auth.stage) {
-      case AuthStage.unauthorized:
+    switch (auth.status) {
+      case AuthStatus.unauthorized:
         navigate(leadingSlash(PATH_SIGN_IN), { replace: true });
         break;
 
-      case AuthStage.authorized:
+      case AuthStatus.authorized:
         (async () => {
           const data = await localforage.getItem<{ from: string } | undefined>(
             LOCALSTORAGE_POST_SIGN_IN_KEY,
@@ -43,7 +43,7 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({
     return () => {
       hasCancelled = true;
     };
-  }, [auth.stage]);
+  }, [auth.status]);
 
   if (showFallback) {
     return <>{fallback}</>;

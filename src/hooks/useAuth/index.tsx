@@ -14,7 +14,7 @@ import { DropboxUser } from 'types/dropbox';
 import { OAUTH_STATE_COOKIE } from '../../constants';
 import { handleStateChange } from './state-handler';
 
-export enum AuthStage {
+export enum AuthStatus {
   unknown = 'unknown',
   checking = 'checking',
   checkingToken = 'checking-token',
@@ -77,38 +77,38 @@ export type SigningInState =
  */
 export type AuthState =
   | {
-      stage: AuthStage.unknown;
+      status: AuthStatus.unknown;
     }
   | {
-      stage: AuthStage.checking;
+      status: AuthStatus.checking;
     }
   | {
-      stage: AuthStage.checkingToken;
+      status: AuthStatus.checkingToken;
       accessToken: string;
     }
   | {
-      stage: AuthStage.authorized;
+      status: AuthStatus.authorized;
       accessToken: string;
       user: DropboxUser;
     }
   | {
-      stage: AuthStage.unauthorized;
+      status: AuthStatus.unauthorized;
       error?: string;
     }
   | {
-      stage: AuthStage.signingIn;
+      status: AuthStatus.signingIn;
     } & SigningInState
   | {
-      stage: AuthStage.signingOut;
+      status: AuthStatus.signingOut;
       accessToken: string;
     };
 
 export interface StateChart {
-  initial: AuthStage;
+  initial: AuthStatus;
   states: {
-    [key in AuthStage]: {
+    [key in AuthStatus]: {
       on: {
-        [key in AuthActionType]?: AuthStage;
+        [key in AuthActionType]?: AuthStatus;
       };
     };
   };
@@ -120,47 +120,47 @@ export interface StateChart {
  * precedence over each other.
  */
 const stateChart: StateChart = {
-  initial: AuthStage.unknown,
+  initial: AuthStatus.unknown,
   states: {
-    [AuthStage.unknown]: {
+    [AuthStatus.unknown]: {
       on: {
-        [AuthActionType.checkAuth]: AuthStage.checking,
-        [AuthActionType.checkToken]: AuthStage.checkingToken,
+        [AuthActionType.checkAuth]: AuthStatus.checking,
+        [AuthActionType.checkToken]: AuthStatus.checkingToken,
       },
     },
-    [AuthStage.checking]: {
+    [AuthStatus.checking]: {
       on: {
-        [AuthActionType.authorize]: AuthStage.authorized,
-        [AuthActionType.unauthorize]: AuthStage.unauthorized,
-        [AuthActionType.checkToken]: AuthStage.checkingToken,
+        [AuthActionType.authorize]: AuthStatus.authorized,
+        [AuthActionType.unauthorize]: AuthStatus.unauthorized,
+        [AuthActionType.checkToken]: AuthStatus.checkingToken,
       },
     },
-    [AuthStage.checkingToken]: {
+    [AuthStatus.checkingToken]: {
       on: {
-        [AuthActionType.authorize]: AuthStage.authorized,
-        [AuthActionType.unauthorize]: AuthStage.unauthorized,
+        [AuthActionType.authorize]: AuthStatus.authorized,
+        [AuthActionType.unauthorize]: AuthStatus.unauthorized,
       },
     },
-    [AuthStage.signingIn]: {
+    [AuthStatus.signingIn]: {
       on: {
-        [AuthActionType.authorize]: AuthStage.authorized,
-        [AuthActionType.unauthorize]: AuthStage.unauthorized,
+        [AuthActionType.authorize]: AuthStatus.authorized,
+        [AuthActionType.unauthorize]: AuthStatus.unauthorized,
       },
     },
-    [AuthStage.signingOut]: {
+    [AuthStatus.signingOut]: {
       on: {
-        [AuthActionType.unauthorize]: AuthStage.unauthorized,
+        [AuthActionType.unauthorize]: AuthStatus.unauthorized,
       },
     },
-    [AuthStage.unauthorized]: {
+    [AuthStatus.unauthorized]: {
       on: {
-        [AuthActionType.signIn]: AuthStage.signingIn,
-        [AuthActionType.checkToken]: AuthStage.checkingToken,
+        [AuthActionType.signIn]: AuthStatus.signingIn,
+        [AuthActionType.checkToken]: AuthStatus.checkingToken,
       },
     },
-    [AuthStage.authorized]: {
+    [AuthStatus.authorized]: {
       on: {
-        [AuthActionType.signOut]: AuthStage.signingOut,
+        [AuthActionType.signOut]: AuthStatus.signingOut,
       },
     },
   },
@@ -179,20 +179,20 @@ const stateChart: StateChart = {
  * @returns {AuthState}
  */
 export const reducer = (state: AuthState, action: AuthAction): AuthState => {
-  const currentStage = state.stage;
-  const nextStage = stateChart.states[currentStage].on[action.type];
+  const currentStatus = state.status;
+  const nextStatus = stateChart.states[currentStatus].on[action.type];
 
-  if (nextStage == null || currentStage === nextStage) return state;
+  if (nextStatus == null || currentStatus === nextStatus) return state;
 
   switch (action.type) {
     case AuthActionType.checkAuth:
       return {
-        stage: nextStage as AuthStage.checking,
+        status: nextStatus as AuthStatus.checking,
       };
 
     case AuthActionType.checkToken:
       return {
-        stage: nextStage as AuthStage.checkingToken,
+        status: nextStatus as AuthStatus.checkingToken,
         accessToken: action.payload.accessToken,
       };
 
@@ -200,13 +200,13 @@ export const reducer = (state: AuthState, action: AuthAction): AuthState => {
       switch (action.payload.method) {
         case SignInMethod.oauth:
           return {
-            stage: nextStage as AuthStage.signingIn,
+            status: nextStatus as AuthStatus.signingIn,
             method: SignInMethod.oauth,
             oauthState: action.payload.oauthState,
           };
         case SignInMethod.directInput:
           return {
-            stage: nextStage as AuthStage.signingIn,
+            status: nextStatus as AuthStatus.signingIn,
             method: SignInMethod.directInput,
             accessToken: action.payload.accessToken,
           };
@@ -216,27 +216,27 @@ export const reducer = (state: AuthState, action: AuthAction): AuthState => {
 
     case AuthActionType.signOut:
       return {
-        stage: nextStage as AuthStage.signingOut,
+        status: nextStatus as AuthStatus.signingOut,
         accessToken: action.payload.accessToken,
       };
 
     case AuthActionType.authorize:
       return {
-        stage: nextStage as AuthStage.authorized,
+        status: nextStatus as AuthStatus.authorized,
         accessToken: action.payload.accessToken,
         user: action.payload.user,
       };
 
     case AuthActionType.unauthorize:
       return {
-        stage: nextStage as AuthStage.unauthorized,
+        status: nextStatus as AuthStatus.unauthorized,
         error: action.payload && action.payload.reason,
       };
   }
 };
 
 const initialState: AuthState = {
-  stage: AuthStage.unknown,
+  status: AuthStatus.unknown,
 };
 
 export const AuthContext = createContext<AuthState>(null as any);
@@ -280,7 +280,7 @@ export const useAuthDispatch = () => useContext(AuthDispatchContext);
 
 export const useAuthorized = () => {
   const auth = useAuth();
-  if (auth.stage !== AuthStage.authorized) {
+  if (auth.status !== AuthStatus.authorized) {
     throw new Error('User not authorized');
   }
 
@@ -293,7 +293,7 @@ export const useAuthSignIn = () => {
   const dispatch = useAuthDispatch();
 
   const handleOauth = () => {
-    if (auth.stage === AuthStage.unauthorized) {
+    if (auth.status === AuthStatus.unauthorized) {
       const uid = nanoid();
       cookie.set(OAUTH_STATE_COOKIE, uid, {
         path: '/',
@@ -308,7 +308,7 @@ export const useAuthSignIn = () => {
   };
 
   const handleDirectInput = (accessToken: string) => {
-    if (auth.stage === AuthStage.unauthorized) {
+    if (auth.status === AuthStatus.unauthorized) {
       dispatch({
         type: AuthActionType.signIn,
         payload: { method: SignInMethod.directInput, accessToken },
@@ -323,7 +323,7 @@ export const useAuthSignOut = () => {
   const dispatch = useAuthDispatch();
   const auth = useAuth();
   return () => {
-    if (auth.stage === AuthStage.authorized) {
+    if (auth.status === AuthStatus.authorized) {
       dispatch({
         type: AuthActionType.signOut,
         payload: { accessToken: auth.accessToken },
@@ -349,5 +349,5 @@ export const useAuthReciever = (location?: Location) => {
     });
 
     hasHandled.current = true;
-  }, [auth.stage, location, dispatch]);
+  }, [auth.status, location, dispatch]);
 };
