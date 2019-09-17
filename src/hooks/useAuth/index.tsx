@@ -60,9 +60,26 @@ export const AuthProvider = ({
   );
 };
 
+/**
+ * Use the global auth state read from AuthContext
+ *
+ * @returns {AuthState}
+ */
 export const useAuth = () => useContext(AuthContext);
+
+/**
+ * Use global auth dispatch function read from AuthDispatchContext
+ *
+ * @returns {Dispatch<AuthAction>}
+ */
 export const useAuthDispatch = () => useContext(AuthDispatchContext);
 
+/**
+ * Use auth state ensured to be authorized. If used when auth state may not be
+ * authorized it will throw an error.
+ *
+ * @returns {{ status: AuthStatus.authorized, accessToken: string, user: DropboxUser }}
+ */
 export const useAuthorized = () => {
   const auth = useAuth();
   if (auth.status !== AuthStatus.authorized) {
@@ -72,13 +89,22 @@ export const useAuthorized = () => {
   return auth;
 };
 
-const cookie = new Cookie();
+/**
+ * Hook returning two event handlers. One to use on a button when the user wants
+ * to authorize using standard oauth flow. And the other one which accepts an
+ * access token string as input for when the user wants to provide an access
+ * token directly instead of going thru the oauth flow.
+ *
+ * @returns {{ handleOauth: () => void; handleDirectInput: (accessToken: string) => void }}
+ */
 export const useAuthSignIn = () => {
   const auth = useAuth();
   const dispatch = useAuthDispatch();
 
   const handleOauth = () => {
     if (auth.status === AuthStatus.unauthorized) {
+      const cookie = new Cookie();
+
       const uid = nanoid();
       cookie.set(OAUTH_STATE_COOKIE, uid, {
         path: '/',
@@ -104,6 +130,11 @@ export const useAuthSignIn = () => {
   return { handleOauth, handleDirectInput };
 };
 
+/**
+ * This hook provides an onClick handler which will sign out the current user.
+ *
+ * @returns {() => void}
+ */
 export const useAuthSignOut = () => {
   const dispatch = useAuthDispatch();
   const auth = useAuth();
@@ -117,6 +148,13 @@ export const useAuthSignOut = () => {
   };
 };
 
+/**
+ * This hook should be called on an auth handler route. It will try to read the
+ * provided access token from the url and validate it before determine if the
+ * user is authorized or not.
+ *
+ * @param {Location | undefined} location
+ */
 export const useAuthReciever = (location?: Location) => {
   const auth = useAuth();
   const dispatch = useAuthDispatch();
