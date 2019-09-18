@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, StrictMode, useEffect } from 'react';
+import React, { Suspense, lazy, StrictMode } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Router } from '@reach/router';
 import { theme } from './styles/theme';
@@ -11,17 +11,17 @@ import {
   ErrorBoundaryWithRefresh,
 } from './components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
-import { AuthProvider, useAuth, AuthStatus } from './hooks/use-auth';
+import { AuthProvider, AuthStatus, useAuthEffect } from './hooks/use-auth';
 import { content, api } from './api/dropbox';
+import { ProfileMenu } from './components/ProfileMenu';
+import { MenuManager } from './hooks/use-menu';
 
 const Landing = lazy(() => import('./pages/Landing'));
 const SignIn = lazy(() => import('./pages/SignIn'));
 const DropboxAuthHandler = lazy(() => import('./pages/DropboxAuthHandler'));
 
 const App: React.FC = () => {
-  const auth = useAuth();
-
-  useEffect(() => {
+  useAuthEffect(auth => {
     switch (auth.status) {
       case AuthStatus.authorized:
         const token = `Bearer ${auth.accessToken}`;
@@ -33,7 +33,7 @@ const App: React.FC = () => {
         content.defaults.headers.common['Authorization'] = undefined;
         api.defaults.headers.common['Authorization'] = undefined;
     }
-  }, [auth]);
+  });
 
   return (
     <StrictMode>
@@ -41,6 +41,11 @@ const App: React.FC = () => {
       <ErrorBoundaryWithRefresh>
         <Header />
       </ErrorBoundaryWithRefresh>
+
+      <ErrorBoundaryWithRefresh>
+        <ProfileMenu />
+      </ErrorBoundaryWithRefresh>
+
       <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
         <Suspense fallback={<LoaderOverlay />}>
           <Router>
@@ -59,13 +64,15 @@ const App: React.FC = () => {
   );
 };
 
-const withProviders = <P extends object>(
+export const withProviders = <P extends object>(
   App: React.ComponentType<P>,
 ): React.FC<P> => props => {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <App {...props} />
+        <MenuManager>
+          <App {...props} />
+        </MenuManager>
       </AuthProvider>
     </ThemeProvider>
   );

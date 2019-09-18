@@ -174,3 +174,16 @@ export const useAuthReciever = (location?: Location) => {
     hasHandled.current = true;
   }, [auth.status, location, dispatch]);
 };
+
+export const useAuthEffect = (
+  effect: (state: AuthState) => void | (() => void | undefined),
+) => {
+  const auth = useAuth();
+  const effectRef = useRef(effect);
+
+  useEffect(() => {
+    effectRef.current = effect;
+  }, [effect]);
+
+  useEffect(() => effectRef.current(auth), [auth]);
+};

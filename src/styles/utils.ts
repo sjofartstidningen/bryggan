@@ -1,4 +1,5 @@
-import { css } from 'styled-components';
+import { css, DefaultTheme } from 'styled-components';
+import { shadow } from './theme';
 
 export const truncate = () => css`
   overflow: hidden;
@@ -19,4 +20,8 @@ export const transition = (...props: TransitionProp[]) => css`
       return `${prop[0]} ${prop[1] || '0.3'}s ${prop[2] || 'ease-in-out'}`;
     })
     .join(', ')};
+`;
+
+export const boxShadow = (key: keyof DefaultTheme['shadow']) => css`
+  box-shadow: ${shadow(key)};
 `;

@@ -1,4 +1,5 @@
 import 'styled-components';
+import { string } from 'prop-types';
 
 // and extend them!
 declare module 'styled-components' {
@@ -73,6 +74,16 @@ declare module 'styled-components' {
       md: string;
       lg: string;
       xl: string;
+    };
+    shadow: {
+      default: string;
+      md: string;
+      lg: string;
+      xl: string;
+      xl2: string;
+      inner: string;
+      outline: string;
+      none: string;
     };
   }
 }

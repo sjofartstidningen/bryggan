@@ -2,11 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from '@reach/router';
 import { spacing, font, size, color, tracking } from '../styles/theme';
+import { boxShadow } from '../styles/utils';
 import { useAuth, AuthStatus } from '../hooks/use-auth';
 import { useScreens } from '../hooks/use-theme';
+import { useMenu } from '../hooks/use-menu';
 import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
+import { MENU_PROFILE } from '../constants';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -17,6 +20,8 @@ const HeaderContainer = styled.header`
   height: ${spacing('16')};
   padding: 0 ${spacing('4')};
   background-color: ${color('shade')};
+
+  ${boxShadow('md')};
 `;
 
 const Title = styled.h1`
@@ -48,6 +53,7 @@ const ProfileContainer = styled.div`
 export const Header: React.FC = () => {
   const auth = useAuth();
   const screens = useScreens();
+  const menu = useMenu(MENU_PROFILE);
 
   return (
     <HeaderContainer>
@@ -64,7 +70,7 @@ export const Header: React.FC = () => {
           </ScreenMinWidth>
 
           <ProfileContainer>
-            <ProfileBox />
+            <ProfileBox onClick={menu.toggle} />
           </ProfileContainer>
         </>
       )}
