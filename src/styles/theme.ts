@@ -17,6 +17,7 @@ const createSelector = <
 export const color = createSelector('color');
 export const font = createSelector('font');
 export const size = createSelector('size');
+export const maxWidth = createSelector('maxWidth');
 export const spacing = createSelector('spacing');
 export const tracking = createSelector('tracking');
 export const screens = createSelector('screens');
@@ -56,6 +57,19 @@ export const theme: DefaultTheme = {
     xl4: '2.25rem',
     xl5: '3rem',
     xl6: '4rem',
+  },
+  maxWidth: {
+    xs: '20rem',
+    sm: '24rem',
+    md: '28rem',
+    lg: '32rem',
+    xl: '36rem',
+    xl2: '42rem',
+    xl3: '48rem',
+    xl4: '56rem',
+    xl5: '64rem',
+    xl6: '72rem',
+    full: '100%',
   },
   spacing: {
     '0': '0',

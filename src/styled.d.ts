@@ -26,6 +26,19 @@ declare module 'styled-components' {
       xl5: string;
       xl6: string;
     };
+    maxWidth: {
+      xs: string;
+      sm: string;
+      md: string;
+      lg: string;
+      xl: string;
+      xl2: string;
+      xl3: string;
+      xl4: string;
+      xl5: string;
+      xl6: string;
+      full: string;
+    };
     spacing: {
       '0': string;
       px: string;

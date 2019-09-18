@@ -14,6 +14,7 @@ const createHook = <R extends keyof DefaultTheme>(key: R) => () => {
 export const useColor = createHook('color');
 export const useFont = createHook('font');
 export const useSize = createHook('size');
+export const useMaxWidth = createHook('maxWidth');
 export const useSpacing = createHook('spacing');
 export const useTracking = createHook('tracking');
 export const useScreens = createHook('screens');
