@@ -1,4 +1,4 @@
-import * as array from 'utils/array';
+import * as array from '../array';
 
 describe('array.keepFirst()', () => {
   it('should keep the first unique values in an array', () => {
