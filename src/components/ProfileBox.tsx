@@ -5,10 +5,6 @@ import { animated, fadeIn } from '../styles/animations';
 import { useAuth, AuthStatus } from '../hooks/use-auth';
 import { VisuallyHidden } from './VisuallyHidden';
 
-const Profile = styled.div`
-  position: relative;
-`;
-
 interface ProfileButtonProps {
   profilePicture?: string;
   background?: keyof DefaultTheme['color'];
@@ -68,15 +64,14 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
   if (auth.status !== AuthStatus.authorized) return null;
 
   return (
-    <Profile {...rest}>
-      <ProfileButton
-        type="button"
-        profilePicture={auth.user.profile_photo_url}
-        background={background}
-        onClick={onClick}
-      >
-        <VisuallyHidden>Context menu</VisuallyHidden>
-      </ProfileButton>
-    </Profile>
+    <ProfileButton
+      type="button"
+      profilePicture={auth.user.profile_photo_url}
+      background={background}
+      onClick={onClick}
+      {...rest}
+    >
+      <VisuallyHidden>Context menu</VisuallyHidden>
+    </ProfileButton>
   );
 };
