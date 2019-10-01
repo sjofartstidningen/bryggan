@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ProfileBox } from '../ProfileBox';
-import { spacing, size, color } from '../../styles/theme';
+import { spacing, size, color, maxWidth } from '../../styles/theme';
 import { truncate } from '../../styles/utils';
 import { useAuth, AuthStatus, useAuthSignOut } from '../../hooks/use-auth';
 import { darken } from 'polished';
@@ -15,26 +15,32 @@ export const Profile = ({ onClick }: ProfileProps) => {
   const signOut = useAuthSignOut();
 
   if (auth.status !== AuthStatus.authorized) return null;
-  console.log(auth.user);
+
   return (
-    <Wrapper>
-      <StyledProfileBox onClick={onClick} background="shade" />
-      <ProfileInfo>
-        <p title={auth.user.name.display_name}>{auth.user.name.display_name}</p>
-        <p title={auth.user.email}>{auth.user.email}</p>
-      </ProfileInfo>
-      <SignOutButton type="button" onClick={signOut}>
-        Sign out
-      </SignOutButton>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <StyledProfileBox onClick={onClick} background="shade" />
+        <ProfileInfo>
+          <p title={auth.user.name.display_name}>
+            {auth.user.name.display_name}
+          </p>
+          <p title={auth.user.email}>{auth.user.email}</p>
+        </ProfileInfo>
+      </Wrapper>
+      <SignOutButtonWrapper>
+        <SignOutButton type="button" onClick={signOut}>
+          Sign out
+        </SignOutButton>
+      </SignOutButtonWrapper>
+    </>
   );
 };
 
 const Wrapper = styled.div`
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   padding: ${spacing('4')};
@@ -44,38 +50,44 @@ const StyledProfileBox = styled(ProfileBox)`
   flex: none;
   width: ${spacing('12')};
   height: ${spacing('12')};
-  margin-bottom: ${spacing('4')};
+  margin-right: ${spacing('4')};
 `;
 
 const ProfileInfo = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
-  min-width: 0;
-  margin-bottom: ${spacing('2')};
+  width: calc(${maxWidth('xs')} - (${spacing('12')} + (${spacing('4')} * 3)));
+  margin-bottom: ${spacing('1')};
   font-size: ${size('sm')};
   color: ${color('black')};
 
-  & > * {
+  > p {
     margin: 0;
-    margin-bottom: ${spacing('1')};
+    line-height: 1.2;
+    ${truncate};
   }
 
-  > *:first-child {
+  > p:first-child {
     font-weight: 700;
-    ${truncate};
   }
 
-  > *:last-child {
+  > p:last-child {
     opacity: 0.8;
-    ${truncate};
   }
 `;
 
+const SignOutButtonWrapper = styled.div`
+  width: 100%;
+  padding: ${spacing('4')};
+  padding-top: 0;
+  text-align: right;
+`;
+
 const SignOutButton = styled.button`
+  display: inline-block;
   margin: 0;
   border: none;
-  padding: 0;
+  padding: ${spacing('1')};
   color: ${color('warning')};
   font-size: ${size('xs')};
   background: transparent;

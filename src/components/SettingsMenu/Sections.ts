@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { boxShadow } from '../../styles/utils';
 import { color, maxWidth } from '../../styles/theme';
 
-export const ProfileMenuWrapper = styled.div`
+export const MenuWrapper = styled.div`
   position: fixed;
   top: 0;
   right: 0;

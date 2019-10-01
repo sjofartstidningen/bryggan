@@ -5,6 +5,7 @@ import {
   SimpleInterpolation,
   CSSObject,
 } from 'styled-components';
+import { transparentize } from 'polished';
 
 const createSelector = <
   R extends keyof DefaultTheme,
@@ -36,14 +37,16 @@ export const screen = (scr: keyof DefaultTheme['screens']) => {
   `;
 };
 
+const colors = {
+  white: '#ffffff',
+  black: '#333333',
+  shade: '#e6e6e6',
+  highlight: '#0599e4',
+  warning: '#d73a49',
+};
+
 export const theme: DefaultTheme = {
-  color: {
-    white: '#ffffff',
-    black: '#333333',
-    shade: '#e6e6e6',
-    highlight: '#0599e4',
-    warning: '#d73a49',
-  },
+  color: colors,
   font: {
     display: '"Montserrat", sans-serif',
     body:
@@ -110,15 +113,25 @@ export const theme: DefaultTheme = {
     xl: '1280px',
   },
   shadow: {
-    default: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    lg:
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-    xl:
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-    xl2: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-    outline: '0 0 0 3px rgba(66, 153, 225, 0.5)',
+    default: `0 1px 3px 0 ${transparentize(
+      0.1,
+      colors.black,
+    )} 0 1px 2px 0 ${transparentize(0.06, colors.black)}`,
+    md: `0 4px 6px -1px ${transparentize(
+      0.1,
+      colors.black,
+    )} 0 2px 4px -1px ${transparentize(0.06, colors.black)}`,
+    lg: `0 10px 15px -3px ${transparentize(
+      0.1,
+      colors.black,
+    )} 0 4px 6px -2px ${transparentize(0.05, colors.black)}`,
+    xl: `0 20px 25px -5px ${transparentize(
+      0.1,
+      colors.black,
+    )} 0 10px 10px -5px ${transparentize(0.04, colors.black)}`,
+    xl2: `0 25px 50px -12px ${transparentize(0.25, colors.black)}`,
+    inner: `inset 0 2px 4px 0 ${transparentize(0.06, colors.black)}`,
+    outline: `0 0 0 2px ${transparentize(0.5, colors.highlight)}`,
     none: 'none',
   },
 };

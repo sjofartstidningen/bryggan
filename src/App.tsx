@@ -13,7 +13,7 @@ import {
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
 import { AuthProvider, AuthStatus, useAuthEffect } from './hooks/use-auth';
 import { content, api } from './api/dropbox';
-import { ProfileMenu } from './components/ProfileMenu';
+import { SettingsMenu } from './components/SettingsMenu';
 import { MenuManager } from './hooks/use-menu';
 
 const Landing = lazy(() => import('./pages/Landing'));
@@ -43,7 +43,7 @@ const App: React.FC = () => {
       </ErrorBoundaryWithRefresh>
 
       <ErrorBoundaryWithRefresh>
-        <ProfileMenu />
+        <SettingsMenu />
       </ErrorBoundaryWithRefresh>
 
       <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>

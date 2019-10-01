@@ -4,10 +4,11 @@ import { useMenu } from '../../hooks/use-menu';
 import { AuthStatus, useAuthEffect, useAuth } from '../../hooks/use-auth';
 import { MENU_PROFILE } from '../../constants';
 import { PopUpOverlay } from '../PopUpOverlay';
-import { ProfileMenuWrapper, MenuSection } from './Sections';
+import { MenuWrapper, MenuSection } from './Sections';
 import { Profile } from './Profile';
+import { GeneralSettings } from './GeneralSettings';
 
-export const ProfileMenu: React.FC = () => {
+export const SettingsMenu: React.FC = () => {
   const auth = useAuth();
   const menu = useMenu(MENU_PROFILE, false);
 
@@ -33,7 +34,7 @@ export const ProfileMenu: React.FC = () => {
         ({ item, key, props }) =>
           item && (
             <PopUpOverlay key={key} onClick={menu.close}>
-              <ProfileMenuWrapper
+              <MenuWrapper
                 as={animated.div}
                 style={props}
                 onClick={e => {
@@ -42,9 +43,12 @@ export const ProfileMenu: React.FC = () => {
                 }}
               >
                 <MenuSection>
+                  <GeneralSettings />
+                </MenuSection>
+                <MenuSection push>
                   <Profile onClick={menu.close} />
                 </MenuSection>
-              </ProfileMenuWrapper>
+              </MenuWrapper>
             </PopUpOverlay>
           ),
       )}
