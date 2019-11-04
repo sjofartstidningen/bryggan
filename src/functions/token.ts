@@ -4,9 +4,8 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import Cookies from 'universal-cookie';
 import { createResponse } from '../utils/create-response';
 import { Oauth2TokenResponse } from '../types/dropbox';
-import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../constants';
+import { OAUTH_STATE_COOKIE } from '../constants';
 import { safeEnv } from '../env';
-import { trailingSlash, unleadingSlash } from '../utils';
 
 /**
  * Handler to take care of authentication against Dropbox' Oauth2 interface.
@@ -21,21 +20,8 @@ import { trailingSlash, unleadingSlash } from '../utils';
 export async function handler(
   event: AWSLambda.APIGatewayProxyEvent,
 ): Promise<AWSLambda.APIGatewayProxyResult> {
-  const CONTEXT = safeEnv('CONTEXT', 'production');
-  const REDIRECT_URL = safeEnv('REACT_APP_REDIRECT_URL');
   const CLIENT_ID = safeEnv('REACT_APP_DROPBOX_CLIENT_ID');
   const CLIENT_SECRET = safeEnv('DROPBOX_CLIENT_SECRET');
-
-  let APP_URL: string;
-  switch (CONTEXT) {
-    case 'deploy-preview':
-    case 'branch-deploy':
-      APP_URL = safeEnv('DEPLOY_PRIME_URL');
-      break;
-    case 'production':
-    default:
-      APP_URL = safeEnv('URL');
-  }
 
   try {
     const cookie = new Cookies(event.headers.cookie);
@@ -84,7 +70,7 @@ export async function handler(
      */
     const { code } = query;
     const redirectUri =
-      trailingSlash(APP_URL) + unleadingSlash('/.netlify/functions/token');
+      'https://deploy-preview-52--sst-bryggan.netlify.com/.netlify/functions/token';
 
     const { data }: AxiosResponse<Oauth2TokenResponse> = await axios({
       url: 'https://api.dropboxapi.com/oauth2/token',
@@ -172,7 +158,16 @@ function errorBody(message: string, errorData: any = {}) {
     <pre>${JSON.stringify(errorData, null, 2)}</pre>
 
     <h2>Variables</h2>
-    <pre>${JSON.stringify(process.env, null, 2)}</pre>
+    <pre>${JSON.stringify(
+      {
+        CONTEXT: safeEnv('CONTEXT', ''),
+        URL: safeEnv('URL', ''),
+        DEPLOY_PRIME_URL: safeEnv('DEPLOY_PRIME_URL', ''),
+        REDIRECT_URL: safeEnv('REACT_APP_REDIRECT_URL', ''),
+      },
+      null,
+      2,
+    )}</pre>
   </body>
 </html>
 `;
