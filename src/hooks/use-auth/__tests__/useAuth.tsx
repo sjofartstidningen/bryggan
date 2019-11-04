@@ -3,9 +3,12 @@ import { render, fireEvent } from '@testing-library/react';
 import localforage from 'localforage';
 import { BrowserRouter } from 'react-router-dom';
 import nock from 'nock';
-import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
+import {
+  LOCALSTORAGE_AUTH_KEY,
+  DROPBOX_CLIENT_ID,
+  REDIRECT_URL,
+} from '../../../constants';
 import mockUser from '../../../__fixtures__/dropbox/users/get_current_account.json';
-import { safeEnv } from '../../../env';
 import {
   useAuth,
   AuthProvider,
@@ -135,12 +138,10 @@ it('should redirect user to dropbox oauth when signing in with oauth method', as
 
   expect(replaceMock).toHaveBeenCalled();
   expect(replaceMock).toHaveBeenCalledWith(
-    expect.stringContaining(safeEnv('REACT_APP_DROPBOX_CLIENT_ID')),
+    expect.stringContaining(DROPBOX_CLIENT_ID),
   );
   expect(replaceMock).toHaveBeenCalledWith(
-    expect.stringContaining(
-      encodeURIComponent(safeEnv('REACT_APP_REDIRECT_URL')),
-    ),
+    expect.stringContaining(encodeURIComponent(REDIRECT_URL)),
   );
 });
 

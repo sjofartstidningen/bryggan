@@ -2,9 +2,12 @@ import { Dispatch } from 'react';
 import localforage from 'localforage';
 import qs from 'qs';
 import { trailingSlash, unleadingSlash } from '../../utils';
-import { safeEnv } from '../../env';
 import { DropboxUser } from '../../types/dropbox';
-import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
+import {
+  LOCALSTORAGE_AUTH_KEY,
+  REDIRECT_URL,
+  DROPBOX_CLIENT_ID,
+} from '../../constants';
 import * as dropbox from '../../api/dropbox';
 import {
   AuthState,
@@ -233,18 +236,14 @@ async function getCurrentAccount(accessToken: string): Promise<DropboxUser> {
   return user;
 }
 
-const REACT_APP_REDIRECT_URL = safeEnv('REACT_APP_REDIRECT_URL');
-const REACT_APP_DROPBOX_CLIENT_ID = safeEnv('REACT_APP_DROPBOX_CLIENT_ID');
-
 function loginUrl(state?: string) {
   const redirectUri =
-    trailingSlash(window.location.origin) +
-    unleadingSlash(REACT_APP_REDIRECT_URL);
+    trailingSlash(window.location.origin) + unleadingSlash(REDIRECT_URL);
 
   return `https://www.dropbox.com/oauth2/authorize?${qs.stringify({
     response_type: 'code',
     redirect_uri: redirectUri,
-    client_id: REACT_APP_DROPBOX_CLIENT_ID,
+    client_id: DROPBOX_CLIENT_ID,
     state,
   })}`;
 }

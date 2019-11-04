@@ -1,7 +1,10 @@
 import nock from 'nock';
 import { handler } from '../handle-auth';
-import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../../constants';
-import { safeEnv } from '../../env';
+import {
+  OAUTH_STATE_COOKIE,
+  PATH_AUTH_HANDLER,
+  REDIRECT_URL,
+} from '../../constants';
 
 const dropbox = nock('https://api.dropboxapi.com');
 
@@ -12,10 +15,7 @@ it('should handle successful auth and retrieve a token', async () => {
 
   dropbox
     .post('/oauth2/token', body => {
-      return (
-        body.code === code &&
-        body.redirect_uri.includes(safeEnv('REACT_APP_REDIRECT_URL'))
-      );
+      return body.code === code && body.redirect_uri.includes(REDIRECT_URL);
     })
     .reply(200, {
       access_token: accessToken,

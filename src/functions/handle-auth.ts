@@ -1,11 +1,15 @@
-import { HttpError, BadRequest, Forbidden } from 'http-errors';
+import {
+  HttpError,
+  BadRequest,
+  Forbidden,
+  InternalServerError,
+} from 'http-errors';
 import qs from 'qs';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import Cookies from 'universal-cookie';
 import { createResponse } from '../utils/create-response';
 import { Oauth2TokenResponse } from '../types/dropbox';
 import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../constants';
-import { safeEnv } from '../env';
 import { trailingSlash, unleadingSlash } from '../utils';
 
 /**
@@ -21,20 +25,24 @@ import { trailingSlash, unleadingSlash } from '../utils';
 export async function handler(
   event: AWSLambda.APIGatewayProxyEvent,
 ): Promise<AWSLambda.APIGatewayProxyResult> {
-  const CONTEXT = safeEnv('CONTEXT', 'production');
-  const REDIRECT_URL = safeEnv('REACT_APP_REDIRECT_URL');
-  const CLIENT_ID = safeEnv('REACT_APP_DROPBOX_CLIENT_ID');
-  const CLIENT_SECRET = safeEnv('DROPBOX_CLIENT_SECRET');
+  const CONTEXT = process.env.CONTEXT || 'production';
+  const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL;
+  const CLIENT_ID = process.env.REACT_APP_DROPBOX_CLIENT_ID;
+  const CLIENT_SECRET = process.env.DROPBOX_CLIENT_SECRET;
 
-  let APP_URL: string;
+  let APP_URL: string | void;
   switch (CONTEXT) {
     case 'deploy-preview':
     case 'branch-deploy':
-      APP_URL = safeEnv('DEPLOY_PRIME_URL');
+      APP_URL = process.env.DEPLOY_PRIME_URL;
       break;
     case 'production':
     default:
-      APP_URL = safeEnv('URL');
+      APP_URL = process.env.URL;
+  }
+
+  if (!APP_URL || !REDIRECT_URL || !CLIENT_ID || !CLIENT_SECRET) {
+    throw new InternalServerError('Missing required environment variables');
   }
 
   const APP_AUTH_HANDLER =
@@ -180,10 +188,10 @@ function errorBody(message: string, errorData: any = {}) {
     <h2>Variables</h2>
     <pre>${JSON.stringify(
       {
-        CONTEXT: safeEnv('CONTEXT', ''),
-        URL: safeEnv('URL', ''),
-        DEPLOY_PRIME_URL: safeEnv('DEPLOY_PRIME_URL', ''),
-        REDIRECT_URL: safeEnv('REACT_APP_REDIRECT_URL', ''),
+        CONTEXT: process.env.CONTEXT,
+        URL: process.env.URL,
+        DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
+        REDIRECT_URL: process.env.REACT_APP_REDIRECT_URL,
       },
       null,
       2,
