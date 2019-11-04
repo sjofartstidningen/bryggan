@@ -55,6 +55,7 @@ export async function handler(
     if (query.error) {
       return createResponse(errorBody(query.error, query), {
         statusCode: 500,
+        cache: false,
         headers: {
           'Content-Type': 'text/html; charset=UTF-8',
         },
@@ -88,6 +89,7 @@ export async function handler(
 
     return createResponse(body, {
       statusCode: 200,
+      cache: false,
       headers: {
         'Content-Type': 'text/html; charset=UTF-8',
       },
