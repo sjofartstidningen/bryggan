@@ -2,7 +2,6 @@ import qs from 'qs';
 import { createResponse } from '../utils/create-response';
 import { trailingSlash, unleadingSlash } from '../utils';
 import { safeEnv } from '../env';
-import { PATH_SIGN_IN } from '../constants';
 
 export async function handler(
   event: AWSLambda.APIGatewayProxyEvent,
@@ -25,6 +24,9 @@ function body() {
     <p>
       <a href="${loginUrl()}">Sign in</a>
     </p>
+
+    <h2>Variables</h2>
+    <pre>${JSON.stringify(process.env, null, 2)}</pre>
   </body>
 </html>
 `;
