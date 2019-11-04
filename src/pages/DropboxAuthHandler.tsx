@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { RouteComponentProps, navigate } from '@reach/router';
+import { useHistory } from 'react-router-dom';
 import localforage from 'localforage';
 import { useTimeout } from '../hooks/use-timeout';
 import { useAuthReciever, useAuth, AuthStatus } from '../hooks/use-auth';
 import { leadingSlash } from '../utils';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 
-interface AuthHandlerProps extends RouteComponentProps {
+interface AuthHandlerProps {
   fallback: React.ReactElement;
 }
 
-const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({
-  fallback,
-  location,
-}) => {
+const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({ fallback }) => {
+  const history = useHistory();
   const auth = useAuth();
   const [showFallback, setShowFallback] = useState(false);
 
-  useAuthReciever(location);
+  useAuthReciever();
 
   useTimeout(() => setShowFallback(true), 300);
 
@@ -25,7 +23,7 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({
     let hasCancelled = false;
     switch (auth.status) {
       case AuthStatus.unauthorized:
-        navigate(leadingSlash(PATH_SIGN_IN), { replace: true });
+        history.replace(leadingSlash(PATH_SIGN_IN));
         break;
 
       case AuthStatus.authorized:
@@ -36,14 +34,14 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({
 
           if (hasCancelled) return;
           const to = (data && data.from) || '/';
-          navigate(to, { replace: true });
+          history.replace(to);
         })();
     }
 
     return () => {
       hasCancelled = true;
     };
-  }, [auth.status]);
+  }, [auth.status, history]);
 
   if (showFallback) {
     return <>{fallback}</>;

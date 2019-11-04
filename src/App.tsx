@@ -1,10 +1,10 @@
 import React, { Suspense, lazy, StrictMode } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { Router } from '@reach/router';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { Header } from './components/Header';
-import { Authenticated } from './components/Authenticated';
+import { AuthenticatedRoute } from './components/AuthenticatedRoute';
 import { LoaderOverlay } from './components/Loader';
 import {
   ErrorBoundary,
@@ -35,31 +35,38 @@ const App: React.FC = () => {
     }
   });
 
+  const loader = <LoaderOverlay />;
+
   return (
     <StrictMode>
-      <GlobalStyle />
-      <ErrorBoundaryWithRefresh>
-        <Header />
-      </ErrorBoundaryWithRefresh>
+      <BrowserRouter>
+        <GlobalStyle />
+        <ErrorBoundaryWithRefresh>
+          <Header />
+        </ErrorBoundaryWithRefresh>
 
-      <ErrorBoundaryWithRefresh>
-        <SettingsMenu />
-      </ErrorBoundaryWithRefresh>
+        <ErrorBoundaryWithRefresh>
+          <SettingsMenu />
+        </ErrorBoundaryWithRefresh>
 
-      <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
-        <Suspense fallback={<LoaderOverlay />}>
-          <Router>
-            <Authenticated path="/" fallback={<LoaderOverlay />}>
-              <Landing path="/" />
-            </Authenticated>
-            <SignIn path={PATH_SIGN_IN} />
-            <DropboxAuthHandler
-              path={PATH_AUTH_HANDLER}
-              fallback={<LoaderOverlay />}
-            />
-          </Router>
-        </Suspense>
-      </ErrorBoundary>
+        <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
+          <Suspense fallback={loader}>
+            <Switch>
+              <Route path={PATH_SIGN_IN}>
+                <SignIn />
+              </Route>
+
+              <Route path={PATH_AUTH_HANDLER}>
+                <DropboxAuthHandler fallback={loader} />
+              </Route>
+
+              <AuthenticatedRoute exact path="/" fallback={loader}>
+                <Landing />
+              </AuthenticatedRoute>
+            </Switch>
+          </Suspense>
+        </ErrorBoundary>
+      </BrowserRouter>
     </StrictMode>
   );
 };

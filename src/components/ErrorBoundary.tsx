@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { isRedirect } from '@reach/router';
 import rafSchd from 'raf-schd';
 
 export interface ErrorFallbackProps {
@@ -48,12 +47,10 @@ export class ErrorBoundary extends Component<
   static getDerivedStateFromError(
     error: Error,
   ): Partial<ErrorBoundaryState> | null {
-    if (isRedirect(error)) return null;
     return { error };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    if (isRedirect(error)) throw error;
     this.props.onError!(error, info, this.resetErrorBoundary);
   }
 

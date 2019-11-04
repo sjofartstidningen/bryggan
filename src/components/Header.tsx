@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 import { spacing, font, size, color, tracking } from '../styles/theme';
 import { boxShadow } from '../styles/utils';
 import { useAuth, AuthStatus } from '../hooks/use-auth';

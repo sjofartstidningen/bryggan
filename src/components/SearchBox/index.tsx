@@ -2,7 +2,7 @@ import '@reach/combobox/styles.css';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
-import { navigate, Link } from '@reach/router';
+import { Link, useHistory } from 'react-router-dom';
 import { useEventListener } from '@fransvilhelm/hooks';
 import {
   Combobox,
@@ -37,6 +37,7 @@ export const SearchBox: React.FC = () => {
   const listRef = useRef<HTMLElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, searchMore] = useSearch(query);
+  const history = useHistory();
 
   const handleQueryChange = (evt: React.FormEvent<HTMLInputElement>) => {
     setQuery(evt.currentTarget.value.replace(/^\//, ''));
@@ -99,7 +100,7 @@ export const SearchBox: React.FC = () => {
                   data-testid="search-result-item"
                   onClick={() => {
                     setQuery('');
-                    navigate(page.link);
+                    history.push(page.link);
                   }}
                 >
                   <DropboxPreview

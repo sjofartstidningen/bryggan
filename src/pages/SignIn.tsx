@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { RouteComponentProps, navigate } from '@reach/router';
+import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 import { useInput, usePersistedState } from '@fransvilhelm/hooks';
@@ -124,7 +124,9 @@ enum SignInMethod {
   paste,
 }
 
-const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
+const SignIn: React.FC = () => {
+  const location = useLocation<{ from?: string }>();
+  const history = useHistory();
   const auth = useAuth();
   const { handleOauth, handleDirectInput } = useAuthSignIn();
   const [signInMethod, setSignInMethod] = usePersistedState(SignInMethod.link);
@@ -156,11 +158,11 @@ const SignIn: React.FC<RouteComponentProps> = ({ location }) => {
         break;
 
       case AuthStatus.authorized:
-        const to = (location && location.state && location.state.from) || '/';
-        navigate(to, { replace: true });
+        const to = location.state.from || '/';
+        history.replace(to);
         break;
     }
-  }, [isSubmitting, auth.status, location]);
+  }, [isSubmitting, auth.status, location, history]);
 
   return (
     <Wrapper>

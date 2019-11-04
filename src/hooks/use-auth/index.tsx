@@ -20,6 +20,7 @@ import {
   AuthState,
 } from './types';
 import { reducer, initialState } from './reducer';
+import { useLocation } from 'react-router';
 
 export * from './types';
 
@@ -152,10 +153,9 @@ export const useAuthSignOut = () => {
  * This hook should be called on an auth handler route. It will try to read the
  * provided access token from the url and validate it before determine if the
  * user is authorized or not.
- *
- * @param {Location | undefined} location
  */
-export const useAuthReciever = (location?: Location) => {
+export const useAuthReciever = () => {
+  const location = useLocation();
   const auth = useAuth();
   const dispatch = useAuthDispatch();
   const hasHandled = useRef(false);

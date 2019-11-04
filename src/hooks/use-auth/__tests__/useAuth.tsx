@@ -1,15 +1,8 @@
 import React, { useEffect } from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import localforage from 'localforage';
+import { BrowserRouter } from 'react-router-dom';
 import nock from 'nock';
-import {
-  Router,
-  createHistory,
-  createMemorySource,
-  LocationProvider,
-  RouteComponentProps,
-} from '@reach/router';
-import qs from 'qs';
 import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
 import mockUser from '../../../__fixtures__/dropbox/users/get_current_account.json';
 import { safeEnv } from '../../../env';
@@ -21,6 +14,7 @@ import {
   useAuthSignOut,
   useAuthReciever,
 } from '../index';
+import { Route } from 'react-router';
 
 const dropboxApi = nock('https://api.dropboxapi.com', {
   reqheaders: { authorization: /^bearer .+/i },
@@ -186,11 +180,11 @@ it('should handle recieving access token from server', async () => {
 
   const onAuthStageChange = jest.fn();
 
-  const Comp: React.FC<RouteComponentProps> = ({ location }) => {
+  const Comp: React.FC = () => {
     const auth = useAuth();
-    useAuthReciever(location);
+    useAuthReciever();
 
-    useEffect(onAuthStageChange, [auth.status]);
+    useEffect(() => onAuthStageChange(auth.status), [auth.status]);
 
     switch (auth.status) {
       case AuthStatus.unauthorized:
@@ -204,36 +198,17 @@ it('should handle recieving access token from server', async () => {
     }
   };
 
-  const memory = createMemorySource('/');
-  memory.history.replaceState(
-    null,
-    '',
-    '/auth-handler?' + qs.stringify({ access_token: 'abc123' }),
-  );
-
-  const { findByText } = renderWithLocationProvider(
-    <AuthProvider>
-      <Router>
-        <Comp path="/auth-handler" />
-      </Router>
-    </AuthProvider>,
-    { history: createHistory(memory) },
+  const { findByText } = render(
+    <BrowserRouter>
+      <AuthProvider>
+        <Route path="/">
+          <Comp />
+        </Route>
+      </AuthProvider>
+    </BrowserRouter>,
   );
 
   await findByText(/^authorized$/i);
+  expect(onAuthStageChange).toHaveBeenCalledWith(AuthStatus.authorized);
   expect(onAuthStageChange).not.toHaveBeenCalledWith(AuthStatus.unauthorized);
 });
-
-function renderWithLocationProvider(
-  ui: React.ReactElement,
-  {
-    route = '/',
-    memory = createMemorySource(route),
-    history = createHistory(memory),
-  } = {},
-) {
-  return {
-    ...render(<LocationProvider history={history}>{ui}</LocationProvider>),
-    history,
-  };
-}
