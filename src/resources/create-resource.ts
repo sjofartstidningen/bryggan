@@ -1,135 +1,86 @@
-import { createLRU, LRUEntry } from '../utils/lru';
+import LRU from 'lru-cache';
 
-enum AsyncState {
+interface Loader<R> {
+  (): Promise<R>;
+}
+
+enum LoaderState {
+  idle,
   pending,
   resolved,
   rejected,
 }
 
-const lru = createLRU<Result<any>>(500);
+type ResourceState<R> =
+  | { loaderState: LoaderState.idle }
+  | { loaderState: LoaderState.pending }
+  | { loaderState: LoaderState.rejected; error: Error }
+  | { loaderState: LoaderState.resolved; result: R };
 
-export function createResource<I, K extends Key, V = any>(
-  fetch: Fetch<I, V>,
-  hashInput: Hash<I, K> = identityHash,
-): Resource<I, V> {
-  const resource = {
-    read: (input: I): V => {
-      const key = hashInput(input);
-      const result = accessResult(resource, fetch, input, key);
+export class Resource<R> {
+  private state: ResourceState<R> = { loaderState: LoaderState.idle };
+  private promise?: Promise<R>;
+  private loader: Loader<R>;
 
-      switch (result.status) {
-        case AsyncState.pending:
-          const suspender = result.value;
-          throw suspender;
-        case AsyncState.rejected:
-          const error = result.value;
-          throw error;
-        case AsyncState.resolved:
-          const value = result.value;
-          return value;
+  constructor(loader: Loader<R>) {
+    this.loader = loader;
+  }
+
+  async load(): Promise<void> {
+    try {
+      if (!this.promise) {
+        this.promise = this.loader();
+
+        this.state = { loaderState: LoaderState.pending };
+        const result = await this.promise;
+        this.state = { loaderState: LoaderState.resolved, result };
       }
-    },
-    preload: (input: I): void => {
-      const key = hashInput(input);
-      accessResult(resource, fetch, input, key);
-    },
-  };
-
-  return resource;
-}
-
-const entries = new Map<Resource<any, any>, Map<Key, LRUEntry<Result<any>>>>();
-
-function accessResult<I, K extends Key, V>(
-  resource: Resource<I, V>,
-  fetch: Fetch<I, V>,
-  input: I,
-  key: K,
-): Result<V> {
-  let entriesForResource = entries.get(resource);
-
-  if (!entriesForResource) {
-    entriesForResource = new Map<Key, LRUEntry<Result<V>>>();
-    entries.set(resource, entriesForResource);
-  }
-
-  const entry = entriesForResource.get(key);
-
-  if (!entry) {
-    const thenable = fetch(input);
-
-    let newResult = {
-      status: AsyncState.pending,
-      value: thenable,
-    };
-
-    thenable.then(
-      value => {
-        if (newResult.status === AsyncState.pending) {
-          newResult.status = AsyncState.resolved;
-          newResult.value = (value as unknown) as any;
-        }
-      },
-      error => {
-        if (newResult.status === AsyncState.pending) {
-          newResult.status = AsyncState.rejected;
-          newResult.value = error;
-        }
-      },
-    );
-
-    const newEntry: LRUEntry<Result<V>> = lru.add(newResult, () =>
-      deleteEntry(resource, key),
-    );
-    entriesForResource.set(key, newEntry);
-
-    return newResult as Result<V>;
-  }
-
-  return lru.access(entry) as Result<V>;
-}
-
-function deleteEntry(resource: Resource<any, any>, key: string | number) {
-  const entriesForResource = entries.get(resource);
-  if (entriesForResource !== undefined) {
-    entriesForResource.delete(key);
-    if (entriesForResource.size === 0) {
-      entries.delete(resource);
+    } catch (error) {
+      this.state = { loaderState: LoaderState.rejected, error };
     }
   }
-}
 
-function identityHash<I, K extends Key>(input: I) {
-  const isValid =
-    typeof input === 'string' ||
-    typeof input === 'number' ||
-    typeof input === 'boolean' ||
-    input === undefined ||
-    input === null;
-  if (!isValid) {
-    throw new Error(
-      'Trying to access a resource with a non primitive input is not accepted without passing a hashInput function.',
-    );
+  get() {
+    if (this.state.loaderState === LoaderState.resolved) {
+      return this.state.result;
+    }
   }
-  return (input as unknown) as K;
+
+  read() {
+    switch (this.state.loaderState) {
+      case LoaderState.idle:
+        const promise = this.load();
+        throw promise;
+
+      case LoaderState.pending:
+        throw this.promise;
+
+      case LoaderState.rejected:
+        throw this.state.error;
+
+      case LoaderState.resolved:
+        return this.state.result;
+    }
+  }
+
+  retry() {
+    this.promise = undefined;
+    this.state = { loaderState: LoaderState.idle };
+    this.load();
+  }
 }
 
-type Key = string | number;
+const cache = new LRU<string, Resource<any>>({
+  max: 500,
+  maxAge: 1000 * 60 * 60,
+});
 
-interface Resource<I, V> {
-  read(input: I): V;
-  preload(input: I): void;
-}
+export const createResource = <R>(id: string, loader: Loader<R>) => {
+  let resource: Resource<R> | undefined = cache.get(id);
+  if (!resource) {
+    resource = new Resource(loader);
+    cache.set(id, resource);
+  }
 
-interface Fetch<I, V> {
-  (input: I): Promise<V>;
-}
-
-interface Hash<I, K extends string | number> {
-  (input: I): K;
-}
-
-type Result<V> =
-  | { status: AsyncState.pending; value: Promise<V> }
-  | { status: AsyncState.resolved; value: V }
-  | { status: AsyncState.rejected; value: any };
+  return resource;
+};
