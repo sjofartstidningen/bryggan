@@ -5,7 +5,7 @@ import { spacing, font, size, color, tracking } from '../styles/theme';
 import { boxShadow } from '../styles/utils';
 import { useAuth, AuthStatus } from '../hooks/use-auth';
 import { useScreens } from '../hooks/use-theme';
-import { useMenu } from '../hooks/use-menu';
+import { useMenuControls } from '../hooks/use-menu';
 import { SearchBox } from './SearchBox';
 import { ProfileBox } from './ProfileBox';
 import { ScreenMinWidth } from './ScreenSize';
@@ -53,7 +53,7 @@ const ProfileContainer = styled.div`
 export const Header: React.FC = () => {
   const auth = useAuth();
   const screens = useScreens();
-  const menu = useMenu(MENU_PROFILE);
+  const menu = useMenuControls(MENU_PROFILE);
 
   return (
     <HeaderContainer>

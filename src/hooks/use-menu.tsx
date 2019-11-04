@@ -5,6 +5,7 @@ import React, {
   Dispatch,
   useContext,
   useEffect,
+  useMemo,
 } from 'react';
 
 export enum MenuState {
@@ -16,12 +17,20 @@ interface MenuManagerState {
   [key: string]: MenuState | undefined;
 }
 
+enum MenuActionType {
+  open = 'open',
+  close = 'close',
+  toggle = 'toggle',
+  register = 'register',
+  unregister = 'unregister',
+}
+
 type MenuManagerAction =
-  | { type: 'open'; key: string }
-  | { type: 'close'; key: string }
-  | { type: 'toggle'; key: string }
-  | { type: 'register'; key: string; initialState?: MenuState }
-  | { type: 'unregister'; key: string };
+  | { type: MenuActionType.open; key: string }
+  | { type: MenuActionType.close; key: string }
+  | { type: MenuActionType.toggle; key: string }
+  | { type: MenuActionType.register; key: string; initialState?: MenuState }
+  | { type: MenuActionType.unregister; key: string };
 
 const reducer: Reducer<MenuManagerState, MenuManagerAction> = (
   state,
@@ -30,21 +39,21 @@ const reducer: Reducer<MenuManagerState, MenuManagerAction> = (
   const hasMenu = state[action.key] !== undefined;
 
   switch (action.type) {
-    case 'open':
+    case MenuActionType.open:
       if (!hasMenu) return state;
       return {
         ...state,
         [action.key]: MenuState.open,
       };
 
-    case 'close':
+    case MenuActionType.close:
       if (!hasMenu) return state;
       return {
         ...state,
         [action.key]: MenuState.closed,
       };
 
-    case 'toggle':
+    case MenuActionType.toggle:
       if (!hasMenu) return state;
       const currentState = state[action.key];
       return {
@@ -53,14 +62,14 @@ const reducer: Reducer<MenuManagerState, MenuManagerAction> = (
           currentState === MenuState.open ? MenuState.closed : MenuState.open,
       };
 
-    case 'register':
+    case MenuActionType.register:
       if (hasMenu) return state;
       return {
         ...state,
         [action.key]: action.initialState || MenuState.closed,
       };
 
-    case 'unregister':
+    case MenuActionType.unregister:
       if (!hasMenu) return state;
       return {
         ...state,
@@ -115,23 +124,36 @@ interface Menu {
   unregister: () => void;
 }
 
+export const useMenuControls = (key: string): Omit<Menu, 'state' | 'show'> => {
+  const dispatch = useContext(MenuManagerDispatchContext);
+  return useMemo(
+    () => ({
+      open: () => dispatch({ type: MenuActionType.open, key }),
+      close: () => dispatch({ type: MenuActionType.close, key }),
+      toggle: () => dispatch({ type: MenuActionType.toggle, key }),
+      register: () => dispatch({ type: MenuActionType.register, key }),
+      unregister: () => dispatch({ type: MenuActionType.unregister, key }),
+    }),
+    [dispatch, key],
+  );
+};
+
 export const useMenu = (key: string, register?: boolean): Menu => {
   const state = useContext(MenuManagerContext);
-  const dispatch = useContext(MenuManagerDispatchContext);
+  const controls = useMenuControls(key);
 
   const menu = state[key];
 
   useEffect(() => {
-    if (register) dispatch({ type: 'register', key });
-  }, [key, register, dispatch]);
+    if (register) controls.register();
+  }, [register, controls]);
 
-  return {
-    state: menu,
-    show: menu === MenuState.open,
-    open: () => dispatch({ type: 'open', key }),
-    close: () => dispatch({ type: 'close', key }),
-    toggle: () => dispatch({ type: 'toggle', key }),
-    register: () => dispatch({ type: 'register', key }),
-    unregister: () => dispatch({ type: 'unregister', key }),
-  };
+  return useMemo(
+    () => ({
+      state: menu,
+      show: menu === MenuState.open,
+      ...controls,
+    }),
+    [menu, controls],
+  );
 };
