@@ -80,6 +80,7 @@ export async function handler(
     if (query.error) {
       return createResponse('', {
         statusCode: 301,
+        cache: false,
         headers: {
           Location: `${APP_AUTH_HANDLER}?${qs.stringify(query)}`,
         },
@@ -117,6 +118,7 @@ export async function handler(
 
     return createResponse(body, {
       statusCode: 301,
+      cache: false,
       headers: {
         'Content-Type': 'text/html; charset=UTF-8',
         Location: location,
