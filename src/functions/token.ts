@@ -172,16 +172,7 @@ function errorBody(message: string, errorData: any = {}) {
     <pre>${JSON.stringify(errorData, null, 2)}</pre>
 
     <h2>Variables</h2>
-    <pre>${JSON.stringify(
-      {
-        CONTEXT: safeEnv('CONTEXT', ''),
-        URL: safeEnv('URL', ''),
-        DEPLOY_PRIME_URL: safeEnv('DEPLOY_PRIME_URL', ''),
-        REDIRECT_URL: safeEnv('REACT_APP_REDIRECT_URL', ''),
-      },
-      null,
-      2,
-    )}</pre>
+    <pre>${JSON.stringify(process.env, null, 2)}</pre>
   </body>
 </html>
 `;
