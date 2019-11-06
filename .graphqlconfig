@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "bryggan.sjofartstidningen.se": {
+      "schemaPath": "./schema.json",
+      "extensions": {
+        "endpoints": {
+          "dev": "http://localhost:9000/graphql"
+        }
+      }
+    }
+  }
+}
