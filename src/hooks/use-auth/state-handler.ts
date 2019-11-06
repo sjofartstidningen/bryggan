@@ -3,11 +3,8 @@ import localforage from 'localforage';
 import qs from 'qs';
 import { trailingSlash, unleadingSlash } from '../../utils';
 import { DropboxUser } from '../../types/dropbox';
-import {
-  LOCALSTORAGE_AUTH_KEY,
-  REDIRECT_URL,
-  DROPBOX_CLIENT_ID,
-} from '../../constants';
+import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
+import { REDIRECT_URL, DROPBOX_CLIENT_ID } from '../../env';
 import * as dropbox from '../../api/dropbox';
 import {
   AuthState,

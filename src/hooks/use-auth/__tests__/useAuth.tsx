@@ -3,11 +3,8 @@ import { render, fireEvent } from '@testing-library/react';
 import localforage from 'localforage';
 import { BrowserRouter } from 'react-router-dom';
 import nock from 'nock';
-import {
-  LOCALSTORAGE_AUTH_KEY,
-  DROPBOX_CLIENT_ID,
-  REDIRECT_URL,
-} from '../../../constants';
+import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
+import { DROPBOX_CLIENT_ID, REDIRECT_URL } from '../../../env';
 import mockUser from '../../../__fixtures__/dropbox/users/get_current_account.json';
 import {
   useAuth,

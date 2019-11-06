@@ -1,10 +1,7 @@
 import nock from 'nock';
 import { handler } from '../handle-auth';
-import {
-  OAUTH_STATE_COOKIE,
-  PATH_AUTH_HANDLER,
-  REDIRECT_URL,
-} from '../../constants';
+import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../../constants';
+import { REDIRECT_URL } from '../../env';
 
 const dropbox = nock('https://api.dropboxapi.com');
 
