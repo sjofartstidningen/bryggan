@@ -6,6 +6,7 @@ import { GlobalStyle } from './styles/GlobalStyle';
 import { Header } from './components/Header';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute';
 import { LoaderOverlay } from './components/Loader';
+import { AppWrapper } from './components/AppWrapper';
 import {
   ErrorBoundary,
   ErrorBoundaryWithRefresh,
@@ -49,23 +50,25 @@ const App: React.FC = () => {
           <SettingsMenu />
         </ErrorBoundaryWithRefresh>
 
-        <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
-          <Suspense fallback={loader}>
-            <Switch>
-              <Route path={PATH_SIGN_IN}>
-                <SignIn />
-              </Route>
+        <AppWrapper>
+          <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
+            <Suspense fallback={loader}>
+              <Switch>
+                <Route path={PATH_SIGN_IN}>
+                  <SignIn />
+                </Route>
 
-              <Route path={PATH_AUTH_HANDLER}>
-                <DropboxAuthHandler fallback={loader} />
-              </Route>
+                <Route path={PATH_AUTH_HANDLER}>
+                  <DropboxAuthHandler fallback={loader} />
+                </Route>
 
-              <AuthenticatedRoute exact path="/" fallback={loader}>
-                <Landing />
-              </AuthenticatedRoute>
-            </Switch>
-          </Suspense>
-        </ErrorBoundary>
+                <AuthenticatedRoute exact path="/" fallback={loader}>
+                  <Landing />
+                </AuthenticatedRoute>
+              </Switch>
+            </Suspense>
+          </ErrorBoundary>
+        </AppWrapper>
       </BrowserRouter>
     </StrictMode>
   );

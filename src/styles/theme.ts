@@ -25,6 +25,7 @@ export const spacing = createSelector('spacing');
 export const tracking = createSelector('tracking');
 export const screens = createSelector('screens');
 export const shadow = createSelector('shadow');
+export const layer = createSelector('layer');
 
 export const screen = (scr: keyof DefaultTheme['screens']) => {
   return (
@@ -129,5 +130,10 @@ export const theme: DefaultTheme = {
     inner: `inset 0 2px 4px 0 ${transparentize(0.06, colors.black)}`,
     outline: `0 0 0 2px ${transparentize(0.5, colors.highlight)}`,
     none: 'none',
+  },
+  layer: {
+    base: 1,
+    header: 10,
+    popup: 20,
   },
 };

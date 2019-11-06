@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { DefaultTheme } from 'styled-components';
 import { useLockBodyScroll } from '@fransvilhelm/hooks';
+import Portal from '@reach/portal';
+import { useTheme } from '../hooks/use-theme';
 
 const Overlay = styled.div`
   position: fixed;
@@ -13,43 +14,31 @@ const Overlay = styled.div`
 `;
 
 interface PopUpOverlayProps {
-  zIndex?: number;
+  layer?: keyof DefaultTheme['layer'];
   preventScroll?: boolean;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export const PopUpOverlay: React.FC<PopUpOverlayProps> = ({
-  zIndex = 1,
+  layer = 'popup',
   preventScroll = true,
   className,
   onClick,
   children,
 }) => {
-  const container = useRef<Element>();
+  const theme = useTheme();
   useLockBodyScroll(preventScroll);
 
-  const getRootElement = () => {
-    if (container.current) return container.current;
-    container.current = document.createElement('popup-portal');
-    return container.current;
-  };
-
-  useEffect(() => {
-    document.body.appendChild(getRootElement());
-
-    return () => {
-      if (container.current) {
-        container.current.remove();
-        container.current = undefined;
-      }
-    };
-  }, []);
-
-  return createPortal(
-    <Overlay className={className} style={{ zIndex }} onClick={onClick}>
-      {children}
-    </Overlay>,
-    getRootElement(),
+  return (
+    <Portal>
+      <Overlay
+        className={className}
+        style={{ zIndex: theme.layer[layer] }}
+        onClick={onClick}
+      >
+        {children}
+      </Overlay>
+    </Portal>
   );
 };

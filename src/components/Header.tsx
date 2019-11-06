@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { spacing, font, size, color, tracking } from '../styles/theme';
+import { spacing, font, size, color, tracking, layer } from '../styles/theme';
 import { boxShadow } from '../styles/utils';
 import { useAuth, AuthStatus } from '../hooks/use-auth';
 import { useScreens } from '../hooks/use-theme';
@@ -20,6 +20,7 @@ const HeaderContainer = styled.header`
   height: ${spacing('16')};
   padding: 0 ${spacing('4')};
   background-color: ${color('shade')};
+  z-index: ${layer('header')};
 
   ${boxShadow('md')};
 `;

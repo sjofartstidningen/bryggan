@@ -84,5 +84,10 @@ declare module 'styled-components' {
       outline: string;
       none: string;
     };
+    layer: {
+      base: number;
+      header: number;
+      popup: number;
+    };
   }
 }
