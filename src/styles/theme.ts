@@ -113,22 +113,18 @@ export const theme: DefaultTheme = {
     xl: '1280px',
   },
   shadow: {
-    default: `0 1px 3px 0 ${transparentize(
-      0.1,
-      colors.black,
-    )} 0 1px 2px 0 ${transparentize(0.06, colors.black)}`,
-    md: `0 4px 6px -1px ${transparentize(
-      0.1,
-      colors.black,
-    )} 0 2px 4px -1px ${transparentize(0.06, colors.black)}`,
-    lg: `0 10px 15px -3px ${transparentize(
-      0.1,
-      colors.black,
-    )} 0 4px 6px -2px ${transparentize(0.05, colors.black)}`,
-    xl: `0 20px 25px -5px ${transparentize(
-      0.1,
-      colors.black,
-    )} 0 10px 10px -5px ${transparentize(0.04, colors.black)}`,
+    default: `
+      0 1px 3px 0 ${transparentize(0.9, colors.black)},
+      0 1px 2px 0 ${transparentize(0.06, colors.black)}`,
+    md: `
+      0 4px 6px -1px ${transparentize(0.9, colors.black)},
+      0 2px 4px -1px ${transparentize(0.94, colors.black)}`,
+    lg: `
+      0 10px 15px -3px ${transparentize(0.1, colors.black)},
+      0 4px 6px -2px ${transparentize(0.05, colors.black)}`,
+    xl: `
+      0 20px 25px -5px ${transparentize(0.1, colors.black)},
+      0 10px 10px -5px ${transparentize(0.04, colors.black)}`,
     xl2: `0 25px 50px -12px ${transparentize(0.25, colors.black)}`,
     inner: `inset 0 2px 4px 0 ${transparentize(0.06, colors.black)}`,
     outline: `0 0 0 2px ${transparentize(0.5, colors.highlight)}`,
