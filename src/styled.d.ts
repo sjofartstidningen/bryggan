@@ -1,5 +1,4 @@
 import 'styled-components';
-import { string } from 'prop-types';
 
 // and extend them!
 declare module 'styled-components' {
