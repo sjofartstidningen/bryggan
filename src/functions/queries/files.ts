@@ -1,17 +1,28 @@
 import { gql } from 'apollo-server-lambda';
 
 export const Files = gql`
-  union Metadata = FileMetadata | FolderMetadata
+  #####
+  # Base types
+  #####
 
-  type FileMetadata {
+  interface ItemMetadata {
     id: ID!
     name: String!
+    pathLower: String
+    pathDisplay: String
+  }
+
+  union Metadata = FileMetadata | FolderMetadata
+
+  type FileMetadata implements ItemMetadata {
+    id: ID!
+    name: String!
+    pathLower: String
+    pathDisplay: String
     clientModified: String!
     serverModified: String!
     rev: String!
     size: Int!
-    pathLower: String
-    pathDisplay: String
     mediaInfo: MediaInfo!
     # symlinkInfo: SymlinkInfo
     # sharingInfo: FileSharingInfo
@@ -20,9 +31,11 @@ export const Files = gql`
     # propertyGroups: [PropertyGroup]
     hasExplicitSharedMembers: Boolean
     contentHash: String
+    url: String!
+    thumbnail(options: ThumbnailOptions): Thumbnail
   }
 
-  type FolderMetadata {
+  type FolderMetadata implements ItemMetadata {
     id: ID!
     name: String!
     pathLower: String
@@ -30,6 +43,10 @@ export const Files = gql`
     # sharingInfo: FolderSharingInfo
     # propertyGroups: [PropertyGroup]
   }
+
+  #####
+  # Media
+  #####
 
   union MediaInfo = PhotoMetadata | VideoMetadata
 
@@ -56,12 +73,56 @@ export const Files = gql`
     longitude: Float!
   }
 
-  input ListFolderInput {
-    path: String!
+  #####
+  # Thumbnail
+  #####
+
+  type Thumbnail {
+    url: String!
+    format: ThumbnailFormat!
+    size: ThumbnailSize!
+    mode: ThumbnailMode!
+  }
+
+  enum ThumbnailFormat {
+    jpeg
+    png
+  }
+
+  enum ThumbnailSize {
+    w32h32
+    w64h64
+    w128h128
+    w256h256
+    w480h320
+    w640h480
+    w960h640
+    w1024h768
+    w2048h1536
+  }
+
+  enum ThumbnailMode {
+    strict
+    bestfit
+    fitoneBestfit
+  }
+
+  input ThumbnailOptions {
+    format: ThumbnailFormat!
+    size: ThumbnailSize
+    mode: ThumbnailMode
+  }
+
+  #####
+  # Queries
+  #####
+
+  input ListFolderOptions {
     recursive: Boolean
   }
 
   extend type Query {
-    listFolder(arg: ListFolderInput!): [Metadata]!
+    listFolder(path: PathLike!, options: ListFolderOptions): [Metadata]!
+    getThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail
   }
 `;
