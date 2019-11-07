@@ -5,16 +5,18 @@ export const Files = gql`
   # Base types
   #####
 
-  interface ItemMetadata {
-    id: ID!
-    name: String!
-    pathLower: String
-    pathDisplay: String
+  type MetadataConnection {
+    edges: [MetadataEdge]!
+    pageInfo: PageInfo!
   }
 
-  union Metadata = FileMetadata | FolderMetadata
+  type MetadataEdge {
+    node: Metadata!
+  }
 
-  type FileMetadata implements ItemMetadata {
+  union MetadataNode = FileMetadataNode | FolderMetadataNode
+
+  type FileMetadataNode {
     id: ID!
     name: String!
     pathLower: String
@@ -35,7 +37,7 @@ export const Files = gql`
     thumbnail(options: ThumbnailOptions): Thumbnail
   }
 
-  type FolderMetadata implements ItemMetadata {
+  type FolderMetadataNode {
     id: ID!
     name: String!
     pathLower: String
@@ -122,7 +124,7 @@ export const Files = gql`
   }
 
   extend type Query {
-    listFolder(path: PathLike!, options: ListFolderOptions): [Metadata]!
+    listFolder(path: PathLike!, options: ListFolderOptions): MetadataConnection!
     getThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail
   }
 `;
