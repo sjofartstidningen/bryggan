@@ -21,10 +21,10 @@ export const Users = gql`
     referralLink: String!
     isPaired: String!
     accountType: AccountType!
-    # rootInfo: RootInfo!
     profilePhotoUrl: String
     team: FullTeam
     teamMemberId: String
+    # rootInfo: RootInfo!
   }
 
   type Name {

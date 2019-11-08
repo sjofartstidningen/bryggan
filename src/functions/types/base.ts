@@ -16,7 +16,7 @@ export const Base = gql`
     id: ID!
   }
 
-  interface PageInfo {
+  type PageInfo {
     hasNextPage: Boolean!
     cursor: String
   }

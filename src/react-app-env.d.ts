@@ -62,3 +62,8 @@ declare module '@reach/portal' {
 
   export default function Portal(props: PortalProps): JSX.Element;
 }
+
+declare module 'strman' {
+  export function toCamelCase(value: string): string;
+  export function toSnakeCase(value: string): string;
+}

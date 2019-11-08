@@ -14,9 +14,9 @@ export const Files = gql`
     node: Metadata!
   }
 
-  union MetadataNode = FileMetadataNode | FolderMetadataNode
+  union Metadata = FileMetadata | FolderMetadata
 
-  type FileMetadataNode {
+  type FileMetadata {
     id: ID!
     name: String!
     pathLower: String
@@ -25,54 +25,24 @@ export const Files = gql`
     serverModified: String!
     rev: String!
     size: Int!
-    mediaInfo: MediaInfo!
-    # symlinkInfo: SymlinkInfo
-    # sharingInfo: FileSharingInfo
     isDownloadable: Boolean!
-    # exportInfo: ExportInfo
-    # propertyGroups: [PropertyGroup]
     hasExplicitSharedMembers: Boolean
     contentHash: String
     url: String!
     thumbnail(options: ThumbnailOptions): Thumbnail
+    # symlinkInfo: SymlinkInfo
+    # sharingInfo: FileSharingInfo
+    # exportInfo: ExportInfo
+    # propertyGroups: [PropertyGroup]
   }
 
-  type FolderMetadataNode {
+  type FolderMetadata {
     id: ID!
     name: String!
     pathLower: String
     pathDisplay: String
     # sharingInfo: FolderSharingInfo
     # propertyGroups: [PropertyGroup]
-  }
-
-  #####
-  # Media
-  #####
-
-  union MediaInfo = PhotoMetadata | VideoMetadata
-
-  type PhotoMetadata {
-    dimensions: Dimensions
-    location: GpsCoordinates
-    timeTaken: String
-  }
-
-  type VideoMetadata {
-    dimensions: Dimensions
-    location: GpsCoordinates
-    timeTaken: String
-    duration: Int
-  }
-
-  type Dimensions {
-    height: Int!
-    width: Int!
-  }
-
-  type GpsCoordinates {
-    latitude: Float!
-    longitude: Float!
   }
 
   #####
@@ -110,7 +80,7 @@ export const Files = gql`
   }
 
   input ThumbnailOptions {
-    format: ThumbnailFormat!
+    format: ThumbnailFormat
     size: ThumbnailSize
     mode: ThumbnailMode
   }
@@ -125,6 +95,6 @@ export const Files = gql`
 
   extend type Query {
     listFolder(path: PathLike!, options: ListFolderOptions): MetadataConnection!
-    getThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail
+    getThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail!
   }
 `;
