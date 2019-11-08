@@ -82,11 +82,26 @@ const FileMetadata: IResolverObject<
 
 const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
   _,
-  { path },
+  { path, options = {} },
 ) => {
-  const { data } = await api.post<ListFolderResult>('/files/list_folder', {
-    path,
-  });
+  let data: ListFolderResult;
+
+  if (options.after) {
+    const res = await api.post<ListFolderResult>(
+      '/files/list_folder/continue',
+      { cursor: options.after },
+    );
+    data = res.data;
+  } else {
+    const body = {
+      path,
+      recursive: options.recursive ? true : false,
+      limit: options.first || 500,
+    };
+
+    const res = await api.post<ListFolderResult>('/files/list_folder', body);
+    data = res.data;
+  }
 
   return {
     pageInfo: {

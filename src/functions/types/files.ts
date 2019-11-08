@@ -91,6 +91,8 @@ export const Files = gql`
 
   input ListFolderOptions {
     recursive: Boolean
+    first: Int
+    after: String
   }
 
   extend type Query {

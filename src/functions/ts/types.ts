@@ -11,6 +11,8 @@ export interface ListFolderArgs {
   path: string;
   options?: {
     recursive?: boolean;
+    first?: number;
+    after?: string;
   };
 }
 
