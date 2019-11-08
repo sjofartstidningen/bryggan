@@ -1,4 +1,4 @@
-import { IFieldResolver, IResolvers } from 'graphql-tools';
+import { IFieldResolver, IResolvers } from 'apollo-server-lambda';
 import { api } from '../../api/dropbox';
 import { camelCaseKeys } from '../../utils/object';
 import { GraphQLContext } from '../ts/types';

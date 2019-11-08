@@ -1,5 +1,17 @@
-import { IFieldResolver, IResolverObject, IResolvers } from 'graphql-tools';
+import {
+  ApolloError,
+  IFieldResolver,
+  IResolverObject,
+  IResolvers,
+} from 'apollo-server-lambda';
 import qs from 'qs';
+import { api, content } from '../../api/dropbox';
+import {
+  camelCaseKeys,
+  snakeCaseKeys,
+  snakeCaseValues,
+} from '../../utils/object';
+
 import {
   GraphQLContext,
   ListFolderArgs,
@@ -8,16 +20,10 @@ import {
   ThumbnailSize,
   ThumbnailMode,
 } from '../ts/types';
-import { api, content } from '../../api/dropbox';
 import {
   ListFolderResult,
   FileMetadata as FileMetadataType,
 } from '../../types/dropbox';
-import {
-  camelCaseKeys,
-  snakeCaseKeys,
-  snakeCaseValues,
-} from '../../utils/object';
 
 const Metadata: IResolverObject<any, GraphQLContext> = {
   __resolveType: (obj: any) => {
@@ -84,32 +90,40 @@ const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
   _,
   { path, options = {} },
 ) => {
-  let data: ListFolderResult;
+  try {
+    let data: ListFolderResult;
 
-  if (options.after) {
-    const res = await api.post<ListFolderResult>(
-      '/files/list_folder/continue',
-      { cursor: options.after },
-    );
-    data = res.data;
-  } else {
-    const body = {
-      path,
-      recursive: options.recursive ? true : false,
-      limit: options.first || 500,
+    if (options.after) {
+      const res = await api.post<ListFolderResult>(
+        '/files/list_folder/continue',
+        { cursor: options.after },
+      );
+      data = res.data;
+    } else {
+      const body = {
+        path,
+        recursive: options.recursive ? true : false,
+        limit: options.first || 500,
+      };
+
+      const res = await api.post<ListFolderResult>('/files/list_folder', body);
+      data = res.data;
+    }
+
+    return {
+      pageInfo: {
+        hasNextPage: data.has_more,
+        cursor: data.has_more ? data.cursor : null,
+      },
+      edges: data.entries.map(entry => ({ node: camelCaseKeys(entry) })),
     };
+  } catch (error) {
+    if (error.response) {
+      throw new ApolloError(error.response.data.error_summary, 'NOT_FOUND');
+    }
 
-    const res = await api.post<ListFolderResult>('/files/list_folder', body);
-    data = res.data;
+    throw error;
   }
-
-  return {
-    pageInfo: {
-      hasNextPage: data.has_more,
-      cursor: data.has_more ? data.cursor : null,
-    },
-    edges: data.entries.map(entry => ({ node: camelCaseKeys(entry) })),
-  };
 };
 
 const files: IResolvers<any, GraphQLContext> = {

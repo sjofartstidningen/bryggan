@@ -1,5 +1,5 @@
 import { GraphQLScalarType, Kind, GraphQLScalarTypeConfig } from 'graphql';
-import { IResolvers } from 'graphql-tools';
+import { IResolvers } from 'apollo-server-lambda';
 import { GraphQLContext } from '../ts/types';
 
 const pathRegex = /^(\/(.|[\r\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(\/.*)?)$/;

@@ -1,4 +1,9 @@
-import { ApolloServer, gql, IResolvers } from 'apollo-server-lambda';
+import {
+  ApolloServer,
+  gql,
+  IResolvers,
+  AuthenticationError,
+} from 'apollo-server-lambda';
 import got from 'got';
 import { mergeDeep } from 'apollo-utilities';
 
@@ -46,30 +51,35 @@ const server = new ApolloServer({
      * If the current request is an IntrospectionQuery we don't need to
      * verify the token. We could just skip that part and move along.
      */
-    if (event.body && event.body.includes('IntrospectionQuery'))
+    if (event.body && event.body.includes('IntrospectionQuery')) {
       return {} as GraphQLContext;
+    }
 
-    const token = event.headers.authorization || '';
+    try {
+      const token = event.headers.authorization || '';
 
-    /**
-     * There seem to be an issue with axios and sending undefined bodies on post
-     * requests in node. It works fine in the browser, but something breaks in
-     * node. Therefore we use `got` here to be able to request the authorized
-     * user.
-     */
-    const { body: user }: got.Response<User> = await got(
-      '/users/get_current_account',
-      {
-        method: 'POST',
-        baseUrl: 'https://api.dropboxapi.com/2',
-        json: true,
-        headers: { Authorization: token },
-      },
-    );
+      /**
+       * There seem to be an issue with axios and sending undefined bodies on post
+       * requests in node. It works fine in the browser, but something breaks in
+       * node. Therefore we use `got` here to be able to request the authorized
+       * user.
+       */
+      const { body: user }: got.Response<User> = await got(
+        '/users/get_current_account',
+        {
+          method: 'POST',
+          baseUrl: 'https://api.dropboxapi.com/2',
+          json: true,
+          headers: { Authorization: token },
+        },
+      );
 
-    api.defaults.headers.Authorization = token;
+      api.defaults.headers.Authorization = token;
 
-    return { user, token };
+      return { user, token };
+    } catch (error) {
+      throw new AuthenticationError('User not authenticated');
+    }
   },
 });
 
