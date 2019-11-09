@@ -23,6 +23,7 @@ import {
 import {
   ListFolderResult,
   FileMetadata as FileMetadataType,
+  FolderMetadata as FolderMetadataType,
 } from '../../types/dropbox';
 
 const Metadata: IResolverObject<any, GraphQLContext> = {
@@ -86,6 +87,22 @@ const FileMetadata: IResolverObject<
   },
 };
 
+const FolderMetadata: IResolverObject<
+  FolderMetadataType,
+  GraphQLContext,
+  any
+> = {
+  content: (parent, args: Pick<ListFolderArgs, 'options'>, context, info) => {
+    const { id } = parent;
+    return listFolder(
+      parent,
+      { path: id, options: args.options },
+      context,
+      info,
+    );
+  },
+};
+
 const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
   _,
   { path, options = {} },
@@ -129,6 +146,7 @@ const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
 const files: IResolvers<any, GraphQLContext> = {
   Metadata,
   FileMetadata,
+  FolderMetadata,
   Query: {
     listFolder,
   },

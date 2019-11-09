@@ -41,6 +41,7 @@ export const Files = gql`
     name: String!
     pathLower: String
     pathDisplay: String
+    content(options: ListFolderOptions): MetadataConnection!
     # sharingInfo: FolderSharingInfo
     # propertyGroups: [PropertyGroup]
   }
