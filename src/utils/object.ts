@@ -1,12 +1,20 @@
 import { toCamelCase, toSnakeCase } from 'strman';
 
+const isObject = (value: unknown): value is Record<string, any> => {
+  return typeof value === 'object' && value !== null;
+};
+
 export const transformKeys = <R extends Record<string, any>>(
   input: Record<string, any>,
   transformer: (key: string) => string,
 ): R => {
   const newObject: Record<string, any> = {};
   for (const key in input) {
-    newObject[transformer(key)] = input[key];
+    let value = input[key];
+    if (isObject(value)) {
+      value = transformKeys(value, transformer);
+    }
+    newObject[transformer(key)] = value;
   }
 
   return newObject as R;

@@ -1,11 +1,21 @@
-import { DropboxUser } from '../../types/dropbox';
+import { DropboxAPI } from '../data-sources/Dropbox';
 
 export interface GraphQLContext {
   token: string;
-  user: DropboxUser;
+  dataSources: {
+    dropbox: DropboxAPI;
+  };
 }
 
-export type User = DropboxUser;
+export interface PageInfo {
+  hasNextPage: boolean;
+  cursor: string | null;
+}
+
+export interface Connection<T> {
+  pageInfo: PageInfo;
+  edges: { node: T }[];
+}
 
 export interface ListFolderArgs {
   path: string;
@@ -14,6 +24,24 @@ export interface ListFolderArgs {
     first?: number;
     after?: string;
   };
+}
+
+enum FileCategory {
+  image = 'image',
+  document = 'document',
+  pdf = 'pdf',
+  spreadsheet = 'spreadsheet',
+  presentation = 'presentation',
+  audio = 'audio',
+  video = 'video',
+  folder = 'folder',
+  paper = 'paper',
+  others = 'others',
+}
+
+export interface SearchOptions {
+  path?: string;
+  fileCategories?: FileCategory[];
 }
 
 export enum ThumbnailFormat {

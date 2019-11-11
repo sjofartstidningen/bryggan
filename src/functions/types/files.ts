@@ -80,10 +80,17 @@ export const Files = gql`
     fitoneBestfit
   }
 
-  input ThumbnailOptions {
-    format: ThumbnailFormat
-    size: ThumbnailSize
-    mode: ThumbnailMode
+  enum FileCategory {
+    image
+    document
+    pdf
+    spreadsheet
+    presentation
+    audio
+    video
+    folder
+    paper
+    others
   }
 
   #####
@@ -91,13 +98,24 @@ export const Files = gql`
   #####
 
   input ListFolderOptions {
-    recursive: Boolean
     first: Int
     after: String
   }
 
+  input ThumbnailOptions {
+    format: ThumbnailFormat
+    size: ThumbnailSize
+    mode: ThumbnailMode
+  }
+
+  input SearchOptions {
+    path: PathLike
+    fileCategories: [FileCategory!]
+  }
+
   extend type Query {
     listFolder(path: PathLike!, options: ListFolderOptions): MetadataConnection!
-    getThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail!
+    fileThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail!
+    search(query: String!, options: SearchOptions): MetadataConnection!
   }
 `;

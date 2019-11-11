@@ -4,11 +4,9 @@ import {
   IResolvers,
   AuthenticationError,
 } from 'apollo-server-lambda';
-import got from 'got';
 import { mergeDeep } from 'apollo-utilities';
 
-import { api } from '../api/dropbox';
-import { User, GraphQLContext } from './ts/types';
+import { DropboxAPI } from './data-sources/Dropbox';
 
 import general from './resolvers/general';
 import users from './resolvers/users';
@@ -17,6 +15,8 @@ import files from './resolvers/files';
 import { Base } from './types/base';
 import { Files } from './types/files';
 import { Users } from './types/users';
+
+import { GraphQLContext } from './ts/types';
 
 const rootType = gql`
   type Query {
@@ -42,11 +42,14 @@ const resolvers: IResolvers<any, GraphQLContext> = mergeDeep(
 const server = new ApolloServer({
   typeDefs,
   resolvers: resolvers,
+  dataSources: () => ({
+    dropbox: new DropboxAPI(),
+  }),
   context: async ({
     event,
   }: {
     event: AWSLambda.APIGatewayProxyEvent;
-  }): Promise<GraphQLContext> => {
+  }): Promise<Pick<GraphQLContext, 'token'>> => {
     /**
      * If the current request is an IntrospectionQuery we don't need to
      * verify the token. We could just skip that part and move along.
@@ -55,31 +58,14 @@ const server = new ApolloServer({
       return {} as GraphQLContext;
     }
 
-    try {
-      const token = event.headers.authorization || '';
-
-      /**
-       * There seem to be an issue with axios and sending undefined bodies on post
-       * requests in node. It works fine in the browser, but something breaks in
-       * node. Therefore we use `got` here to be able to request the authorized
-       * user.
-       */
-      const { body: user }: got.Response<User> = await got(
-        '/users/get_current_account',
-        {
-          method: 'POST',
-          baseUrl: 'https://api.dropboxapi.com/2',
-          json: true,
-          headers: { Authorization: token },
-        },
+    const token = event.headers.authorization;
+    if (!token || !token.includes('Bearer')) {
+      throw new AuthenticationError(
+        'A Dropbox access token must be provided in the form of "Bearer <token>"',
       );
-
-      api.defaults.headers.Authorization = token;
-
-      return { user, token };
-    } catch (error) {
-      throw new AuthenticationError('User not authenticated');
     }
+
+    return { token };
   },
 });
 

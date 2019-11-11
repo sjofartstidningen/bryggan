@@ -1,24 +1,18 @@
 import { IFieldResolver, IResolvers } from 'apollo-server-lambda';
-import { api } from '../../api/dropbox';
-import { camelCaseKeys } from '../../utils/object';
 import { GraphQLContext } from '../ts/types';
 
 export const getCurrentAccount: IFieldResolver<{}, GraphQLContext> = (
-  _,
-  __,
-  { user },
-) => user;
+  parent,
+  args,
+  { dataSources },
+) => dataSources.dropbox.getCurrentAccount();
 
 export const getAccount: IFieldResolver<
   {},
   GraphQLContext,
   { id: string }
-> = async (_, { id }) => {
-  const { data: user } = await api.post('/users/get_account', {
-    account_id: id,
-  });
-
-  return camelCaseKeys(user);
+> = async (_, { id }, { dataSources }) => {
+  return dataSources.dropbox.getUser({ id });
 };
 
 const users: IResolvers<any, GraphQLContext> = {

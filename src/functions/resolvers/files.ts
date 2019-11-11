@@ -1,30 +1,19 @@
 import {
-  ApolloError,
   IFieldResolver,
   IResolverObject,
   IResolvers,
 } from 'apollo-server-lambda';
-import qs from 'qs';
-import { api, content } from '../../api/dropbox';
-import {
-  camelCaseKeys,
-  snakeCaseKeys,
-  snakeCaseValues,
-} from '../../utils/object';
 
 import {
   GraphQLContext,
   ListFolderArgs,
   ThumbnailOptions,
-  ThumbnailFormat,
-  ThumbnailSize,
-  ThumbnailMode,
+  SearchOptions,
 } from '../ts/types';
 import {
-  ListFolderResult,
   FileMetadata as FileMetadataType,
   FolderMetadata as FolderMetadataType,
-} from '../../types/dropbox';
+} from '../ts/dropbox';
 
 const Metadata: IResolverObject<any, GraphQLContext> = {
   __resolveType: (obj: any) => {
@@ -41,49 +30,12 @@ const Metadata: IResolverObject<any, GraphQLContext> = {
 };
 
 const FileMetadata: IResolverObject<
-  FileMetadataType | void,
+  FileMetadataType,
   GraphQLContext,
-  { path?: string; options?: ThumbnailOptions }
+  { options?: ThumbnailOptions }
 > = {
-  thumbnail: (file, params = {}, context) => {
-    const options = snakeCaseKeys(
-      snakeCaseValues({
-        format: ThumbnailFormat.jpeg,
-        size: ThumbnailSize.w64h64,
-        mode: ThumbnailMode.strict,
-        ...params.options,
-      }),
-    );
-
-    const buildThumbnailUrl = (p: string) => {
-      const queryArgs = {
-        arg: JSON.stringify({
-          path: p,
-          ...options,
-        }),
-        authorization: context.token,
-      };
-
-      return `${content.defaults.baseURL}files/get_thumbnail?${qs.stringify(
-        queryArgs,
-      )}`;
-    };
-
-    if (file) {
-      return {
-        ...options,
-        url: buildThumbnailUrl(file.id),
-      };
-    }
-
-    if (params.path) {
-      return {
-        ...options,
-        url: buildThumbnailUrl(params.path),
-      };
-    }
-
-    return null;
+  thumbnail: (file, params = {}, { dataSources }) => {
+    return dataSources.dropbox.getThumbnailUrl(file.id, params.options);
   },
 };
 
@@ -92,55 +44,34 @@ const FolderMetadata: IResolverObject<
   GraphQLContext,
   any
 > = {
-  content: (parent, args: Pick<ListFolderArgs, 'options'>, context, info) => {
+  content: (parent, args: Pick<ListFolderArgs, 'options'>, { dataSources }) => {
     const { id } = parent;
-    return listFolder(
-      parent,
-      { path: id, options: args.options },
-      context,
-      info,
-    );
+    return dataSources.dropbox.listFolder(id, args.options);
   },
+};
+
+const fileThumbnail: IFieldResolver<
+  void,
+  GraphQLContext,
+  { path: string; options?: ThumbnailOptions }
+> = (_, params, { dataSources }) => {
+  return dataSources.dropbox.getThumbnailUrl(params.path, params.options);
 };
 
 const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
   _,
   { path, options = {} },
+  { dataSources },
 ) => {
-  try {
-    let data: ListFolderResult;
+  return dataSources.dropbox.listFolder(path, options);
+};
 
-    if (options.after) {
-      const res = await api.post<ListFolderResult>(
-        '/files/list_folder/continue',
-        { cursor: options.after },
-      );
-      data = res.data;
-    } else {
-      const body = {
-        path,
-        recursive: options.recursive ? true : false,
-        limit: options.first || 500,
-      };
-
-      const res = await api.post<ListFolderResult>('/files/list_folder', body);
-      data = res.data;
-    }
-
-    return {
-      pageInfo: {
-        hasNextPage: data.has_more,
-        cursor: data.has_more ? data.cursor : null,
-      },
-      edges: data.entries.map(entry => ({ node: camelCaseKeys(entry) })),
-    };
-  } catch (error) {
-    if (error.response) {
-      throw new ApolloError(error.response.data.error_summary, 'NOT_FOUND');
-    }
-
-    throw error;
-  }
+const search: IFieldResolver<
+  any,
+  GraphQLContext,
+  { path: string; options: SearchOptions }
+> = async (_, { path, options }, { dataSources }) => {
+  return dataSources.dropbox.search(path, options);
 };
 
 const files: IResolvers<any, GraphQLContext> = {
@@ -149,6 +80,8 @@ const files: IResolvers<any, GraphQLContext> = {
   FolderMetadata,
   Query: {
     listFolder,
+    fileThumbnail,
+    search,
   },
 };
 

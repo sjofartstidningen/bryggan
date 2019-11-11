@@ -1,12 +1,14 @@
 import { GraphQLScalarType, Kind, GraphQLScalarTypeConfig } from 'graphql';
-import { IResolvers } from 'apollo-server-lambda';
+import { IResolvers, UserInputError } from 'apollo-server-lambda';
 import { GraphQLContext } from '../ts/types';
 
 const pathRegex = /^(\/(.|[\r\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(\/.*)?)$/;
 
-const validatePathLike = (value: unknown): string | null => {
+const validatePathLike = (value: unknown): string => {
   if (typeof value === 'string' && pathRegex.test(value)) return value;
-  return null;
+  throw new UserInputError(
+    'A PathLike value must match the pattern "^(/(.|[\r\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)$"',
+  );
 };
 
 /**
