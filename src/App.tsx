@@ -1,6 +1,8 @@
 import React, { Suspense, lazy, StrictMode } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { ApolloProvider, useApolloClient } from '@apollo/react-hooks';
+import { client } from './apollo';
 import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { Header } from './components/Header';
@@ -22,6 +24,8 @@ const SignIn = lazy(() => import('./pages/SignIn'));
 const DropboxAuthHandler = lazy(() => import('./pages/DropboxAuthHandler'));
 
 const App: React.FC = () => {
+  const apolloClient = useApolloClient();
+
   useAuthEffect(auth => {
     switch (auth.status) {
       case AuthStatus.authorized:
@@ -33,6 +37,7 @@ const App: React.FC = () => {
       default:
         content.defaults.headers.common['Authorization'] = undefined;
         api.defaults.headers.common['Authorization'] = undefined;
+        apolloClient.resetStore();
     }
   });
 
@@ -78,13 +83,15 @@ export const withProviders = <P extends object>(
   App: React.ComponentType<P>,
 ): React.FC<P> => props => {
   return (
-    <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <MenuManager>
-          <App {...props} />
-        </MenuManager>
-      </AuthProvider>
-    </ThemeProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <MenuManager>
+            <App {...props} />
+          </MenuManager>
+        </AuthProvider>
+      </ThemeProvider>
+    </ApolloProvider>
   );
 };
 
