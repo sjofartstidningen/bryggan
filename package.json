@@ -32,11 +32,13 @@
     "generate": "yarn generate:schema && yarn generate:types"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.3",
     "@fransvilhelm/hooks": "^1.1.0",
     "@reach/combobox": "^0.5.3",
     "@reach/portal": "^0.5.0",
     "@reach/tooltip": "^0.5.4",
     "apollo": "^2.21.0",
+    "apollo-boost": "^0.4.4",
     "apollo-datasource-rest": "^0.6.6",
     "apollo-server-lambda": "^2.9.7",
     "apollo-utilities": "^1.3.2",
