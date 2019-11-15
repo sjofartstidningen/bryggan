@@ -37,8 +37,12 @@ export const SettingsMenu: React.FC = () => {
               <MenuWrapper
                 as={animated.div}
                 style={props}
-                onClick={e => {
-                  e.preventDefault();
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  /**
+                   * Propagation needs to be stopped here since otherwise the
+                   * event will bubble up to the `<PopupOverlay />` and
+                   * therefore closing the menu, which is not desireable.
+                   */
                   e.stopPropagation();
                 }}
               >
