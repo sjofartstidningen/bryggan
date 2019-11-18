@@ -96,12 +96,16 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
   },
   {
     services: {
-      checkInitialState: async () => {
+      checkInitialState: async (_, evt: EventObject) => {
+        const event = evt as AuthEvent;
+        if (event.type !== 'CHECK') return {};
+        const { location } = event;
         let token: string | void;
 
-        const params: { access_token?: string } = qs.parse(
-          window.location.search,
-        );
+        const params: { access_token?: string } = qs.parse(location.search, {
+          ignoreQueryPrefix: true,
+        });
+
         if (params.access_token) {
           token = params && params.access_token;
         } else {
@@ -116,11 +120,11 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
 
         return { token };
       },
-      authenticate: async (_: AuthContext, event: EventObject) => {
-        const evt = event as AuthEvent;
+      authenticate: async (_: AuthContext, evt: EventObject) => {
+        const event = evt as AuthEvent;
 
-        if (evt.type !== 'SIGN_IN') return {};
-        const { token } = evt;
+        if (event.type !== 'SIGN_IN') return {};
+        const { token } = event;
         await validateToken(token);
 
         localforage
@@ -129,6 +133,8 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
 
         return { token };
       },
+    },
+    actions: {
       revokeToken: async ({ token }: AuthContext) => {
         if (token) {
           await Promise.all([
