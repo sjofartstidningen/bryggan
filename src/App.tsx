@@ -44,38 +44,36 @@ const App: React.FC = () => {
   const loader = <LoaderOverlay />;
 
   return (
-    <StrictMode>
-      <BrowserRouter>
-        <GlobalStyle />
-        <ErrorBoundaryWithRefresh>
-          <Header />
-        </ErrorBoundaryWithRefresh>
+    <React.Fragment>
+      <GlobalStyle />
+      <ErrorBoundaryWithRefresh>
+        <Header />
+      </ErrorBoundaryWithRefresh>
 
-        <ErrorBoundaryWithRefresh>
-          <SettingsMenu />
-        </ErrorBoundaryWithRefresh>
+      <ErrorBoundaryWithRefresh>
+        <SettingsMenu />
+      </ErrorBoundaryWithRefresh>
 
-        <AppWrapper>
-          <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
-            <Suspense fallback={loader}>
-              <Switch>
-                <Route path={PATH_SIGN_IN}>
-                  <SignIn />
-                </Route>
+      <AppWrapper>
+        <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
+          <Suspense fallback={loader}>
+            <Switch>
+              <Route path={PATH_SIGN_IN}>
+                <SignIn />
+              </Route>
 
-                <Route path={PATH_AUTH_HANDLER}>
-                  <DropboxAuthHandler fallback={loader} />
-                </Route>
+              <Route path={PATH_AUTH_HANDLER}>
+                <DropboxAuthHandler fallback={loader} />
+              </Route>
 
-                <AuthenticatedRoute exact path="/" fallback={loader}>
-                  <Landing />
-                </AuthenticatedRoute>
-              </Switch>
-            </Suspense>
-          </ErrorBoundary>
-        </AppWrapper>
-      </BrowserRouter>
-    </StrictMode>
+              <AuthenticatedRoute exact path="/" fallback={loader}>
+                <Landing />
+              </AuthenticatedRoute>
+            </Switch>
+          </Suspense>
+        </ErrorBoundary>
+      </AppWrapper>
+    </React.Fragment>
   );
 };
 
@@ -83,15 +81,19 @@ export const withProviders = <P extends object>(
   App: React.ComponentType<P>,
 ): React.FC<P> => props => {
   return (
-    <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <MenuManager>
-            <App {...props} />
-          </MenuManager>
-        </AuthProvider>
-      </ThemeProvider>
-    </ApolloProvider>
+    <StrictMode>
+      <BrowserRouter>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <AuthProvider>
+              <MenuManager>
+                <App {...props} />
+              </MenuManager>
+            </AuthProvider>
+          </ThemeProvider>
+        </ApolloProvider>
+      </BrowserRouter>
+    </StrictMode>
   );
 };
 
