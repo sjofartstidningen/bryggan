@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { spacing, font, size, color, tracking, layer } from '../styles/theme';
 import { boxShadow } from '../styles/utils';
-import { useAuth, AuthStatus } from '../hooks/use-auth';
+import { useAuthState } from '../hooks/use-auth2';
 import { useScreens } from '../hooks/use-theme';
 import { useMenuControls } from '../hooks/use-menu';
 import { SearchBox } from './SearchBox';
@@ -52,7 +52,7 @@ const ProfileContainer = styled.div`
 `;
 
 export const Header: React.FC = () => {
-  const auth = useAuth();
+  const state = useAuthState();
   const screens = useScreens();
   const menu = useMenuControls(MENU_PROFILE);
 
@@ -62,7 +62,7 @@ export const Header: React.FC = () => {
         <Link to="/">Bryggan</Link>
       </Title>
 
-      {auth.status === AuthStatus.authorized && (
+      {state.matches('authenticated') && (
         <>
           <ScreenMinWidth width={Number.parseInt(screens.sm, 10)}>
             <SearchContainer>

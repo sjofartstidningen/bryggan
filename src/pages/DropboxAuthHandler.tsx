@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import localforage from 'localforage';
 import { useTimeout } from '../hooks/use-timeout';
-import { useAuthReciever, useAuth, AuthStatus } from '../hooks/use-auth';
+import { useAuth } from '../hooks/use-auth2';
 import { leadingSlash } from '../utils';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 
@@ -11,22 +11,25 @@ interface AuthHandlerProps {
 }
 
 const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({ fallback }) => {
+  const [state, auth] = useAuth();
+  const location = useLocation();
   const history = useHistory();
-  const auth = useAuth();
   const [showFallback, setShowFallback] = useState(false);
 
-  useAuthReciever();
+  useEffect(() => {
+    auth.checkAuthState(location);
+  });
 
   useTimeout(() => setShowFallback(true), 300);
 
   useEffect(() => {
     let hasCancelled = false;
-    switch (auth.status) {
-      case AuthStatus.unauthorized:
+    switch (state.value) {
+      case 'unauthenticated':
         history.replace(leadingSlash(PATH_SIGN_IN));
         break;
 
-      case AuthStatus.authorized:
+      case 'authenticated':
         (async () => {
           const data = await localforage.getItem<{ from: string } | undefined>(
             LOCALSTORAGE_POST_SIGN_IN_KEY,
@@ -41,7 +44,7 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({ fallback }) => {
     return () => {
       hasCancelled = true;
     };
-  }, [auth.status, history]);
+  }, [state, history]);
 
   if (showFallback) {
     return <>{fallback}</>;

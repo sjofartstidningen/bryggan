@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTransition, animated } from 'react-spring';
 import { useMenu } from '../../hooks/use-menu';
-import { AuthStatus, useAuthEffect, useAuth } from '../../hooks/use-auth';
+import { useAuthEffect, useAuthState } from '../../hooks/use-auth2';
 import { MENU_PROFILE } from '../../constants';
 import { PopUpOverlay } from '../PopUpOverlay';
 import { MenuWrapper, MenuSection } from './Sections';
@@ -9,7 +9,7 @@ import { Profile } from './Profile';
 import { GeneralSettings } from './GeneralSettings';
 
 export const SettingsMenu: React.FC = () => {
-  const auth = useAuth();
+  const state = useAuthState();
   const menu = useMenu(MENU_PROFILE, false);
 
   const menuTransition = useTransition(menu.show, null, {
@@ -18,15 +18,15 @@ export const SettingsMenu: React.FC = () => {
     leave: { transform: 'translate3d(100%, 0, 0)' },
   });
 
-  useAuthEffect(({ status }) => {
-    if (status === AuthStatus.authorized) {
+  useAuthEffect(state => {
+    if (state.matches('authenticated')) {
       menu.register();
     } else {
       menu.unregister();
     }
   });
 
-  if (auth.status !== AuthStatus.authorized) return null;
+  if (!state.matches('authenticated')) return null;
 
   return (
     <>

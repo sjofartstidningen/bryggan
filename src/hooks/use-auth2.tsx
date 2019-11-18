@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useEffect,
+  useRef,
+} from 'react';
 import { Machine, assign, EventObject, State } from 'xstate';
 import { useMachine } from '@xstate/react';
 import qs from 'qs';
@@ -206,6 +212,19 @@ export const useAuth = (): [AuthStateContextValue, AuthMethodsContextValue] => [
   useAuthState(),
   useAuthMethods(),
 ];
+
+export const useAuthEffect = (
+  effect: (state: AuthStateContextValue) => void | (() => void | undefined),
+) => {
+  const state = useAuthState();
+  const effectRef = useRef(effect);
+
+  useEffect(() => {
+    effectRef.current = effect;
+  }, [effect]);
+
+  useEffect(() => effectRef.current(state), [state]);
+};
 
 async function validateToken(token: string) {
   const query = nanoid();

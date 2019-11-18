@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
-import { useAuth, AuthStatus } from '../hooks/use-auth';
+import { useAuthState } from '../hooks/use-auth2';
 import { VisuallyHidden } from './VisuallyHidden';
 
 interface ProfileButtonProps {
@@ -60,13 +60,13 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
   background,
   ...rest
 }) => {
-  const auth = useAuth();
-  if (auth.status !== AuthStatus.authorized) return null;
+  const state = useAuthState();
+  if (!state.matches('authenticated')) return null;
 
   return (
     <ProfileButton
       type="button"
-      profilePicture={auth.user.profile_photo_url}
+      // profilePicture={auth.user.profile_photo_url}
       background={background}
       onClick={onClick}
       {...rest}

@@ -9,7 +9,7 @@ import { transition } from '../styles/utils';
 import { VisuallyHidden } from '../components/VisuallyHidden';
 import { Dropbox, ArrowRightCircle } from '../components/Icons';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY } from '../constants';
-import { useAuthSignIn, AuthStatus, useAuth } from '../hooks/use-auth';
+import { useAuth } from '../hooks/use-auth2';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -127,8 +127,7 @@ enum SignInMethod {
 const SignIn: React.FC = () => {
   const location = useLocation<{ from?: string }>();
   const history = useHistory();
-  const auth = useAuth();
-  const { handleOauth, handleDirectInput } = useAuthSignIn();
+  const [state, auth] = useAuth();
   const [signInMethod, setSignInMethod] = usePersistedState(SignInMethod.link);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const input = useInput('');
@@ -140,29 +139,29 @@ const SignIn: React.FC = () => {
       });
     }
 
-    handleOauth();
+    auth.authorize();
   };
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     setIsSubmitting(true);
-    handleDirectInput(input.value);
+    auth.signIn(input.value);
   };
 
   useEffect(() => {
     if (!isSubmitting) return;
 
-    switch (auth.status) {
-      case AuthStatus.unauthorized:
+    switch (state.value) {
+      case 'unauthenticated':
         setIsSubmitting(false);
         break;
 
-      case AuthStatus.authorized:
+      case 'authenticated':
         const to = location.state.from || '/';
         history.replace(to);
         break;
     }
-  }, [isSubmitting, auth.status, location, history]);
+  }, [isSubmitting, state.value, location, history]);
 
   return (
     <Wrapper>
@@ -201,10 +200,10 @@ const SignIn: React.FC = () => {
           >
             Or sign in via link
           </ToggleMethodButton>
-          {auth.status === AuthStatus.unauthorized && auth.error && (
+          {state.value === 'unauthenticated' && state.context.error && (
             <AuthError>
               Could not sign in, access token probably invalid{' '}
-              <small>(Reason: {auth.error})</small>
+              <small>(Reason: {state.context.error})</small>
             </AuthError>
           )}
         </>

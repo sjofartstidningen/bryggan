@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, Route, RouteProps, Redirect } from 'react-router-dom';
 import { useTimeout } from '../hooks/use-timeout';
-import { useAuth, AuthStatus } from '../hooks/use-auth';
+import { useAuthState } from '../hooks/use-auth2';
 import { PATH_SIGN_IN } from '../constants';
 
 interface AuthenticatedProps {
@@ -16,25 +16,25 @@ export const AuthenticatedRoute: React.FC<RouteProps & AuthenticatedProps> = ({
   ...routeProps
 }) => {
   const location = useLocation();
-  const auth = useAuth();
+  const state = useAuthState();
   const [showFallback, setShowFallback] = useState(false);
 
   useTimeout(() => setShowFallback(true), timeout);
 
   let kids: React.ReactNode;
 
-  switch (auth.status) {
-    case AuthStatus.authorized:
+  switch (state.value) {
+    case 'authenticated':
       kids = children;
       break;
 
-    case AuthStatus.unknown:
-    case AuthStatus.checking:
-    case AuthStatus.checkingToken:
+    case 'idle':
+    case 'initialCheck':
+    case 'authenticating':
       kids = showFallback ? fallback : null;
       break;
 
-    case AuthStatus.unauthorized:
+    case 'unauthenticated':
       kids = (
         <Redirect
           to={{ pathname: PATH_SIGN_IN, state: { from: location.pathname } }}

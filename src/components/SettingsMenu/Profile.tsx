@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ProfileBox } from '../ProfileBox';
 import { spacing, size, color, maxWidth } from '../../styles/theme';
 import { truncate } from '../../styles/utils';
-import { useAuth, AuthStatus, useAuthSignOut } from '../../hooks/use-auth';
+import { useAuth } from '../../hooks/use-auth2';
 import { darken } from 'polished';
 
 interface ProfileProps {
@@ -11,24 +11,23 @@ interface ProfileProps {
 }
 
 export const Profile = ({ onClick }: ProfileProps) => {
-  const auth = useAuth();
-  const signOut = useAuthSignOut();
+  const [state, auth] = useAuth();
 
-  if (auth.status !== AuthStatus.authorized) return null;
+  if (!state.matches('authenticated')) return null;
 
   return (
     <>
       <Wrapper>
         <StyledProfileBox onClick={onClick} background="shade" />
         <ProfileInfo>
-          <p title={auth.user.name.display_name}>
+          {/* <p title={auth.user.name.display_name}>
             {auth.user.name.display_name}
           </p>
-          <p title={auth.user.email}>{auth.user.email}</p>
+          <p title={auth.user.email}>{auth.user.email}</p> */}
         </ProfileInfo>
       </Wrapper>
       <SignOutButtonWrapper>
-        <SignOutButton type="button" onClick={signOut}>
+        <SignOutButton type="button" onClick={() => auth.signOut()}>
           Sign out
         </SignOutButton>
       </SignOutButtonWrapper>
