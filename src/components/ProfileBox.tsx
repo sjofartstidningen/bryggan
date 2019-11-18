@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
-import { useAuthState } from '../hooks/use-auth2';
+import { useAuthState } from '../hooks/use-auth';
 import { VisuallyHidden } from './VisuallyHidden';
 
 interface ProfileButtonProps {

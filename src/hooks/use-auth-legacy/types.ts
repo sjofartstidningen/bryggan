@@ -81,9 +81,9 @@ export type AuthState =
       status: AuthStatus.unauthorized;
       error?: string;
     }
-  | {
+  | ({
       status: AuthStatus.signingIn;
-    } & SigningInState
+    } & SigningInState)
   | {
       status: AuthStatus.signingOut;
       accessToken: string;

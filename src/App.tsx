@@ -14,7 +14,7 @@ import {
   ErrorBoundaryWithRefresh,
 } from './components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
-import { AuthProvider, useAuthEffect, useAuthMethods } from './hooks/use-auth2';
+import { AuthProvider, useAuthEffect, useAuthMethods } from './hooks/use-auth';
 import { content, api } from './api/dropbox';
 import { SettingsMenu } from './components/SettingsMenu';
 import { MenuManager } from './hooks/use-menu';

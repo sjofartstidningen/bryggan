@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, Route, RouteProps, Redirect } from 'react-router-dom';
 import { useTimeout } from '../hooks/use-timeout';
-import { useAuthState } from '../hooks/use-auth2';
+import { useAuthState } from '../hooks/use-auth';
 import { PATH_SIGN_IN } from '../constants';
 
 interface AuthenticatedProps {

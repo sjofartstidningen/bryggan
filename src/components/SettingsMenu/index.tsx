@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTransition, animated } from 'react-spring';
 import { useMenu } from '../../hooks/use-menu';
-import { useAuthEffect, useAuthState } from '../../hooks/use-auth2';
+import { useAuthEffect, useAuthState } from '../../hooks/use-auth';
 import { MENU_PROFILE } from '../../constants';
 import { PopUpOverlay } from '../PopUpOverlay';
 import { MenuWrapper, MenuSection } from './Sections';

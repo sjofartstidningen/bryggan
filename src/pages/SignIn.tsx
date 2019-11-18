@@ -9,7 +9,7 @@ import { transition } from '../styles/utils';
 import { VisuallyHidden } from '../components/VisuallyHidden';
 import { Dropbox, ArrowRightCircle } from '../components/Icons';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY } from '../constants';
-import { useAuth } from '../hooks/use-auth2';
+import { useAuth } from '../hooks/use-auth';
 
 const Wrapper = styled.div`
   width: 100%;

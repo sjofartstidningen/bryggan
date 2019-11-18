@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { spacing, font, size, color, tracking, layer } from '../styles/theme';
 import { boxShadow } from '../styles/utils';
-import { useAuthState } from '../hooks/use-auth2';
+import { useAuthState } from '../hooks/use-auth';
 import { useScreens } from '../hooks/use-theme';
 import { useMenuControls } from '../hooks/use-menu';
 import { SearchBox } from './SearchBox';

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import localforage from 'localforage';
 import { useTimeout } from '../hooks/use-timeout';
-import { useAuth } from '../hooks/use-auth2';
+import { useAuth } from '../hooks/use-auth';
 import { leadingSlash } from '../utils';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 

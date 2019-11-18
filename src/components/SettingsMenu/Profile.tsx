@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ProfileBox } from '../ProfileBox';
 import { spacing, size, color, maxWidth } from '../../styles/theme';
 import { truncate } from '../../styles/utils';
-import { useAuth } from '../../hooks/use-auth2';
+import { useAuth } from '../../hooks/use-auth';
 import { darken } from 'polished';
 
 interface ProfileProps {
