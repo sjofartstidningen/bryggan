@@ -5,6 +5,20 @@ import { spacing, size, color, maxWidth } from '../../styles/theme';
 import { truncate } from '../../styles/utils';
 import { useAuth } from '../../hooks/use-auth';
 import { darken } from 'polished';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
+import { profile } from './__generated__/profile';
+
+const PROFILE_QUERY = gql`
+  query profile {
+    getCurrentAccount {
+      email
+      name {
+        displayName
+      }
+    }
+  }
+`;
 
 interface ProfileProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -12,18 +26,22 @@ interface ProfileProps {
 
 export const Profile = ({ onClick }: ProfileProps) => {
   const [state, auth] = useAuth();
+  const { data } = useQuery<profile>(PROFILE_QUERY);
 
   if (!state.matches('authenticated')) return null;
+  if (!data) return null;
 
   return (
     <>
       <Wrapper>
         <StyledProfileBox onClick={onClick} background="shade" />
         <ProfileInfo>
-          {/* <p title={auth.user.name.display_name}>
-            {auth.user.name.display_name}
+          <p title={data.getCurrentAccount.name.displayName}>
+            {data.getCurrentAccount.name.displayName}
           </p>
-          <p title={auth.user.email}>{auth.user.email}</p> */}
+          <p title={data.getCurrentAccount.email}>
+            {data.getCurrentAccount.email}
+          </p>
         </ProfileInfo>
       </Wrapper>
       <SignOutButtonWrapper>

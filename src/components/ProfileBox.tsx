@@ -1,9 +1,12 @@
 import React from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
 import { useAuthState } from '../hooks/use-auth';
 import { VisuallyHidden } from './VisuallyHidden';
+import { profile } from './__generated__/profile';
 
 interface ProfileButtonProps {
   profilePicture?: string;
@@ -61,12 +64,18 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
   ...rest
 }) => {
   const state = useAuthState();
+  const { data } = useQuery<profile>(PROFILE_QUERY);
   if (!state.matches('authenticated')) return null;
+
+  let profilePicture;
+  if (data) {
+    profilePicture = data.getCurrentAccount.profilePhotoUrl || undefined;
+  }
 
   return (
     <ProfileButton
       type="button"
-      // profilePicture={auth.user.profile_photo_url}
+      profilePicture={profilePicture}
       background={background}
       onClick={onClick}
       {...rest}
@@ -75,3 +84,11 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
     </ProfileButton>
   );
 };
+
+const PROFILE_QUERY = gql`
+  query profile {
+    getCurrentAccount {
+      profilePhotoUrl
+    }
+  }
+`;
