@@ -4,10 +4,15 @@ module.exports = on => {
   const options = {
     webpackOptions: {
       resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs'],
       },
       module: {
         rules: [
+          {
+            test: /\.mjs$/,
+            include: /node_modules/,
+            type: 'javascript/auto',
+          },
           {
             test: /\.tsx?$/,
             loader: 'ts-loader',
@@ -17,5 +22,6 @@ module.exports = on => {
       },
     },
   };
+
   on('file:preprocessor', wp(options));
 };

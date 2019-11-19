@@ -2,7 +2,6 @@ describe('Auth Flow', () => {
   it('should be possible to sign in by pasting access token', () => {
     cy.visit('/');
 
-    cy.mockDropbox('users/get_current_account');
     cy.mockDropbox('auth/token/revoke');
 
     cy.findByText(/paste/i).click();
@@ -20,9 +19,8 @@ describe('Auth Flow', () => {
     cy.setAuthorized();
     cy.visit('/');
 
-    cy.findByText(/context menu/i)
+    cy.findByLabelText(/context menu/i)
       .should('exist')
-      .parent()
       .click();
 
     cy.findByText(/sign out/i)

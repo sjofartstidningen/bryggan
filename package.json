@@ -26,7 +26,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:ci": "start-server-and-test 'yarn start' :3000 'yarn cypress:run'",
-    "generate:schema": "mv ./apollo.config.js ./_apollo.config.js && apollo service:download --endpoint http://localhost:9000/graphql ./schema.json && mv _apollo.config.js apollo.config.js",
+    "generate:schema": "apollo client:download-schema",
     "generate:types": "apollo client:codegen --addTypename --target=typescript --passthroughCustomScalars --customScalarsPrefix=GraphQL_ --localSchemaFile=./schema.json",
     "generate:types:watch": "npx nodemon --ignore '*/__generated__/*' --watch 'src' -e ts,tsx,js,jsx --exec 'yarn generate:types'",
     "generate": "yarn generate:schema && yarn generate:types"
