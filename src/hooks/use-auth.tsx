@@ -18,6 +18,7 @@ import { trailingSlash, unleadingSlash } from '../utils';
 import { REDIRECT_URL, DROPBOX_CLIENT_ID } from '../env';
 import { LOCALSTORAGE_AUTH_KEY, OAUTH_STATE_COOKIE } from '../constants';
 import { PersistedAuthSet, PersistedAuthGet } from '../types/bryggan';
+import { useLocation } from 'react-router-dom';
 
 interface AuthContext {
   token: null | string;
@@ -179,6 +180,7 @@ const AuthMethodsContext = createContext<AuthMethodsContextValue>(
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [state, send] = useMachine(authMachine);
+  const location = useLocation();
 
   const methods = useMemo(
     () => ({
@@ -211,6 +213,10 @@ export const AuthProvider: React.FC = ({ children }) => {
     }),
     [send],
   );
+
+  useEffect(() => {
+    methods.checkAuthState(location);
+  }, [methods, location]);
 
   return (
     <AuthMethodsContext.Provider value={methods}>

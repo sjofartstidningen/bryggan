@@ -1,4 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
+import localforage from 'localforage';
+
+afterEach(() => localforage.clear());
 
 /**
  * This is an ugly trick to avoid xstate warning about sending early events...
