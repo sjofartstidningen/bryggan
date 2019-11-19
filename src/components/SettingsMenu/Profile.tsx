@@ -9,7 +9,7 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { profile } from './__generated__/profile';
 
-const PROFILE_QUERY = gql`
+export const PROFILE_QUERY = gql`
   query profile {
     getCurrentAccount {
       email
@@ -34,7 +34,7 @@ export const Profile = ({ onClick }: ProfileProps) => {
   return (
     <>
       <Wrapper>
-        <StyledProfileBox onClick={onClick} background="shade" />
+        <StyledProfileBox onClick={onClick} background="shade" label="" />
         <ProfileInfo>
           <p title={data.getCurrentAccount.name.displayName}>
             {data.getCurrentAccount.name.displayName}
