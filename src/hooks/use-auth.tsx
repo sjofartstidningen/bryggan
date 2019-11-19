@@ -17,6 +17,7 @@ import Cookie from 'universal-cookie';
 import { trailingSlash, unleadingSlash } from '../utils';
 import { REDIRECT_URL, DROPBOX_CLIENT_ID } from '../env';
 import { LOCALSTORAGE_AUTH_KEY, OAUTH_STATE_COOKIE } from '../constants';
+import { PersistedAuthSet, PersistedAuthGet } from '../types/bryggan';
 
 interface AuthContext {
   token: null | string;
@@ -109,10 +110,10 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
         if (params.access_token) {
           token = params && params.access_token;
         } else {
-          const data = await localforage.getItem<{ accessToken?: string }>(
+          const data = await localforage.getItem<PersistedAuthGet>(
             LOCALSTORAGE_AUTH_KEY,
           );
-          token = data && data.accessToken;
+          token = data ? data.accessToken : undefined;
         }
 
         if (!token) throw new Error('No token available');
@@ -128,26 +129,34 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
         await validateToken(token);
 
         localforage
-          .setItem(LOCALSTORAGE_AUTH_KEY, { accessToken: token })
+          .setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
+            accessToken: token,
+          })
           .catch(() => {});
 
         return { token };
       },
     },
     actions: {
-      revokeToken: async ({ token }: AuthContext) => {
-        if (token) {
-          await Promise.all([
-            localforage.removeItem(LOCALSTORAGE_AUTH_KEY),
-            axios
-              .post(
-                'https://api.dropboxapi.com/2/auth/token/revoke',
-                undefined,
-                { headers: { Authorization: `Bearer ${token}` } },
-              )
-              .catch(() => {}),
-          ]);
-        }
+      revokeToken: async () => {
+        try {
+          const data = await localforage.getItem<PersistedAuthGet>(
+            LOCALSTORAGE_AUTH_KEY,
+          );
+
+          if (data) {
+            await Promise.all([
+              localforage.removeItem(LOCALSTORAGE_AUTH_KEY),
+              axios
+                .post(
+                  'https://api.dropboxapi.com/2/auth/token/revoke',
+                  undefined,
+                  { headers: { Authorization: `Bearer ${data.accessToken}` } },
+                )
+                .catch(() => {}),
+            ]);
+          }
+        } catch (error) {}
       },
     },
   },

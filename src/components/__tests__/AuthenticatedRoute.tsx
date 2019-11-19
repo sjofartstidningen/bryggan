@@ -3,9 +3,9 @@ import localforage from 'localforage';
 import { Route, useLocation } from 'react-router-dom';
 import nock from 'nock';
 import { render, act, renderWithHistory } from '../../utils/test-utils';
-import mockUser from '../../__fixtures__/dropbox/users/get_current_account.json';
 import { LOCALSTORAGE_AUTH_KEY, PATH_SIGN_IN } from '../../constants';
 import { AuthenticatedRoute } from '../AuthenticatedRoute';
+import { PersistedAuthSet } from '../../types/bryggan';
 
 const dropboxApi = nock('https://api.dropboxapi.com', {
   reqheaders: { authorization: /^bearer .+/i },
@@ -16,11 +16,8 @@ afterEach(async () => {
 });
 
 it('should render children if authenticated', async () => {
-  dropboxApi.post('/2/users/get_current_account').reply(200, mockUser);
-
-  await localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
+  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
     accessToken: 'abc123',
-    user: mockUser,
   });
 
   const Page = () => <p>Authenticated</p>;

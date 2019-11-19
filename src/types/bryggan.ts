@@ -9,3 +9,6 @@ export interface Page {
   clientModified: string;
   serverModified: string;
 }
+
+export type PersistedAuthSet = { accessToken: string };
+export type PersistedAuthGet = PersistedAuthSet | null;

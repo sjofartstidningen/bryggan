@@ -5,16 +5,15 @@ import { render, waitForElement, fireEvent } from '../../../utils/test-utils';
 import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
 import searchResponse from '../../../__fixtures__/dropbox/files/search_v2.json';
 import moreResponse from '../../../__fixtures__/dropbox/files/search/continue_v2.json';
-import mockUser from '../../../__fixtures__/dropbox/users/get_current_account.json';
 import { last, first } from '../../../utils/array';
 import { SearchBox } from '../index';
+import { PersistedAuthSet } from '../../../types/bryggan';
 
 const scope = nock('https://api.dropboxapi.com');
 
 beforeEach(async () => {
-  await localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
+  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
     accessToken: 'abc123',
-    user: mockUser,
   });
 });
 

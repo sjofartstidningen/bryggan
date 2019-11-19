@@ -1,5 +1,6 @@
 import '@testing-library/cypress/add-commands';
 import localforage from 'localforage';
+import { PersistedAuthSet } from '../../src/types/bryggan';
 import { LOCALSTORAGE_AUTH_KEY } from '../../src/constants';
 
 Cypress.Commands.add('setAuthorized', () => {
@@ -9,7 +10,7 @@ Cypress.Commands.add('setAuthorized', () => {
   cy.mockDropbox('auth/token/revoke');
 
   cy.localforage(localforage =>
-    localforage.setItem(LOCALSTORAGE_AUTH_KEY, {
+    localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
       accessToken: Cypress.env('DROPBOX_ACCESS_TOKEN'),
     }),
   );
