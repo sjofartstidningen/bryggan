@@ -2,39 +2,46 @@ import React, { useEffect } from 'react';
 import nock from 'nock';
 import localforage from 'localforage';
 import { Location } from 'history';
-import { render } from '../../utils/test-utils';
+import { render, fireEvent, wait } from '../../utils/test-utils';
 import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
 import { useAuth } from '../use-auth';
+import { DROPBOX_CLIENT_ID, REDIRECT_URL } from '../../env';
+import { PersistedAuthSet, PersistedAuthGet } from '../../types/bryggan';
 
 const dropboxApi = nock('https://api.dropboxapi.com', {
   reqheaders: { authorization: /^bearer .+/i },
 });
 
-afterEach(async () => {
-  await localforage.clear();
-});
+afterEach(() => localforage.clear());
 
 it('checks for initial auth state (localstorage)', async () => {
   dropboxApi
     .post('/2/check/user')
     .reply(200, (_, body: Record<string, any>) => ({ result: body.query }));
 
-  await localforage.setItem(LOCALSTORAGE_AUTH_KEY, { accessToken: 'abc123' });
+  const accessToken = 'abc123';
+  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
+    accessToken,
+  });
 
   const Comp: React.FC = () => {
     const [state, auth] = useAuth();
 
     useEffect(() => {
-      auth.checkAuthState(({} as unknown) as any);
+      auth.checkAuthState(({} as unknown) as Location);
     });
 
-    return <div>{state.matches('authenticated') && <p>Welcome!</p>}</div>;
+    return (
+      <div>
+        {state.matches('authenticated') && <p>{state.context.token}</p>}
+      </div>
+    );
   };
 
   const { findByText } = render(<Comp />);
 
-  const signIn = await findByText(/welcome/i);
-  expect(signIn).toBeInTheDocument();
+  const token = await findByText(accessToken);
+  expect(token).toBeInTheDocument();
 });
 
 it('checks for access token available on window.location', async () => {
@@ -56,11 +63,132 @@ it('checks for access token available on window.location', async () => {
 
   const { findByText } = render(<Comp />);
 
-  const signIn = await findByText(/welcome/i);
+  const welcome = await findByText(/welcome/i);
+  expect(welcome).toBeInTheDocument();
+});
+
+it('will set as unauthenticated if no tokens are found', async () => {
+  const Comp: React.FC = () => {
+    const [state, auth] = useAuth();
+
+    useEffect(() => {
+      auth.checkAuthState(({} as unknown) as Location);
+    });
+
+    return <div>{state.matches('unauthenticated') && <p>Sign in</p>}</div>;
+  };
+
+  const { findByText } = render(<Comp />);
+
+  const signIn = await findByText(/sign in/i);
   expect(signIn).toBeInTheDocument();
 });
 
-it.todo('checks for an access token on window.location');
-it.todo('sends a user to Dropbox authorization page');
-it.todo('validates passed in access token');
-it.todo('signs a user out');
+it('will set as unauthenticated if user check does not pass', async () => {
+  dropboxApi.post('/2/check/user').reply(400, {});
+  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
+    accessToken: 'old_token',
+  });
+
+  const Comp: React.FC = () => {
+    const [state, auth] = useAuth();
+
+    useEffect(() => {
+      auth.checkAuthState(({} as unknown) as Location);
+    });
+
+    return <div>{state.matches('unauthenticated') && <p>Sign in</p>}</div>;
+  };
+
+  const { findByText } = render(<Comp />);
+
+  const signIn = await findByText(/sign in/i);
+  expect(signIn).toBeInTheDocument();
+});
+
+it('sends a user to Dropbox authorization page', async () => {
+  window.location.replace = jest.fn();
+
+  const Comp: React.FC = () => {
+    const [state, auth] = useAuth();
+
+    useEffect(() => {
+      auth.checkAuthState(({} as unknown) as Location);
+    });
+
+    return (
+      <div>
+        {state.matches('unauthenticated') && (
+          <button onClick={() => auth.authorize()}>Sign in</button>
+        )}
+      </div>
+    );
+  };
+
+  const { findByText } = render(<Comp />);
+
+  const signIn = await findByText(/sign in/i);
+  fireEvent.click(signIn);
+
+  expect(window.location.replace).toHaveBeenCalled();
+  expect(window.location.replace).toHaveBeenCalledWith(
+    expect.stringContaining(DROPBOX_CLIENT_ID),
+  );
+  expect(window.location.replace).toHaveBeenCalledWith(
+    expect.stringContaining(encodeURIComponent(REDIRECT_URL)),
+  );
+  expect(window.location.replace).toHaveBeenCalledWith(
+    expect.stringContaining('https://www.dropbox.com/oauth2/authorize'),
+  );
+});
+
+it('signs a user out', async () => {
+  dropboxApi
+    .post('/2/check/user')
+    .reply(200, (_, body: Record<string, any>) => ({ result: body.query }));
+
+  dropboxApi.post('/2/auth/token/revoke').reply(200, {});
+
+  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
+    accessToken: 'abc123',
+  });
+
+  const Comp: React.FC = () => {
+    const [state, auth] = useAuth();
+
+    useEffect(() => {
+      auth.checkAuthState(({} as unknown) as Location);
+    });
+
+    return (
+      <div>
+        {state.matches('unauthenticated') && <p>Bye bye!</p>}
+        {state.matches('authenticated') && (
+          <button onClick={() => auth.signOut()}>Sign out</button>
+        )}
+      </div>
+    );
+  };
+
+  const { findByText } = render(<Comp />);
+
+  const signOut = await findByText(/sign out/i);
+  fireEvent.click(signOut);
+
+  await findByText(/bye bye/i);
+
+  /**
+   * When entering an the unauthenticated state a `revokeToke` action is being
+   * executed. But this happens async and we therefore have to wait for
+   * localStorage to be empty.
+   */
+  await wait(async () => {
+    const data = await localforage.getItem<PersistedAuthGet>(
+      LOCALSTORAGE_AUTH_KEY,
+    );
+    if (data != null) throw new Error('Not empty yet');
+  });
+  await expect(
+    localforage.getItem<PersistedAuthGet>(LOCALSTORAGE_AUTH_KEY),
+  ).resolves.toEqual(null);
+});
