@@ -71,7 +71,7 @@ export const Header: React.FC = () => {
           </ScreenMinWidth>
 
           <ProfileContainer>
-            <ProfileBox onClick={menu.toggle} />
+            <ProfileBox label="Context menu" onClick={menu.toggle} />
           </ProfileContainer>
         </>
       )}

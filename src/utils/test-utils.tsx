@@ -5,37 +5,50 @@ import { Router, MemoryRouter } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import nock from 'nock';
 import localforage from 'localforage';
+import {
+  MockedProvider as ApolloProvider,
+  MockedResponse,
+} from '@apollo/react-testing';
 import { theme } from '../styles/theme';
 import { AuthProvider } from '../hooks/use-auth';
 import { MenuManager } from '../hooks/use-menu';
 import { LOCALSTORAGE_AUTH_KEY } from '../constants';
 import { PersistedAuthSet } from '../types/bryggan';
 
-const Providers: React.FC = ({ children }) => {
+interface ProviderProps {
+  mocks?: ReadonlyArray<MockedResponse>;
+}
+
+const Providers: React.FC<ProviderProps> = ({ children, mocks }) => {
   return (
     <React.Suspense fallback={<p>Loading</p>}>
-      <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <MenuManager>{children}</MenuManager>
-        </AuthProvider>
-      </ThemeProvider>
+      <ApolloProvider mocks={mocks} addTypename={false}>
+        <ThemeProvider theme={theme}>
+          <AuthProvider>
+            <MenuManager>{children}</MenuManager>
+          </AuthProvider>
+        </ThemeProvider>
+      </ApolloProvider>
     </React.Suspense>
   );
 };
 
-interface RouterOptions {
+interface CustomOptions {
   initialEntries?: string[];
 }
 
 const customRender = (
   ui: React.ReactElement,
-  options: RenderOptions & RouterOptions = {},
+  {
+    mocks,
+    initialEntries = ['/'],
+    ...options
+  }: RenderOptions & CustomOptions & ProviderProps = {},
 ) => {
-  const initialEntries = options.initialEntries || ['/'];
   return render(ui, {
     wrapper: ({ children }) => (
       <MemoryRouter initialEntries={initialEntries}>
-        <Providers>{children}</Providers>
+        <Providers mocks={mocks}>{children}</Providers>
       </MemoryRouter>
     ),
     ...options,

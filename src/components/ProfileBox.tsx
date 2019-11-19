@@ -4,9 +4,8 @@ import gql from 'graphql-tag';
 import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
-import { useAuthState } from '../hooks/use-auth';
 import { VisuallyHidden } from './VisuallyHidden';
-import { profile } from './__generated__/profile';
+import { profilePhoto } from './__generated__/profilePhoto';
 
 interface ProfileButtonProps {
   profilePicture?: string;
@@ -54,39 +53,39 @@ const ProfileButton = styled.button<ProfileButtonProps>`
 `;
 
 interface ProfileBoxProps extends React.HTMLAttributes<HTMLElement> {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  label: string;
   background?: keyof DefaultTheme['color'];
 }
 
 export const ProfileBox: React.FC<ProfileBoxProps> = ({
-  onClick,
+  label,
   background,
+  onClick,
   ...rest
 }) => {
-  const state = useAuthState();
-  const { data } = useQuery<profile>(PROFILE_QUERY);
-  if (!state.matches('authenticated')) return null;
+  const { data } = useQuery<profilePhoto>(PROFILE_QUERY);
 
-  let profilePicture;
+  let profileSrc;
   if (data) {
-    profilePicture = data.getCurrentAccount.profilePhotoUrl || undefined;
+    profileSrc = data.getCurrentAccount.profilePhotoUrl || undefined;
   }
 
   return (
     <ProfileButton
       type="button"
-      profilePicture={profilePicture}
+      profilePicture={profileSrc}
       background={background}
       onClick={onClick}
+      aria-labelledby="profile-box-label"
       {...rest}
     >
-      <VisuallyHidden>Context menu</VisuallyHidden>
+      <VisuallyHidden id="profile-box-label">{label}</VisuallyHidden>
     </ProfileButton>
   );
 };
 
-const PROFILE_QUERY = gql`
-  query profile {
+export const PROFILE_QUERY = gql`
+  query profilePhoto {
     getCurrentAccount {
       profilePhotoUrl
     }

@@ -1,0 +1,34 @@
+import React from 'react';
+import { ProfileBox, PROFILE_QUERY } from '../ProfileBox';
+import { render, waitForDomChange, fireEvent } from '../../utils/test-utils';
+
+const src = 'https://via.placeholder.com/100x100';
+const mocks = [
+  {
+    request: { query: PROFILE_QUERY },
+    result: { data: { getCurrentAccount: { profilePhotoUrl: src } } },
+  },
+];
+
+it('renders a profile picture button', async () => {
+  const { findByLabelText } = render(<ProfileBox label="button" />, { mocks });
+
+  const btn = await findByLabelText(/button/i);
+  expect(btn).toBeInTheDocument();
+
+  await waitForDomChange({ container: btn });
+  expect(btn).toHaveStyleRule('background-image', `url(${src})`);
+});
+
+it('accepts an on click handler', async () => {
+  const onClick = jest.fn();
+  const { findByLabelText } = render(
+    <ProfileBox label="button" onClick={onClick} />,
+    { mocks },
+  );
+
+  const btn = await findByLabelText(/button/i);
+
+  fireEvent.click(btn);
+  expect(onClick).toHaveBeenCalled();
+});
