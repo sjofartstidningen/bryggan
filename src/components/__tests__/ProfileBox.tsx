@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProfileBox, PROFILE_QUERY } from '../ProfileBox';
-import { render, waitForDomChange, fireEvent } from '../../utils/test-utils';
+import { render, fireEvent, wait } from '../../utils/test-utils';
 
 const src = 'https://via.placeholder.com/100x100';
 const mocks = [
@@ -16,7 +16,12 @@ it('renders a profile picture button', async () => {
   const btn = await findByLabelText(/button/i);
   expect(btn).toBeInTheDocument();
 
-  await waitForDomChange({ container: btn });
+  await wait(() => {
+    const { backgroundImage } = window.getComputedStyle(btn);
+    if (!backgroundImage.includes(src)) {
+      throw new Error('No background image yet');
+    }
+  });
   expect(btn).toHaveStyleRule('background-image', `url(${src})`);
 });
 
