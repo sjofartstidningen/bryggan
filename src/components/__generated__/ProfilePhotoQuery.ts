@@ -3,14 +3,14 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: profilePhoto
+// GraphQL query operation: ProfilePhotoQuery
 // ====================================================
 
-export interface profilePhoto_getCurrentAccount {
+export interface ProfilePhotoQuery_getCurrentAccount {
   __typename: 'FullAccount';
   profilePhotoUrl: string | null;
 }
 
-export interface profilePhoto {
-  getCurrentAccount: profilePhoto_getCurrentAccount;
+export interface ProfilePhotoQuery {
+  getCurrentAccount: ProfilePhotoQuery_getCurrentAccount;
 }

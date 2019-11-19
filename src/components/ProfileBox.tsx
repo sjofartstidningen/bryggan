@@ -5,7 +5,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
 import { VisuallyHidden } from './VisuallyHidden';
-import { profilePhoto } from './__generated__/profilePhoto';
+import { ProfilePhotoQuery } from './__generated__/ProfilePhotoQuery';
 
 interface ProfileButtonProps {
   profilePicture?: string;
@@ -63,7 +63,7 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
   onClick,
   ...rest
 }) => {
-  const { data } = useQuery<profilePhoto>(PROFILE_QUERY);
+  const { data } = useQuery<ProfilePhotoQuery>(PROFILE_QUERY);
 
   let profileSrc;
   if (data) {
@@ -85,7 +85,7 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
 };
 
 export const PROFILE_QUERY = gql`
-  query profilePhoto {
+  query ProfilePhotoQuery {
     getCurrentAccount {
       profilePhotoUrl
     }

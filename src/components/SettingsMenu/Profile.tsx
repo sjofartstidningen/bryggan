@@ -7,10 +7,10 @@ import { useAuth } from '../../hooks/use-auth';
 import { darken } from 'polished';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { profile } from './__generated__/profile';
+import { SettingsProfileQuery } from './__generated__/SettingsProfileQuery';
 
 export const PROFILE_QUERY = gql`
-  query profile {
+  query SettingsProfileQuery {
     getCurrentAccount {
       email
       name {
@@ -26,7 +26,7 @@ interface ProfileProps {
 
 export const Profile = ({ onClick }: ProfileProps) => {
   const [state, auth] = useAuth();
-  const { data } = useQuery<profile>(PROFILE_QUERY);
+  const { data } = useQuery<SettingsProfileQuery>(PROFILE_QUERY);
 
   if (!state.matches('authenticated')) return null;
   if (!data) return null;
