@@ -28,7 +28,7 @@ const App: React.FC = () => {
 
   useAuthEffect(state => {
     switch (state.value) {
-      case 'authorized':
+      case 'authenticated':
         const authHeader = `Bearer ${state.context.token}`;
         content.defaults.headers.common['Authorization'] = authHeader;
         api.defaults.headers.common['Authorization'] = authHeader;

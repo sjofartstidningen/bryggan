@@ -41,7 +41,7 @@ const resolvers: IResolvers<any, GraphQLContext> = mergeDeep(
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers: resolvers,
+  resolvers,
   dataSources: () => ({
     dropbox: new DropboxAPI(),
   }),
