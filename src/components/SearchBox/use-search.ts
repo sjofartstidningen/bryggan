@@ -7,37 +7,56 @@ import { filterFileMetadata, mapMetadata } from '../../utils/files';
 import { keepFirst } from '../../utils/array';
 import { api } from '../../api/dropbox';
 
+export enum SearchStage {
+  idle,
+  searching,
+  success,
+  error,
+  searchingMore,
+}
+
+export enum SearchActionType {
+  setIdle,
+  setSearching,
+  setSuccess,
+  setError,
+  setSearchMore,
+}
+
 type SearchState =
-  | { state: 'idle' }
-  | { state: 'searching' }
-  | { state: 'success'; pages: Page[]; cursor?: string }
-  | { state: 'error'; error: string }
-  | { state: 'searching-more'; pages: Page[]; cursor?: string };
+  | { stage: SearchStage.idle }
+  | { stage: SearchStage.searching }
+  | { stage: SearchStage.success; pages: Page[]; cursor?: string }
+  | { stage: SearchStage.error; error: string }
+  | { stage: SearchStage.searchingMore; pages: Page[]; cursor?: string };
 
 type SearchAction =
-  | { type: 'SET_IDLE' }
-  | { type: 'SET_SEARCHING' }
-  | { type: 'SET_SUCCESS'; payload: { pages: Page[]; cursor?: string } }
-  | { type: 'SET_ERROR'; payload: { error: string } }
-  | { type: 'SET_SEARCH_MORE' };
+  | { type: SearchActionType.setIdle }
+  | { type: SearchActionType.setSearching }
+  | {
+      type: SearchActionType.setSuccess;
+      payload: { pages: Page[]; cursor?: string };
+    }
+  | { type: SearchActionType.setError; payload: { error: string } }
+  | { type: SearchActionType.setSearchMore };
 
 const searchReducer: React.Reducer<SearchState, SearchAction> = (
   state,
   action,
 ) => {
   switch (action.type) {
-    case 'SET_IDLE':
-      return { state: 'idle' };
+    case SearchActionType.setIdle:
+      return { stage: SearchStage.idle };
 
-    case 'SET_SEARCHING':
-      return { state: 'searching' };
+    case SearchActionType.setSearching:
+      return { stage: SearchStage.searching };
 
-    case 'SET_SUCCESS':
+    case SearchActionType.setSuccess:
       return {
-        state: 'success',
+        stage: SearchStage.success,
         pages: keepFirst(
           [
-            ...(state.state === 'searching-more' ? state.pages : []),
+            ...(state.stage === SearchStage.searchingMore ? state.pages : []),
             ...action.payload.pages,
           ],
           (a, b) => a.id === b.id,
@@ -45,17 +64,17 @@ const searchReducer: React.Reducer<SearchState, SearchAction> = (
         cursor: action.payload.cursor,
       };
 
-    case 'SET_ERROR':
+    case SearchActionType.setError:
       return {
-        state: 'error',
+        stage: SearchStage.error,
         error: action.payload.error,
       };
 
-    case 'SET_SEARCH_MORE':
+    case SearchActionType.setSearchMore:
       return {
-        state: 'searching-more',
-        pages: state.state === 'success' ? state.pages : [],
-        cursor: state.state === 'success' ? state.cursor : undefined,
+        stage: SearchStage.searchingMore,
+        pages: state.stage === SearchStage.success ? state.pages : [],
+        cursor: state.stage === SearchStage.success ? state.cursor : undefined,
       };
 
     default:
@@ -66,17 +85,24 @@ const searchReducer: React.Reducer<SearchState, SearchAction> = (
 export const useSearch = (
   query: string,
 ): [SearchState, () => Promise<void>] => {
-  const [state, dispatch] = useReducer(searchReducer, { state: 'idle' });
+  const [state, dispatch] = useReducer(searchReducer, {
+    stage: SearchStage.idle,
+  });
 
   const delayedQuery = useDebounce(query, 500);
 
   const cancelTokenRef = useRef(Axios.CancelToken.source());
 
   const searchMore = useCallback(async () => {
-    if (state.state !== 'success' && state.state !== 'searching-more') return;
+    if (
+      state.stage !== SearchStage.success &&
+      state.stage !== SearchStage.searchingMore
+    ) {
+      return;
+    }
 
     cancelTokenRef.current = Axios.CancelToken.source();
-    dispatch({ type: 'SET_SEARCH_MORE' });
+    dispatch({ type: SearchActionType.setSearchMore });
 
     try {
       const { data } = await api.post<SearchV2Result>(
@@ -99,7 +125,7 @@ export const useSearch = (
 
     const tokenSource = Axios.CancelToken.source();
 
-    dispatch({ type: 'SET_SEARCHING' });
+    dispatch({ type: SearchActionType.setSearching });
 
     (async () => {
       try {
@@ -147,7 +173,7 @@ const handleSearchResult = (
     .map(mapMetadata);
 
   dispatch({
-    type: 'SET_SUCCESS',
+    type: SearchActionType.setSuccess,
     payload: { pages, cursor: result.cursor },
   });
 };
@@ -167,11 +193,11 @@ const handleError = (
     } else if (err.response && typeof err.response.data.message === 'string') {
       message = err.response.data.message;
     } else {
-      message = 'An unknown error occured';
+      message = 'An unknown error occurred';
     }
   } else {
-    message = 'An unknown error occured';
+    message = 'An unknown error occurred';
   }
 
-  dispatch({ type: 'SET_ERROR', payload: { error: message } });
+  dispatch({ type: SearchActionType.setError, payload: { error: message } });
 };

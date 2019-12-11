@@ -19,7 +19,7 @@ import { DropboxPreview } from '../DropboxPreview';
 import { ChevronRight, AlertCircle } from '../Icons';
 import { Spinner } from '../Spinner';
 import { Intersect } from '../Intersect';
-import { useSearch } from './use-search';
+import { useSearch, SearchStage } from './use-search';
 
 /**
  * Display a search box with the ability to search for pdf content and navigate
@@ -75,13 +75,14 @@ export const SearchBox: React.FC = () => {
           onChange={handleQueryChange}
         />
         <SyledComboboxPopover>
-          {(state.state === 'searching' || state.state === 'idle') && (
+          {(state.stage === SearchStage.searching ||
+            state.stage === SearchStage.idle) && (
             <MessageWrapper>
               <Loader />
             </MessageWrapper>
           )}
 
-          {state.state === 'error' && (
+          {state.stage === SearchStage.error && (
             <MessageWrapper>
               <ErrorMessage>
                 <AlertCircle />
@@ -90,7 +91,8 @@ export const SearchBox: React.FC = () => {
             </MessageWrapper>
           )}
 
-          {(state.state === 'success' || state.state === 'searching-more') && (
+          {(state.stage === SearchStage.success ||
+            state.stage === SearchStage.searchingMore) && (
             <StyledComboboxList ref={listRef} data-testid="search-result">
               {state.pages.map(page => (
                 <StyledComboboxOption
@@ -131,7 +133,7 @@ export const SearchBox: React.FC = () => {
                   onEnter={() => searchMore()}
                 >
                   <LoadMore>
-                    {state.state === 'searching-more' ? (
+                    {state.stage === SearchStage.searchingMore ? (
                       <Spinner />
                     ) : (
                       <LoadMoreButton type="button" onClick={searchMore}>
