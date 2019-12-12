@@ -10,4 +10,5 @@
 
 [build.environment]
   YARN_VERSION = '1.17.3'
+  CYPRESS_INSTALL_BINARY = 0
   
