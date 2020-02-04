@@ -1,13 +1,13 @@
 import { IFieldResolver, IResolvers } from 'apollo-server-lambda';
 import { GraphQLContext } from '../ts/types';
 
-export const getCurrentAccount: IFieldResolver<{}, GraphQLContext> = (
+export const currentAccount: IFieldResolver<{}, GraphQLContext> = (
   parent,
   args,
   { dataSources },
 ) => dataSources.dropbox.getCurrentAccount();
 
-export const getAccount: IFieldResolver<
+export const account: IFieldResolver<
   {},
   GraphQLContext,
   { id: string }
@@ -17,8 +17,8 @@ export const getAccount: IFieldResolver<
 
 const users: IResolvers<any, GraphQLContext> = {
   Query: {
-    getCurrentAccount,
-    getAccount,
+    currentAccount,
+    account,
   },
 };
 

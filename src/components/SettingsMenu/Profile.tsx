@@ -7,11 +7,11 @@ import { useAuth } from '../../hooks/use-auth';
 import { darken } from 'polished';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { SettingsProfileQuery } from './__generated__/SettingsProfileQuery';
+import { SettingsProfile } from './__generated__/SettingsProfile';
 
 export const PROFILE_QUERY = gql`
-  query SettingsProfileQuery {
-    getCurrentAccount {
+  query SettingsProfile {
+    currentAccount {
       email
       name {
         displayName
@@ -26,7 +26,7 @@ interface ProfileProps {
 
 export const Profile = ({ onClick }: ProfileProps) => {
   const [state, auth] = useAuth();
-  const { data } = useQuery<SettingsProfileQuery>(PROFILE_QUERY);
+  const { data } = useQuery<SettingsProfile>(PROFILE_QUERY);
 
   if (!state.matches('authenticated')) return null;
   if (!data) return null;
@@ -36,12 +36,10 @@ export const Profile = ({ onClick }: ProfileProps) => {
       <Wrapper>
         <StyledProfileBox onClick={onClick} background="shade" label="" />
         <ProfileInfo>
-          <p title={data.getCurrentAccount.name.displayName}>
-            {data.getCurrentAccount.name.displayName}
+          <p title={data.currentAccount.name.displayName}>
+            {data.currentAccount.name.displayName}
           </p>
-          <p title={data.getCurrentAccount.email}>
-            {data.getCurrentAccount.email}
-          </p>
+          <p title={data.currentAccount.email}>{data.currentAccount.email}</p>
         </ProfileInfo>
       </Wrapper>
       <SignOutButtonWrapper>

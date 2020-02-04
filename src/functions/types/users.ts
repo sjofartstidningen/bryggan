@@ -49,7 +49,7 @@ export const Users = gql`
   }
 
   extend type Query {
-    getCurrentAccount: FullAccount!
-    getAccount(id: ID!): BasicAccount
+    currentAccount: FullAccount!
+    account(id: ID!): BasicAccount
   }
 `;
