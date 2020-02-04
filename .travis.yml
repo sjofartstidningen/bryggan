@@ -19,8 +19,11 @@ notifications:
 install:
   - yarn install
 
+before_script:
+  - yarn schema:ci
+
 script:
-  - yarn lint && yarn test && yarn cypress:ci && yarn build
+  - yarn lint && yarn type-check && yarn test && yarn cypress:ci && yarn build
 
 branches:
   only:

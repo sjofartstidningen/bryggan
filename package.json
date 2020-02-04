@@ -23,13 +23,14 @@
     "build:lambda": "NODE_ENV=production netlify-lambda build src/functions",
     "test": "react-scripts test",
     "lint": "eslint --ext .ts --ext .tsx --ext .js --ext .jsx src cypress",
+    "type-check": "tsc --noEmit",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:ci": "start-server-and-test 'yarn start' :3000 'yarn cypress:run'",
-    "generate:schema": "apollo client:download-schema",
-    "generate:types": "apollo client:codegen --addTypename --target=typescript --passthroughCustomScalars --customScalarsPrefix=GraphQL_ --localSchemaFile=./schema.json",
-    "generate:types:watch": "npx nodemon --ignore '*/__generated__/*' --watch 'src' -e ts,tsx,js,jsx --exec 'yarn generate:types'",
-    "generate": "yarn generate:schema && yarn generate:types"
+    "schema": "yarn schema:download && yarn schema:types",
+    "schema:download": "apollo client:download-schema",
+    "schema:types": "apollo client:codegen --addTypename --target=typescript --passthroughCustomScalars --customScalarsPrefix=GraphQL_ --localSchemaFile=./schema.json",
+    "schema:ci": "start-server-and-test 'yarn start' :3000 'yarn schema'"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
