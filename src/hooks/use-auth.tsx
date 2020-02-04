@@ -16,7 +16,11 @@ import Cookie from 'universal-cookie';
 
 import { trailingSlash, unleadingSlash } from '../utils';
 import { REDIRECT_URL, DROPBOX_CLIENT_ID } from '../env';
-import { LOCALSTORAGE_AUTH_KEY, OAUTH_STATE_COOKIE } from '../constants';
+import {
+  LOCALSTORAGE_AUTH_KEY,
+  OAUTH_STATE_COOKIE,
+  USER_CHECK_QUERY,
+} from '../constants';
 import { PersistedAuthSet, PersistedAuthGet } from '../types/bryggan';
 import { useLocation } from 'react-router-dom';
 
@@ -248,14 +252,13 @@ export const useAuthEffect = (
 };
 
 async function validateToken(token: string) {
-  const query = nanoid();
   const { data } = await axios.post(
     'https://api.dropboxapi.com/2/check/user',
-    { query },
+    { query: USER_CHECK_QUERY },
     { headers: { Authorization: `Bearer ${token}` } },
   );
 
-  if (data.result !== query) {
-    throw new Error('Token response does not match th expected response');
+  if (data.result !== USER_CHECK_QUERY) {
+    throw new Error('Token response does not match the expected response');
   }
 }

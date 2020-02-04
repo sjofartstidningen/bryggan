@@ -5,11 +5,11 @@ export const Users = gql`
     accountId: ID!
     name: Name!
     email: String!
-    emailVerified: String!
+    emailVerified: Boolean!
     disabled: Boolean!
     isTeammate: Boolean!
     profilePhotoUrl: String
-    teamMemberId: Boolean
+    teamMemberId: String
   }
 
   type FullAccount {

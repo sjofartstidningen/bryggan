@@ -3,6 +3,7 @@ describe('Auth Flow', () => {
     cy.visit('/');
 
     cy.mockDropbox('auth/token/revoke');
+    cy.mockDropbox('check/user');
 
     cy.findByText(/paste/i).click();
     cy.findByLabelText(/access token/i).focus();
