@@ -2,7 +2,9 @@ import '@testing-library/jest-dom/extend-expect';
 import 'jest-styled-components';
 import localforage from 'localforage';
 
-afterEach(() => localforage.clear());
+afterEach(() => {
+  if (typeof window !== 'undefined') localforage.clear();
+});
 
 /**
  * This is an ugly trick to avoid xstate warning about sending early events...

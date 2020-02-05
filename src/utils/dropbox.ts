@@ -4,7 +4,6 @@ import { USER_CHECK_QUERY, LOCALSTORAGE_AUTH_KEY } from '../constants';
 import { PersistedAuthGet } from '../types/bryggan';
 
 export const validateToken = async (token: string) => {
-  console.log(token);
   const { data } = await axios.post(
     'https://api.dropboxapi.com/2/check/user',
     { query: USER_CHECK_QUERY },
