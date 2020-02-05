@@ -54,8 +54,8 @@ const fileThumbnail: IFieldResolver<
   void,
   GraphQLContext,
   { path: string; options?: ThumbnailOptions }
-> = (_, params, { dataSources }) => {
-  return dataSources.dropbox.getThumbnailUrl(params.path, params.options);
+> = (_, args, { dataSources }) => {
+  return dataSources.dropbox.getThumbnailUrl(args.path, args.options);
 };
 
 const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
@@ -69,9 +69,9 @@ const listFolder: IFieldResolver<any, GraphQLContext, ListFolderArgs> = async (
 const search: IFieldResolver<
   any,
   GraphQLContext,
-  { path: string; options: SearchOptions }
-> = async (_, { path, options }, { dataSources }) => {
-  return dataSources.dropbox.search(path, options);
+  { query: string; options?: SearchOptions }
+> = async (_, args, { dataSources }) => {
+  return dataSources.dropbox.search(args.query, args.options);
 };
 
 const files: IResolvers<any, GraphQLContext> = {

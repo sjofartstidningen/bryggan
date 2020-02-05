@@ -54,12 +54,12 @@ class DropboxAPI extends RESTDataSource<GraphQLContext> {
     });
   }
 
-  async search(query: string, options: SearchOptions) {
+  async search(query: string, options?: SearchOptions) {
     const data = await this.post<SearchV2Result>('/files/search_v2', {
       query,
       options: {
-        path: options.path,
-        file_categories: options.fileCategories,
+        path: options?.path,
+        file_categories: options?.fileCategories,
       },
     });
 
