@@ -9,18 +9,13 @@ import { Machine, assign, EventObject, State } from 'xstate';
 import { useMachine } from '@xstate/react';
 import qs from 'qs';
 import localforage from 'localforage';
-import axios from 'axios';
 import nanoid from 'nanoid';
 import { Location } from 'history';
 import Cookie from 'universal-cookie';
 import { useLocation } from 'react-router-dom';
 import { trailingSlash, unleadingSlash } from '../utils';
 import { REDIRECT_URL, DROPBOX_CLIENT_ID } from '../env';
-import {
-  LOCALSTORAGE_AUTH_KEY,
-  OAUTH_STATE_COOKIE,
-  USER_CHECK_QUERY,
-} from '../constants';
+import { LOCALSTORAGE_AUTH_KEY, OAUTH_STATE_COOKIE } from '../constants';
 import { PersistedAuthSet, PersistedAuthGet } from '../types/bryggan';
 import { revokeToken, validateToken } from '../utils/dropbox';
 
