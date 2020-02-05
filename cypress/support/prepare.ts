@@ -13,12 +13,12 @@ beforeEach(() => {
     endpoint: '/.netlify/functions/graphql',
     operations: {
       ProfilePhotoQuery: {
-        getCurrentAccount: {
+        currentAccount: {
           profilePhotoUrl: 'https://via.placeholder.com/150',
         },
       },
       SettingsProfileQuery: {
-        getCurrentAccount: {
+        currentAccount: {
           email: 'adam@fransvilhelm.com',
           name: {
             displayName: 'Adam Bergman',

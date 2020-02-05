@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import nock from 'nock';
 import { handler } from '../handle-auth';
 import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../../constants';

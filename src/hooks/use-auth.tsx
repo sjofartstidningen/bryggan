@@ -9,20 +9,15 @@ import { Machine, assign, EventObject, State } from 'xstate';
 import { useMachine } from '@xstate/react';
 import qs from 'qs';
 import localforage from 'localforage';
-import axios from 'axios';
 import nanoid from 'nanoid';
 import { Location } from 'history';
 import Cookie from 'universal-cookie';
-
+import { useLocation } from 'react-router-dom';
 import { trailingSlash, unleadingSlash } from '../utils';
 import { REDIRECT_URL, DROPBOX_CLIENT_ID } from '../env';
-import {
-  LOCALSTORAGE_AUTH_KEY,
-  OAUTH_STATE_COOKIE,
-  USER_CHECK_QUERY,
-} from '../constants';
+import { LOCALSTORAGE_AUTH_KEY, OAUTH_STATE_COOKIE } from '../constants';
 import { PersistedAuthSet, PersistedAuthGet } from '../types/bryggan';
-import { useLocation } from 'react-router-dom';
+import { revokeToken, validateToken } from '../utils/dropbox';
 
 interface AuthContext {
   token: null | string;
@@ -142,28 +137,7 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
         return { token };
       },
     },
-    actions: {
-      revokeToken: async () => {
-        try {
-          const data = await localforage.getItem<PersistedAuthGet>(
-            LOCALSTORAGE_AUTH_KEY,
-          );
-
-          if (data) {
-            await Promise.all([
-              localforage.removeItem(LOCALSTORAGE_AUTH_KEY),
-              axios
-                .post(
-                  'https://api.dropboxapi.com/2/auth/token/revoke',
-                  undefined,
-                  { headers: { Authorization: `Bearer ${data.accessToken}` } },
-                )
-                .catch(() => {}),
-            ]);
-          }
-        } catch (error) {}
-      },
-    },
+    actions: { revokeToken },
   },
 );
 
@@ -250,15 +224,3 @@ export const useAuthEffect = (
 
   useEffect(() => effectRef.current(state), [state]);
 };
-
-async function validateToken(token: string) {
-  const { data } = await axios.post(
-    'https://api.dropboxapi.com/2/check/user',
-    { query: USER_CHECK_QUERY },
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
-
-  if (data.result !== USER_CHECK_QUERY) {
-    throw new Error('Token response does not match the expected response');
-  }
-}
