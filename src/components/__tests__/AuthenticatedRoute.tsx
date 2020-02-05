@@ -9,6 +9,8 @@ import {
 import { PATH_SIGN_IN } from '../../constants';
 import { AuthenticatedRoute } from '../AuthenticatedRoute';
 
+jest.mock('../../utils/dropbox.ts');
+
 it('should render children if authenticated', async () => {
   await ensureAuthenticated();
 

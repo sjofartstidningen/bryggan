@@ -91,12 +91,6 @@ const ensureAuthenticated = async ({
   token = 'abc123',
   scope = mockDropboxApi(),
 }: EnsureAuthArgs = {}) => {
-  scope.post('/2/check/user').reply(200, (_, body: Record<string, any>) => ({
-    result: body.query,
-  }));
-
-  scope.post('/2/auth/token/revoke').reply(200, {});
-
   await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
     accessToken: token,
   });

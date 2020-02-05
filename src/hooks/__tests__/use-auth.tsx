@@ -1,24 +1,23 @@
 import React, { useEffect } from 'react';
-import nock from 'nock';
 import localforage from 'localforage';
 import { Location } from 'history';
 import {
   render,
   fireEvent,
   wait,
-  mockDropboxApi,
   ensureAuthenticated,
 } from '../../utils/test-utils';
 import { LOCALSTORAGE_AUTH_KEY } from '../../constants';
 import { useAuth } from '../use-auth';
 import { DROPBOX_CLIENT_ID, REDIRECT_URL } from '../../env';
-import { PersistedAuthSet, PersistedAuthGet } from '../../types/bryggan';
+import { PersistedAuthGet } from '../../types/bryggan';
+import { validateToken, revokeToken } from '../../utils/dropbox';
 
-const dropboxApi = mockDropboxApi();
+jest.mock('../../utils/dropbox.ts');
 
 it('checks for initial auth state (localstorage)', async () => {
-  const accessToken = 'abc123';
-  await ensureAuthenticated({ scope: dropboxApi, token: accessToken });
+  const token = 'abc123';
+  await ensureAuthenticated({ token: token });
 
   const Comp: React.FC = () => {
     const [state, auth] = useAuth();
@@ -36,12 +35,11 @@ it('checks for initial auth state (localstorage)', async () => {
 
   const { findByText } = render(<Comp />);
 
-  const token = await findByText(accessToken);
-  expect(token).toBeInTheDocument();
+  const tokenText = await findByText(token);
+  expect(tokenText).toBeInTheDocument();
 });
 
 it('checks for access token available on window.location', async () => {
-  await ensureAuthenticated({ scope: dropboxApi });
   await localforage.clear();
 
   const Comp: React.FC = () => {
@@ -80,10 +78,10 @@ it('will set as unauthenticated if no tokens are found', async () => {
 });
 
 it('will set as unauthenticated if user check does not pass', async () => {
-  dropboxApi.post('/2/check/user').reply(400, {});
-  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
-    accessToken: 'old_token',
-  });
+  await ensureAuthenticated();
+  ((validateToken as unknown) as jest.Mock<any, any>).mockRejectedValueOnce(
+    new Error('Invalid token'),
+  );
 
   const Comp: React.FC = () => {
     const [state, auth] = useAuth();
@@ -138,7 +136,10 @@ it('sends a user to Dropbox authorization page', async () => {
 });
 
 it('signs a user out', async () => {
-  await ensureAuthenticated({ scope: dropboxApi });
+  await ensureAuthenticated();
+  ((revokeToken as unknown) as jest.Mock).mockImplementationOnce(() =>
+    localforage.removeItem(LOCALSTORAGE_AUTH_KEY),
+  );
 
   const Comp: React.FC = () => {
     const [state, auth] = useAuth();
