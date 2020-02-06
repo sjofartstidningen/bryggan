@@ -14,18 +14,18 @@ import {
 import { size, font, spacing, color } from '../../styles/theme';
 import { animated, fadeIn } from '../../styles/animations';
 import { transition } from '../../styles/utils';
+import { generateFileUrl, extractFileInfo } from '../../utils/files';
+import { PAGE_ASPECT_RATIO } from '../../constants';
 import { Loader } from '../Loader';
 import { DropboxPreview } from '../DropboxPreview';
 import { ChevronRight, AlertCircle } from '../Icons';
 import { Spinner } from '../Spinner';
 import { Intersect } from '../Intersect';
-import { useSearch, SearchStage } from './use-search';
+import { useSearch } from './use-search';
 
 /**
  * Display a search box with the ability to search for pdf content and navigate
  * to that page in the application
- *
- * @returns {React.ReactElement}
  */
 export const SearchBox: React.FC = () => {
   /**
@@ -36,7 +36,7 @@ export const SearchBox: React.FC = () => {
   const [query, setQuery] = useState('');
   const listRef = useRef<HTMLElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [state, searchMore] = useSearch(query);
+  const [data, { loading, error, searchMore }] = useSearch(query);
   const history = useHistory();
 
   const handleQueryChange = (evt: React.FormEvent<HTMLInputElement>) => {
@@ -62,6 +62,8 @@ export const SearchBox: React.FC = () => {
     if (evt.key === '/' && inputRef.current) inputRef.current.focus();
   });
 
+  const searchResult = data?.search;
+
   return (
     <div>
       <Combobox>
@@ -75,68 +77,76 @@ export const SearchBox: React.FC = () => {
           onChange={handleQueryChange}
         />
         <SyledComboboxPopover>
-          {(state.stage === SearchStage.searching ||
-            state.stage === SearchStage.idle) && (
+          {loading && !searchResult && (
             <MessageWrapper>
               <Loader />
             </MessageWrapper>
           )}
-
-          {state.stage === SearchStage.error && (
+          {!loading && error && (
             <MessageWrapper>
               <ErrorMessage>
                 <AlertCircle />
               </ErrorMessage>
-              <ErrorMessage>{state.error}</ErrorMessage>
+              <ErrorMessage>{error.message}</ErrorMessage>
             </MessageWrapper>
           )}
-
-          {(state.stage === SearchStage.success ||
-            state.stage === SearchStage.searchingMore) && (
+          {searchResult && (
             <StyledComboboxList ref={listRef} data-testid="search-result">
-              {state.pages.map(page => (
-                <StyledComboboxOption
-                  key={page.id}
-                  value={page.id}
-                  role="link"
-                  data-testid="search-result-item"
-                  onClick={() => {
-                    setQuery('');
-                    history.push(page.link);
-                  }}
-                >
-                  <DropboxPreview
-                    path={page.path}
-                    size="w128h128"
-                    aspectRatio={1195 / 1536}
-                  />
-                  <ResultDetail>
-                    <ResultFile>
-                      <Link to={page.link}>
-                        <span>
-                          {page.year} <ChevronRight />
-                        </span>
-                        <span>
-                          {page.issue} <ChevronRight />
-                        </span>
-                        <span>{page.page}</span>
-                      </Link>
-                    </ResultFile>
-                    <ResultMeta>{page.path}</ResultMeta>
-                  </ResultDetail>
-                </StyledComboboxOption>
-              ))}
-              {state.cursor && (
+              {searchResult.edges.map(edge => {
+                const page = edge.node;
+                if (page.__typename === 'FolderMetadata') return null;
+
+                const link = generateFileUrl(page.name);
+                const meta = extractFileInfo(page.name);
+
+                return (
+                  <StyledComboboxOption
+                    key={page.id}
+                    value={page.id}
+                    role="link"
+                    data-testid="search-result-item"
+                    onClick={() => {
+                      setQuery('');
+                      history.push(link);
+                    }}
+                  >
+                    <DropboxPreview
+                      path={page.pathDisplay ?? ''}
+                      size="w128h128"
+                      aspectRatio={PAGE_ASPECT_RATIO}
+                    />
+                    <ResultDetail>
+                      <ResultFile>
+                        <Link to="/">
+                          <span>
+                            {meta.year} <ChevronRight />
+                          </span>
+                          <span>
+                            {meta.issue} <ChevronRight />
+                          </span>
+                          <span>{meta.page}</span>
+                        </Link>
+                      </ResultFile>
+                      <ResultMeta>{page.pathDisplay}</ResultMeta>
+                    </ResultDetail>
+                  </StyledComboboxOption>
+                );
+              })}
+
+              {searchResult.pageInfo.hasNextPage && (
                 <Intersect
                   as="li"
                   style={{ width: '100%', height: 'auto' }}
                   onEnter={() => searchMore()}
                 >
                   <LoadMore>
-                    {state.stage === SearchStage.searchingMore ? (
+                    {loading ? (
                       <Spinner />
                     ) : (
-                      <LoadMoreButton type="button" onClick={searchMore}>
+                      <LoadMoreButton
+                        type="button"
+                        onClick={() => searchMore()}
+                      >
                         Load more
                       </LoadMoreButton>
                     )}

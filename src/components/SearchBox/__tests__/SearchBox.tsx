@@ -1,78 +1,136 @@
 import React from 'react';
-import localforage from 'localforage';
-import nock from 'nock';
+import { MockedResponse } from '@apollo/react-testing';
+import nanoid from 'nanoid';
 import { render, waitForElement, fireEvent } from '../../../utils/test-utils';
-import { LOCALSTORAGE_AUTH_KEY } from '../../../constants';
-import searchResponse from '../../../__fixtures__/dropbox/files/search_v2.json';
-import moreResponse from '../../../__fixtures__/dropbox/files/search/continue_v2.json';
-import { last, first } from '../../../utils/array';
-import { SearchBox } from '../index';
-import { PersistedAuthSet } from '../../../types/bryggan';
+import { SEARCH_QUERY } from '../use-search';
+import { SearchBox } from '../';
+import { Search_search_edges } from '../../../types/graphql';
 
-const scope = nock('https://api.dropboxapi.com');
-
-beforeEach(async () => {
-  await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
-    accessToken: 'abc123',
-  });
+const generateSearchEdge = (
+  year: string,
+  issue: string,
+  page: string,
+): Search_search_edges => ({
+  node: {
+    name: `${year}-${issue}-${page}.pdf`,
+    id: `id:${nanoid(22)}`,
+    pathDisplay: `/Bryggan/${year}/${issue}/${year}-${issue}-${page}.pdf`,
+    clientModified: '2020-10-01T00:00:00Z',
+    serverModified: '2020-10-01T00:00:00Z',
+    __typename: 'FileMetadata',
+  },
+  __typename: 'MetadataEdge',
 });
 
-it.skip('should render an input box', async () => {
-  const { getByLabelText } = render(<SearchBox />);
-  const input = await waitForElement(() =>
-    getByLabelText(/search pdf content/i),
-  );
-  expect(input).toBeInTheDocument();
+const generatePageInfo = (hasNextPage = false, cursor?: string) => ({
+  hasNextPage,
+  cursor: hasNextPage ? cursor ?? nanoid() : null,
+  __typename: 'PageInfo',
 });
 
-it.skip('should search for pdf file content', async () => {
-  scope.post('/2/files/search_v2').reply(200, searchResponse);
+it('should search for pdf file content', async () => {
+  const mocks: MockedResponse[] = [
+    {
+      request: { query: SEARCH_QUERY, variables: { query: 'stena line' } },
+      result: {
+        data: {
+          search: {
+            pageInfo: generatePageInfo(),
+            edges: [
+              generateSearchEdge('2020', '01', '001'),
+              generateSearchEdge('2020', '01', '002'),
+              generateSearchEdge('2020', '01', '003'),
+              generateSearchEdge('2020', '01', '004'),
+              generateSearchEdge('2020', '01', '005'),
+            ],
+            __typename: 'MetadataConnection',
+          },
+        },
+      },
+    },
+  ];
 
-  const { getByLabelText, getByText } = render(<SearchBox />);
+  const { getByLabelText, findByText } = render(<SearchBox />, { mocks });
   const input = await waitForElement(() =>
     getByLabelText(/search pdf content/i),
   );
 
   fireEvent.change(input, { target: { value: 'stena line' } });
 
-  const fileName = first(searchResponse.matches).metadata.metadata.path_display;
-
-  const item = await waitForElement(() => getByText(fileName));
+  const item = await findByText('/Bryggan/2020/01/2020-01-001.pdf');
   expect(item).toBeInTheDocument();
 });
 
-it.skip('should search for more when clicking load more', async () => {
-  scope.post('/2/files/search_v2').reply(200, searchResponse);
-  scope.post('/2/files/search/continue_v2').reply(200, moreResponse);
+it('should search for more when clicking load more', async () => {
+  const query = 'stena line';
+  const cursor = nanoid();
 
-  const { getByLabelText, getByText } = render(<SearchBox />);
-  const input = await waitForElement(() =>
-    getByLabelText(/search pdf content/i),
-  );
+  const mocks: MockedResponse[] = [
+    {
+      request: { query: SEARCH_QUERY, variables: { query } },
+      result: {
+        data: {
+          search: {
+            pageInfo: generatePageInfo(true, cursor),
+            edges: [
+              generateSearchEdge('2020', '01', '001'),
+              generateSearchEdge('2020', '01', '002'),
+              generateSearchEdge('2020', '01', '003'),
+              generateSearchEdge('2020', '01', '004'),
+              generateSearchEdge('2020', '01', '005'),
+            ],
+            __typename: 'MetadataConnection',
+          },
+        },
+      },
+    },
+    {
+      request: { query: SEARCH_QUERY, variables: { query, cursor } },
+      result: {
+        data: {
+          search: {
+            pageInfo: generatePageInfo(),
+            edges: [
+              generateSearchEdge('2020', '01', '006'),
+              generateSearchEdge('2020', '01', '007'),
+              generateSearchEdge('2020', '01', '008'),
+              generateSearchEdge('2020', '01', '009'),
+              generateSearchEdge('2020', '01', '010'),
+            ],
+            __typename: 'MetadataConnection',
+          },
+        },
+      },
+    },
+  ];
 
-  fireEvent.change(input, { target: { value: 'stena line' } });
+  const { findByLabelText, findByText } = render(<SearchBox />, { mocks });
+  const input = await findByLabelText(/search pdf content/i);
 
-  const button = await waitForElement(() => getByText(/load more/i));
+  fireEvent.change(input, { target: { value: query } });
 
+  const button = await findByText(/load more/i);
   fireEvent.click(button);
 
-  const fileName = last(moreResponse.matches).metadata.metadata.path_display;
-  const item = await waitForElement(() => getByText(fileName));
-
+  const item = await findByText('/Bryggan/2020/01/2020-01-010.pdf');
   expect(item).toBeInTheDocument();
 });
 
-it.skip('should handle a rejected search', async () => {
+it('should handle a rejected search', async () => {
+  const query = 'stena line';
   const message = 'Error: invalid query';
-  scope.post('/2/files/search_v2').reply(400, message);
+  const mocks: MockedResponse[] = [
+    {
+      request: { query: SEARCH_QUERY, variables: { query } },
+      error: new Error(message),
+    },
+  ];
 
-  const { getByLabelText, getByText } = render(<SearchBox />);
-  const input = await waitForElement(() =>
-    getByLabelText(/search pdf content/i),
-  );
+  const { findByLabelText, findByText } = render(<SearchBox />, { mocks });
+  const input = await findByLabelText(/search pdf content/i);
 
-  fireEvent.change(input, { target: { value: 'stena line' } });
+  fireEvent.change(input, { target: { value: query } });
 
-  const errorMessage = await waitForElement(() => getByText(message));
+  const errorMessage = await findByText(message, { exact: false });
   expect(errorMessage).toBeInTheDocument();
 });

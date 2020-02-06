@@ -1,8 +1,6 @@
-import { FileMetadata, Metadata, FolderMetadata } from '../types/dropbox';
-import { Page } from '../types/bryggan';
 import * as re from './regex';
 
-const getDataFromName = (
+export const extractFileInfo = (
   fileName: string,
 ): { page: string; issue: string; year: string } => {
   const result = fileName.match(re.page());
@@ -14,25 +12,7 @@ const getDataFromName = (
   throw new Error(`Could not extract data from filename ${fileName}`);
 };
 
-export const mapMetadata = (meta: FileMetadata): Page => {
-  const { page, issue, year } = getDataFromName(meta.name);
-  return {
-    page,
-    year,
-    issue,
-    id: meta.id,
-    link: `/${year}/${issue}/${page}`,
-    name: meta.name,
-    path: meta.path_display,
-    clientModified: meta.client_modified,
-    serverModified: meta.server_modified,
-  };
-};
-
-export const filterFileMetadata = (data: Metadata): data is FileMetadata => {
-  return data['.tag'] === 'file';
-};
-
-export const filterFolder = (data: Metadata): data is FolderMetadata => {
-  return data['.tag'] === 'folder';
+export const generateFileUrl = (fileName: string): string => {
+  const { page, issue, year } = extractFileInfo(fileName);
+  return `/${year}/${issue}/${page}`;
 };
