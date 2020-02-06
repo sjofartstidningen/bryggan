@@ -8,7 +8,7 @@ import {
 } from '../types/dropbox';
 import { Intersect } from './Intersect';
 import { color } from '../styles/theme';
-import { content } from '../api/dropbox';
+import { useAuthState } from '../hooks/use-auth';
 
 const StyledIntersect = styled(Intersect)`
   background-color: ${color('shade')};
@@ -55,13 +55,16 @@ export const DropboxPreview: React.FC<DropboxPreviewProps> = ({
   parentRef,
   ...imageProps
 }) => {
+  const state = useAuthState();
   const [load, setLoad] = useState(false);
 
   const [width, height] = getExpectedDimensions(size, aspectRatio);
-  const url = `${content.defaults.baseURL}files/get_thumbnail?${qs.stringify({
-    authorization: content.defaults.headers.common.Authorization,
-    arg: JSON.stringify({ path, format, size, mode }),
-  })}`;
+  const url = `https://content.dropboxapi.com/2/files/get_thumbnail?${qs.stringify(
+    {
+      authorization: `Bearer ${state.context.token}`,
+      arg: JSON.stringify({ path, format, size, mode }),
+    },
+  )}`;
 
   const handleLoad = (
     entry: IntersectionObserverEntry,

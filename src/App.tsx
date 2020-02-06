@@ -15,7 +15,6 @@ import {
 } from './components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
 import { AuthProvider, useAuthEffect } from './hooks/use-auth';
-import { content, api } from './api/dropbox';
 import { SettingsMenu } from './components/SettingsMenu';
 import { MenuManager } from './hooks/use-menu';
 
@@ -27,18 +26,8 @@ const App: React.FC = () => {
   const apolloClient = useApolloClient();
 
   useAuthEffect(state => {
-    switch (state.value) {
-      case 'authenticated':
-        const authHeader = `Bearer ${state.context.token}`;
-        content.defaults.headers.common['Authorization'] = authHeader;
-        api.defaults.headers.common['Authorization'] = authHeader;
-        break;
-
-      default:
-        content.defaults.headers.common['Authorization'] = undefined;
-        api.defaults.headers.common['Authorization'] = undefined;
-        apolloClient.resetStore();
-    }
+    if (state.matches('authenticated')) return;
+    apolloClient.resetStore();
   });
 
   const loader = <LoaderOverlay />;

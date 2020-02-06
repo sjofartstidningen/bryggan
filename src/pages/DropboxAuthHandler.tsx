@@ -3,7 +3,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import localforage from 'localforage';
 import { useTimeout } from '../hooks/use-timeout';
 import { useAuth } from '../hooks/use-auth';
-import { leadingSlash } from '../utils';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
 
 interface AuthHandlerProps {
@@ -26,7 +25,7 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({ fallback }) => {
     let hasCancelled = false;
     switch (state.value) {
       case 'unauthenticated':
-        history.replace(leadingSlash(PATH_SIGN_IN));
+        history.replace(PATH_SIGN_IN);
         break;
 
       case 'authenticated':
@@ -36,8 +35,9 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({ fallback }) => {
           );
 
           if (hasCancelled) return;
-          const to = (data && data.from) || '/';
+          const to = data?.from ?? '/';
           history.replace(to);
+          await localforage.removeItem(LOCALSTORAGE_POST_SIGN_IN_KEY);
         })();
     }
 
