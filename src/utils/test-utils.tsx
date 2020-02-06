@@ -22,7 +22,7 @@ interface ProviderProps {
 const Providers: React.FC<ProviderProps> = ({ children, mocks }) => {
   return (
     <React.Suspense fallback={<p>Loading</p>}>
-      <ApolloProvider mocks={mocks} addTypename={false}>
+      <ApolloProvider mocks={mocks} addTypename={true}>
         <ThemeProvider theme={theme}>
           <AuthProvider>
             <MenuManager>{children}</MenuManager>

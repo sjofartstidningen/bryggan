@@ -6,7 +6,11 @@ const src = 'https://via.placeholder.com/100x100';
 const mocks = [
   {
     request: { query: PROFILE_QUERY },
-    result: { data: { currentAccount: { profilePhotoUrl: src } } },
+    result: {
+      data: {
+        currentAccount: { profilePhotoUrl: src, __typename: 'FullAccount' },
+      },
+    },
   },
 ];
 
