@@ -1,30 +1,46 @@
-import schema from '../../schema.json';
+import _schema from '../../schema.json';
+import { IntrospectionQuery } from 'graphql';
+import { setBaseGraphqlMocks } from '@iam4x/cypress-graphql-mock';
+
+setBaseGraphqlMocks({
+  FullAccount: () => ({
+    __typename: 'FullAccount',
+    accountId: 'user-id',
+    name: () => ({
+      givenName: 'Jane',
+      surname: 'Doe',
+      familiarName: 'Jane',
+      displayName: 'Jane Doe',
+      abbreviatedName: 'JD',
+    }),
+    email: 'jane.doe@company.com',
+    emailVerified: true,
+    locale: 'en-US',
+    referralLink: '',
+    isPaired: false,
+    accountType: 'basic',
+    profilePhotoUrl: 'https://via.placeholder.com/150',
+    team: null,
+    teamMemberId: null,
+  }),
+});
 
 beforeEach(() => {
   cy.clearStorage();
+  cy.setAuthorized();
 });
 
 beforeEach(() => {
   cy.server();
 
-  // @ts-ignore
+  const schema: IntrospectionQuery = (_schema as unknown) as any;
   cy.mockGraphql({
     schema,
     endpoint: '/.netlify/functions/graphql',
     operations: {
-      ProfilePhotoQuery: {
-        currentAccount: {
-          profilePhotoUrl: 'https://via.placeholder.com/150',
-        },
-      },
-      SettingsProfileQuery: {
-        currentAccount: {
-          email: 'adam@fransvilhelm.com',
-          name: {
-            displayName: 'Adam Bergman',
-          },
-        },
-      },
+      // Both of these will be redirected to use `FullAccount` above
+      ProfilePhoto: {},
+      SettingsProfile: {},
     },
   }).as('mockGraphqlOps');
 });

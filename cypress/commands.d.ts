@@ -23,6 +23,17 @@ declare global {
       setAuthorized(): Chainable<void>;
 
       /**
+       * Set the curret session as signed out
+       *
+       * @example
+       * cy.setUnauthorized();
+       *
+       * @returns {Chainable<void>}
+       * @memberof Chainable
+       */
+      setUnauthorized(): Chainable<void>;
+
+      /**
        * Use localforage and perform actions with it.
        *
        * @example

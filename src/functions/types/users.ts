@@ -19,7 +19,7 @@ export const Users = gql`
     emailVerified: Boolean!
     locale: String!
     referralLink: String!
-    isPaired: String!
+    isPaired: Boolean!
     accountType: AccountType!
     profilePhotoUrl: String
     team: FullTeam

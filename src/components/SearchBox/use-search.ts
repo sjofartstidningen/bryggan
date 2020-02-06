@@ -3,6 +3,7 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import { ApolloError, gql } from 'apollo-boost';
 import { useDebounce } from '@fransvilhelm/hooks';
 import { Search, SearchVariables } from '../../types/graphql';
+import { keepFirst } from '../../utils/array';
 
 export const SEARCH_QUERY = gql`
   query Search($query: String!, $cursor: String) {
@@ -29,6 +30,10 @@ export const SEARCH_QUERY = gql`
             clientModified
             serverModified
           }
+          ... on FolderMetadata {
+            name
+            id
+          }
         }
       }
     }
@@ -48,6 +53,7 @@ export const useSearch = (query: string): UseSearchResult => {
   >(SEARCH_QUERY);
 
   const searchMore = () => {
+    if (!data?.search.pageInfo.hasNextPage) return;
     return fetchMore({
       variables: { cursor: data?.search.pageInfo.cursor },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -60,7 +66,10 @@ export const useSearch = (query: string): UseSearchResult => {
           search: {
             ...prev.search,
             ...fetchMoreResult.search,
-            edges: [...prevEdges, ...nextEdges],
+            edges: keepFirst(
+              [...prevEdges, ...nextEdges],
+              (a, b) => a.node.id === b.node.id,
+            ),
           },
         };
       },
