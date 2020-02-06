@@ -15,8 +15,6 @@ import {
 } from './components/ErrorBoundary';
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
 import { AuthProvider, useAuthEffect } from './hooks/use-auth';
-import { SettingsMenu } from './components/SettingsMenu';
-import { MenuManager } from './hooks/use-menu';
 
 const Landing = lazy(() => import('./pages/Landing'));
 const SignIn = lazy(() => import('./pages/SignIn'));
@@ -37,10 +35,6 @@ const App: React.FC = () => {
       <GlobalStyle />
       <ErrorBoundaryWithRefresh>
         <Header />
-      </ErrorBoundaryWithRefresh>
-
-      <ErrorBoundaryWithRefresh>
-        <SettingsMenu />
       </ErrorBoundaryWithRefresh>
 
       <AppWrapper>
@@ -75,9 +69,7 @@ export const withProviders = <P extends object>(
         <ApolloProvider client={client}>
           <ThemeProvider theme={theme}>
             <AuthProvider>
-              <MenuManager>
-                <App {...props} />
-              </MenuManager>
+              <App {...props} />
             </AuthProvider>
           </ThemeProvider>
         </ApolloProvider>

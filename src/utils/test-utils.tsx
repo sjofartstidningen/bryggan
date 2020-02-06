@@ -11,7 +11,6 @@ import {
 } from '@apollo/react-testing';
 import { theme } from '../styles/theme';
 import { AuthProvider } from '../hooks/use-auth';
-import { MenuManager } from '../hooks/use-menu';
 import { LOCALSTORAGE_AUTH_KEY } from '../constants';
 import { PersistedAuthSet } from '../types/bryggan';
 
@@ -24,9 +23,7 @@ const Providers: React.FC<ProviderProps> = ({ children, mocks }) => {
     <React.Suspense fallback={<p>Loading</p>}>
       <ApolloProvider mocks={mocks} addTypename={true}>
         <ThemeProvider theme={theme}>
-          <AuthProvider>
-            <MenuManager>{children}</MenuManager>
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </ApolloProvider>
     </React.Suspense>
