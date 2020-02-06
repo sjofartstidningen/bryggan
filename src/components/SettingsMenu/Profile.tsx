@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ProfileBox } from '../ProfileBox';
+import { gql } from 'apollo-boost';
+import { useQuery } from '@apollo/react-hooks';
+import { darken } from 'polished';
 import { spacing, size, color, maxWidth } from '../../styles/theme';
 import { truncate } from '../../styles/utils';
 import { useAuth } from '../../hooks/use-auth';
-import { darken } from 'polished';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { SettingsProfile } from './__generated__/SettingsProfile';
+import { SettingsProfile } from '../../types/graphql';
+import { ProfileBox } from '../ProfileBox';
 
 export const PROFILE_QUERY = gql`
   query SettingsProfile {

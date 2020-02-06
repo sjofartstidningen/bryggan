@@ -5,7 +5,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
 import { VisuallyHidden } from './VisuallyHidden';
-import { ProfilePhoto } from './__generated__/ProfilePhoto';
+import { ProfilePhoto } from '../types/graphql';
 
 interface ProfileButtonProps {
   profilePicture?: string;
