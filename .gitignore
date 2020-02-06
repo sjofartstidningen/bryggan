@@ -1,6 +1,7 @@
 # GraphQL auto generated files
 schema.json
 __generated__
+src/types/graphql.ts
 
 # dependencies
 /node_modules

@@ -29,7 +29,7 @@
     "cypress:ci": "start-server-and-test 'yarn start' :3000 'yarn cypress:run'",
     "schema": "yarn schema:download && yarn schema:types",
     "schema:download": "apollo client:download-schema",
-    "schema:types": "apollo client:codegen --addTypename --target=typescript --passthroughCustomScalars --customScalarsPrefix=GraphQL_ --localSchemaFile=./schema.json",
+    "schema:types": "apollo client:codegen --addTypename --target=typescript --passthroughCustomScalars --customScalarsPrefix=GraphQL_ --localSchemaFile=./schema.json --outputFlat ./src/types/graphql.ts",
     "schema:ci": "start-server-and-test 'yarn start' :3000 'yarn schema'"
   },
   "dependencies": {
