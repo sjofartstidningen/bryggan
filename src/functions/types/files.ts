@@ -6,7 +6,7 @@ export const Files = gql`
   #####
 
   type MetadataConnection {
-    edges: [MetadataEdge]!
+    edges: [MetadataEdge!]!
     pageInfo: PageInfo!
   }
 
@@ -109,6 +109,8 @@ export const Files = gql`
   }
 
   input SearchOptions {
+    first: Int
+    after: String
     path: PathLike
     fileCategories: [FileCategory!]
   }

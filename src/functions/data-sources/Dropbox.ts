@@ -59,10 +59,22 @@ class DropboxAPI extends RESTDataSource<GraphQLContext> {
       query,
       options: {
         path: options?.path,
+        max_results: options?.first,
         file_categories: options?.fileCategories,
       },
     });
 
+    const edges = data.matches.map(match => match.metadata.metadata);
+    return createConnection(edges, {
+      hasMore: data.has_more,
+      cursor: data.cursor,
+    });
+  }
+
+  async searchContinue(cursor: string) {
+    const data = await this.post<SearchV2Result>('/files/search/continue_v2', {
+      cursor,
+    });
     const edges = data.matches.map(match => match.metadata.metadata);
     return createConnection(edges, {
       hasMore: data.has_more,

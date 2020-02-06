@@ -71,6 +71,9 @@ const search: IFieldResolver<
   GraphQLContext,
   { query: string; options?: SearchOptions }
 > = async (_, args, { dataSources }) => {
+  const cursor = args.options?.after;
+
+  if (cursor) return dataSources.dropbox.searchContinue(cursor);
   return dataSources.dropbox.search(args.query, args.options);
 };
 

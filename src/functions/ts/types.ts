@@ -40,6 +40,8 @@ enum FileCategory {
 }
 
 export interface SearchOptions {
+  first?: number;
+  after?: string;
   path?: string;
   fileCategories?: FileCategory[];
 }
