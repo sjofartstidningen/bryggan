@@ -180,3 +180,29 @@ it('signs a user out', async () => {
     localforage.getItem<PersistedAuthGet>(LOCALSTORAGE_AUTH_KEY),
   ).resolves.toEqual(null);
 });
+
+/**
+ * This is an ugly trick to avoid xstate warning about sending early events...
+ */
+const warn = console.warn;
+beforeAll(() => {
+  console.warn = (...args: any[]) => {
+    if (
+      args.some(
+        value =>
+          typeof value === 'string' &&
+          value.includes(
+            'Warning: Event "CHECK" was sent to uninitialized service "auth" and is deferred.',
+          ),
+      )
+    ) {
+      return;
+    }
+
+    warn(...args);
+  };
+});
+
+afterAll(() => {
+  console.warn = warn;
+});

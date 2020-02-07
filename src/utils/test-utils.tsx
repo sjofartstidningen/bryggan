@@ -13,6 +13,7 @@ import { theme } from '../styles/theme';
 import { AuthProvider } from '../hooks/use-auth';
 import { LOCALSTORAGE_AUTH_KEY } from '../constants';
 import { PersistedAuthSet } from '../types/bryggan';
+import { createCache } from './apollo';
 
 interface ProviderProps {
   mocks?: ReadonlyArray<MockedResponse>;
@@ -21,9 +22,10 @@ interface ProviderProps {
 
 const Providers: React.FC<ProviderProps> = ({ children, mocks, skipAuth }) => {
   const Auth = skipAuth ? 'div' : AuthProvider;
+
   return (
     <React.Suspense fallback={<p>Loading</p>}>
-      <ApolloProvider mocks={mocks} addTypename={true}>
+      <ApolloProvider mocks={mocks} addTypename={true} cache={createCache()}>
         <ThemeProvider theme={theme}>
           <Auth>{children}</Auth>
         </ThemeProvider>

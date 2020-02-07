@@ -2,9 +2,13 @@ import ApolloClient from 'apollo-boost';
 import localforage from 'localforage';
 import { LOCALSTORAGE_AUTH_KEY } from './constants';
 import { PersistedAuthGet } from './types/bryggan';
+import { createCache } from './utils/apollo';
+
+const cache = createCache();
 
 export const client = new ApolloClient({
   uri: '/.netlify/functions/graphql',
+  cache,
   request: async operation => {
     const data = await localforage.getItem<PersistedAuthGet>(
       LOCALSTORAGE_AUTH_KEY,
