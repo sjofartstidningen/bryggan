@@ -1,49 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
-import { useQuery } from '@apollo/react-hooks';
 import { darken } from 'polished';
 import { spacing, size, color, maxWidth } from '../../styles/theme';
 import { truncate } from '../../styles/utils';
-import { useAuth } from '../../hooks/use-auth';
-import { SettingsProfile } from '../../types/graphql';
+import { useAuthMethods } from '../../hooks/use-auth';
+import { UserQuery_currentAccount } from '../../types/graphql';
 import { ProfileBox } from '../ProfileBox';
 
-export const PROFILE_QUERY = gql`
-  query SettingsProfile {
-    currentAccount {
-      email
-      name {
-        displayName
-      }
-    }
-  }
-`;
-
 interface ProfileProps {
+  profile: UserQuery_currentAccount;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export const Profile = ({ onClick }: ProfileProps) => {
-  const [state, auth] = useAuth();
-  const { data } = useQuery<SettingsProfile>(PROFILE_QUERY);
-
-  if (!state.matches('authenticated')) return null;
-  if (!data) return null;
+export const Profile = ({ profile, onClick }: ProfileProps) => {
+  const { signOut } = useAuthMethods();
 
   return (
     <>
       <Wrapper>
-        <StyledProfileBox onClick={onClick} background="shade" label="" />
+        <StyledProfileBox
+          profilePhotoUrl={profile.profilePhotoUrl}
+          onClick={onClick}
+          background="shade"
+          label=""
+        />
         <ProfileInfo>
-          <p title={data.currentAccount.name.displayName}>
-            {data.currentAccount.name.displayName}
-          </p>
-          <p title={data.currentAccount.email}>{data.currentAccount.email}</p>
+          <p title={profile.name.displayName}>{profile.name.displayName}</p>
+          <p title={profile.email}>{profile.email}</p>
         </ProfileInfo>
       </Wrapper>
       <SignOutButtonWrapper>
-        <SignOutButton type="button" onClick={() => auth.signOut()}>
+        <SignOutButton type="button" onClick={signOut}>
           Sign out
         </SignOutButton>
       </SignOutButtonWrapper>

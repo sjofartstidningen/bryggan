@@ -11,22 +11,21 @@ import {
 } from '@apollo/react-testing';
 import { theme } from '../styles/theme';
 import { AuthProvider } from '../hooks/use-auth';
-import { MenuManager } from '../hooks/use-menu';
 import { LOCALSTORAGE_AUTH_KEY } from '../constants';
 import { PersistedAuthSet } from '../types/bryggan';
 
 interface ProviderProps {
   mocks?: ReadonlyArray<MockedResponse>;
+  skipAuth?: boolean;
 }
 
-const Providers: React.FC<ProviderProps> = ({ children, mocks }) => {
+const Providers: React.FC<ProviderProps> = ({ children, mocks, skipAuth }) => {
+  const Auth = skipAuth ? 'div' : AuthProvider;
   return (
     <React.Suspense fallback={<p>Loading</p>}>
       <ApolloProvider mocks={mocks} addTypename={true}>
         <ThemeProvider theme={theme}>
-          <AuthProvider>
-            <MenuManager>{children}</MenuManager>
-          </AuthProvider>
+          <Auth>{children}</Auth>
         </ThemeProvider>
       </ApolloProvider>
     </React.Suspense>
@@ -41,6 +40,7 @@ const customRender = (
   ui: React.ReactElement,
   {
     mocks,
+    skipAuth,
     initialEntries = ['/'],
     ...options
   }: RenderOptions & CustomOptions & ProviderProps = {},
@@ -48,7 +48,9 @@ const customRender = (
   return render(ui, {
     wrapper: ({ children }) => (
       <MemoryRouter initialEntries={initialEntries}>
-        <Providers mocks={mocks}>{children}</Providers>
+        <Providers mocks={mocks} skipAuth={skipAuth}>
+          {children}
+        </Providers>
       </MemoryRouter>
     ),
     ...options,

@@ -1,14 +1,38 @@
 import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import styled, { DefaultTheme } from 'styled-components';
 import { spacing, color } from '../styles/theme';
 import { animated, fadeIn } from '../styles/animations';
 import { VisuallyHidden } from './VisuallyHidden';
-import { ProfilePhoto } from '../types/graphql';
+
+interface ProfileBoxProps extends React.HTMLAttributes<HTMLElement> {
+  label: string;
+  profilePhotoUrl: string | null;
+  background?: keyof DefaultTheme['color'];
+}
+
+export const ProfileBox: React.FC<ProfileBoxProps> = ({
+  label,
+  background,
+  onClick,
+  profilePhotoUrl,
+  ...rest
+}) => {
+  return (
+    <ProfileButton
+      type="button"
+      profilePhotoUrl={profilePhotoUrl}
+      background={background}
+      aria-label={label}
+      onClick={onClick}
+      {...rest}
+    >
+      <VisuallyHidden>{label}</VisuallyHidden>
+    </ProfileButton>
+  );
+};
 
 interface ProfileButtonProps {
-  profilePicture?: string;
+  profilePhotoUrl: string | null;
   background?: keyof DefaultTheme['color'];
 }
 
@@ -24,8 +48,7 @@ const ProfileButton = styled.button<ProfileButtonProps>`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: ${p =>
-    p.profilePicture ? `url(${p.profilePicture})` : ''};
+  background-image: url(${p => (p.profilePhotoUrl ? p.profilePhotoUrl : '')});
 
   ${animated(fadeIn)};
 
@@ -49,45 +72,5 @@ const ProfileButton = styled.button<ProfileButtonProps>`
 
   &:focus {
     outline: none;
-  }
-`;
-
-interface ProfileBoxProps extends React.HTMLAttributes<HTMLElement> {
-  label: string;
-  background?: keyof DefaultTheme['color'];
-}
-
-export const ProfileBox: React.FC<ProfileBoxProps> = ({
-  label,
-  background,
-  onClick,
-  ...rest
-}) => {
-  const { data } = useQuery<ProfilePhoto>(PROFILE_QUERY);
-
-  let profileSrc;
-  if (data) {
-    profileSrc = data.currentAccount.profilePhotoUrl || undefined;
-  }
-
-  return (
-    <ProfileButton
-      type="button"
-      profilePicture={profileSrc}
-      background={background}
-      onClick={onClick}
-      aria-labelledby="profile-box-label"
-      {...rest}
-    >
-      <VisuallyHidden id="profile-box-label">{label}</VisuallyHidden>
-    </ProfileButton>
-  );
-};
-
-export const PROFILE_QUERY = gql`
-  query ProfilePhoto {
-    currentAccount {
-      profilePhotoUrl
-    }
   }
 `;

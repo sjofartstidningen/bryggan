@@ -1,42 +1,28 @@
 import React from 'react';
-import { ProfileBox, PROFILE_QUERY } from '../ProfileBox';
-import { render, fireEvent, wait } from '../../utils/test-utils';
+import { ProfileBox } from '../ProfileBox';
+import { render, fireEvent } from '../../utils/test-utils';
 
 const src = 'https://via.placeholder.com/100x100';
-const mocks = [
-  {
-    request: { query: PROFILE_QUERY },
-    result: {
-      data: {
-        currentAccount: { profilePhotoUrl: src, __typename: 'FullAccount' },
-      },
-    },
-  },
-];
 
-it('renders a profile picture button', async () => {
-  const { findByLabelText } = render(<ProfileBox label="button" />, { mocks });
+it('renders a profile picture button', () => {
+  const { getByLabelText } = render(
+    <ProfileBox label="button" profilePhotoUrl={src} />,
+    { skipAuth: true },
+  );
 
-  const btn = await findByLabelText(/button/i);
+  const btn = getByLabelText(/button/i);
   expect(btn).toBeInTheDocument();
-
-  await wait(() => {
-    const { backgroundImage } = window.getComputedStyle(btn);
-    if (!backgroundImage.includes(src)) {
-      throw new Error('No background image yet');
-    }
-  });
   expect(btn).toHaveStyleRule('background-image', `url(${src})`);
 });
 
-it('accepts an on click handler', async () => {
+it('accepts an on click handler', () => {
   const onClick = jest.fn();
-  const { findByLabelText } = render(
-    <ProfileBox label="button" onClick={onClick} />,
-    { mocks },
+  const { getByText } = render(
+    <ProfileBox label="button" profilePhotoUrl={src} onClick={onClick} />,
+    { skipAuth: true },
   );
 
-  const btn = await findByLabelText(/button/i);
+  const btn = getByText(/button/i);
 
   fireEvent.click(btn);
   expect(onClick).toHaveBeenCalled();
