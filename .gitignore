@@ -1,9 +1,7 @@
-# GraphQL auto generated files
+# GQL Schema
 schema.json
-__generated__
-src/types/graphql.ts
 
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
