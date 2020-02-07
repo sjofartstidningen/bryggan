@@ -47,7 +47,6 @@ export interface Search_search_edges_node_FileMetadata {
 
 export interface Search_search_edges_node_FolderMetadata {
   __typename: 'FolderMetadata';
-  name: string;
   id: string;
 }
 
@@ -73,6 +72,36 @@ export interface Search {
 export interface SearchVariables {
   query: string;
   cursor?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: FileData
+// ====================================================
+
+export interface FileData {
+  __typename: 'FileMetadata';
+  name: string;
+  id: string;
+  pathDisplay: string | null;
+  clientModified: string;
+  serverModified: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: FolderData
+// ====================================================
+
+export interface FolderData {
+  __typename: 'FolderMetadata';
+  id: string;
 }
 
 /* tslint:disable */

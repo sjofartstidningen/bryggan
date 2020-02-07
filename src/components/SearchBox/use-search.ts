@@ -23,20 +23,23 @@ export const SEARCH_QUERY = gql`
 
       edges {
         node {
-          ... on FileMetadata {
-            name
-            id
-            pathDisplay
-            clientModified
-            serverModified
-          }
-          ... on FolderMetadata {
-            name
-            id
-          }
+          ...FileData
+          ...FolderData
         }
       }
     }
+  }
+
+  fragment FileData on FileMetadata {
+    name
+    id
+    pathDisplay
+    clientModified
+    serverModified
+  }
+
+  fragment FolderData on FolderMetadata {
+    id
   }
 `;
 
