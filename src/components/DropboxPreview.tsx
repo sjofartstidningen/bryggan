@@ -1,70 +1,28 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import qs from 'qs';
-import {
-  ThumbnailSize,
-  ThumbnailMode,
-  ThumbnailFormat,
-} from '../types/dropbox';
+import { ThumbnailSize } from '../types/graphql';
 import { Intersect } from './Intersect';
 import { color } from '../styles/theme';
-import { useAuthState } from '../hooks/use-auth';
-
-const StyledIntersect = styled(Intersect)`
-  background-color: ${color('shade')};
-  border: 1px solid ${color('white')};
-`;
-
-const dims: { [key: string]: [number, number] } = {
-  w32h32: [32, 32],
-  w64h64: [64, 64],
-  w128h128: [128, 128],
-  w256h256: [256, 256],
-  w480h320: [480, 320],
-  w640h480: [640, 480],
-  w960h640: [960, 640],
-  w1024h768: [1024, 768],
-  w2048h1536: [2048, 1536],
-};
-
-const getExpectedDimensions = (size: ThumbnailSize, aspectRatio: number) => {
-  const [w, h] = dims[size];
-  if (aspectRatio === 0) return [w, h];
-  return [h * aspectRatio, h];
-};
+import { PAGE_ASPECT_RATIO } from '../constants';
 
 interface DropboxPreviewProps
   extends React.DetailedHTMLProps<
     React.ImgHTMLAttributes<HTMLImageElement>,
     HTMLImageElement
   > {
-  path: string;
+  src: string;
   size: ThumbnailSize;
-  mode?: ThumbnailMode;
-  format?: ThumbnailFormat;
-  aspectRatio?: number;
   parentRef?: React.RefObject<HTMLElement>;
 }
 
 export const DropboxPreview: React.FC<DropboxPreviewProps> = ({
-  path,
+  src,
   size,
-  mode = 'strict',
-  format = 'jpeg',
-  aspectRatio = 1,
   parentRef,
   ...imageProps
 }) => {
-  const state = useAuthState();
   const [load, setLoad] = useState(false);
-
-  const [width, height] = getExpectedDimensions(size, aspectRatio);
-  const url = `https://content.dropboxapi.com/2/files/get_thumbnail?${qs.stringify(
-    {
-      authorization: `Bearer ${state.context.token}`,
-      arg: JSON.stringify({ path, format, size, mode }),
-    },
-  )}`;
+  const [width, height] = getExpectedDimensions(size, PAGE_ASPECT_RATIO);
 
   const handleLoad = (
     entry: IntersectionObserverEntry,
@@ -75,16 +33,17 @@ export const DropboxPreview: React.FC<DropboxPreviewProps> = ({
   };
 
   if ('loading' in HTMLImageElement.prototype) {
-    const loading = ({ loading: 'lazy' } as unknown) as any;
     return (
-      <div style={{ width, height }}>
+      <div>
         <img
           {...imageProps}
+          src={src}
           alt={imageProps.alt}
-          src={url}
           width={width}
           height={height}
-          {...loading}
+          style={{ display: 'block' }}
+          // @ts-ignore
+          loading="lazy"
         />
       </div>
     );
@@ -95,17 +54,40 @@ export const DropboxPreview: React.FC<DropboxPreviewProps> = ({
       parentRef={parentRef}
       onEnter={handleLoad}
       fallback={() => setLoad(true)}
-      style={{ width, height }}
     >
       {load && (
         <img
           {...imageProps}
-          src={url}
+          src={src}
           alt={imageProps.alt}
           width={width}
           height={height}
+          style={{ display: 'block' }}
         />
       )}
     </StyledIntersect>
   );
+};
+
+const StyledIntersect = styled(Intersect)`
+  background-color: ${color('shade')};
+  border: 1px solid ${color('white')};
+`;
+
+const dimensions: Record<ThumbnailSize, [number, number]> = {
+  [ThumbnailSize.w32h32]: [32, 32],
+  [ThumbnailSize.w64h64]: [64, 64],
+  [ThumbnailSize.w128h128]: [128, 128],
+  [ThumbnailSize.w256h256]: [256, 256],
+  [ThumbnailSize.w480h320]: [480, 320],
+  [ThumbnailSize.w640h480]: [640, 480],
+  [ThumbnailSize.w960h640]: [960, 640],
+  [ThumbnailSize.w1024h768]: [1024, 768],
+  [ThumbnailSize.w2048h1536]: [2048, 1536],
+};
+
+const getExpectedDimensions = (size: ThumbnailSize, aspectRatio: number) => {
+  const [w, h] = dimensions[size];
+  if (aspectRatio === 0) return [w, h];
+  return [Math.round(h * aspectRatio), h];
 };

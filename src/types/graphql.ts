@@ -36,6 +36,12 @@ export interface Search_search_pageInfo {
   cursor: string | null;
 }
 
+export interface Search_search_edges_node_FileMetadata_thumbnail {
+  __typename: 'Thumbnail';
+  url: string;
+  size: ThumbnailSize;
+}
+
 export interface Search_search_edges_node_FileMetadata {
   __typename: 'FileMetadata';
   name: string;
@@ -43,6 +49,7 @@ export interface Search_search_edges_node_FileMetadata {
   pathDisplay: string | null;
   clientModified: string;
   serverModified: string;
+  thumbnail: Search_search_edges_node_FileMetadata_thumbnail | null;
 }
 
 export interface Search_search_edges_node_FolderMetadata {
@@ -82,6 +89,12 @@ export interface SearchVariables {
 // GraphQL fragment: FileData
 // ====================================================
 
+export interface FileData_thumbnail {
+  __typename: 'Thumbnail';
+  url: string;
+  size: ThumbnailSize;
+}
+
 export interface FileData {
   __typename: 'FileMetadata';
   name: string;
@@ -89,6 +102,7 @@ export interface FileData {
   pathDisplay: string | null;
   clientModified: string;
   serverModified: string;
+  thumbnail: FileData_thumbnail | null;
 }
 
 /* tslint:disable */
@@ -111,6 +125,18 @@ export interface FolderData {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum ThumbnailSize {
+  w1024h768 = 'w1024h768',
+  w128h128 = 'w128h128',
+  w2048h1536 = 'w2048h1536',
+  w256h256 = 'w256h256',
+  w32h32 = 'w32h32',
+  w480h320 = 'w480h320',
+  w640h480 = 'w640h480',
+  w64h64 = 'w64h64',
+  w960h640 = 'w960h640',
+}
 
 //==============================================================
 // END Enums and Input Objects

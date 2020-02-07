@@ -4,7 +4,7 @@ import nanoid from 'nanoid';
 import { render, waitForElement, fireEvent } from '../../../utils/test-utils';
 import { SEARCH_QUERY } from '../use-search';
 import { SearchBox } from '../';
-import { Search_search_edges } from '../../../types/graphql';
+import { Search_search_edges, ThumbnailSize } from '../../../types/graphql';
 
 const generateSearchEdge = (
   year: string,
@@ -17,6 +17,11 @@ const generateSearchEdge = (
     pathDisplay: `/Bryggan/${year}/${issue}/${year}-${issue}-${page}.pdf`,
     clientModified: '2020-10-01T00:00:00Z',
     serverModified: '2020-10-01T00:00:00Z',
+    thumbnail: {
+      __typename: 'Thumbnail',
+      url: 'https://via.placeholder.com/100x128',
+      size: ThumbnailSize.w128h128,
+    },
     __typename: 'FileMetadata',
   },
   __typename: 'MetadataEdge',

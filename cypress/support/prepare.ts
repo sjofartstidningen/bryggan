@@ -23,6 +23,14 @@ setBaseGraphqlMocks({
     team: null,
     teamMemberId: null,
   }),
+  Thumbnail: (_: any, args: any = {}) => {
+    return {
+      url: `https://via.placeholder.com/${(args?.options?.size ?? 'w128h128')
+        .replace('w', '')
+        .replace('h', 'x')}`,
+      ...args?.options,
+    };
+  },
 });
 
 beforeEach(() => {

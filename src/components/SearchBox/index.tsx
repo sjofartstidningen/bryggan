@@ -15,7 +15,6 @@ import { size, font, spacing, color } from '../../styles/theme';
 import { animated, fadeIn } from '../../styles/animations';
 import { transition } from '../../styles/utils';
 import { generateFileUrl, extractFileInfo } from '../../utils/files';
-import { PAGE_ASPECT_RATIO } from '../../constants';
 import { Loader } from '../Loader';
 import { DropboxPreview } from '../DropboxPreview';
 import { ChevronRight, AlertCircle } from '../Icons';
@@ -110,11 +109,12 @@ export const SearchBox: React.FC = () => {
                       history.push(link);
                     }}
                   >
-                    <DropboxPreview
-                      path={page.pathDisplay ?? ''}
-                      size="w128h128"
-                      aspectRatio={PAGE_ASPECT_RATIO}
-                    />
+                    {page.thumbnail && (
+                      <DropboxPreview
+                        src={page.thumbnail.url}
+                        size={page.thumbnail.size}
+                      />
+                    )}
                     <ResultDetail>
                       <ResultFile>
                         <Link to="/">

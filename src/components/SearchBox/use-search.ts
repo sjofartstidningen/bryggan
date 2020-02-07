@@ -36,6 +36,10 @@ export const SEARCH_QUERY = gql`
     pathDisplay
     clientModified
     serverModified
+    thumbnail(options: { format: jpeg, mode: strict, size: w128h128 }) {
+      url
+      size
+    }
   }
 
   fragment FolderData on FolderMetadata {
