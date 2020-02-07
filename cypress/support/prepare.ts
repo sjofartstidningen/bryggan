@@ -38,9 +38,7 @@ beforeEach(() => {
     schema,
     endpoint: '/.netlify/functions/graphql',
     operations: {
-      // Both of these will be redirected to use `FullAccount` above
-      ProfilePhoto: {},
-      SettingsProfile: {},
+      UserQuery: {}, // The data fetching is delegated to FullAccount above
     },
   }).as('mockGraphqlOps');
 });

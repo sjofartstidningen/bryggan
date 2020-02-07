@@ -22,6 +22,7 @@ export const ProfileBox: React.FC<ProfileBoxProps> = ({
       type="button"
       profilePhotoUrl={profilePhotoUrl}
       background={background}
+      aria-label={label}
       onClick={onClick}
       {...rest}
     >
