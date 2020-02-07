@@ -4,6 +4,7 @@ import localforage from 'localforage';
 import { useTimeout } from '../hooks/use-timeout';
 import { useAuth } from '../hooks/use-auth';
 import { LOCALSTORAGE_POST_SIGN_IN_KEY, PATH_SIGN_IN } from '../constants';
+import { useAsyncEffect } from '../hooks/use-async-effect';
 
 interface AuthHandlerProps {
   fallback: React.ReactElement;
@@ -21,30 +22,30 @@ const DropboxAuthHandler: React.FC<AuthHandlerProps> = ({ fallback }) => {
 
   useTimeout(() => setShowFallback(true), 300);
 
-  useEffect(() => {
-    let hasCancelled = false;
-    switch (state.value) {
-      case 'unauthenticated':
-        history.replace(PATH_SIGN_IN);
-        break;
+  useAsyncEffect(
+    async hasCancelled => {
+      switch (state.value) {
+        case 'unauthenticated':
+          history.replace(PATH_SIGN_IN);
+          break;
 
-      case 'authenticated':
-        (async () => {
-          const data = await localforage.getItem<{ from: string } | undefined>(
-            LOCALSTORAGE_POST_SIGN_IN_KEY,
-          );
+        case 'authenticated':
+          (async () => {
+            const data = await localforage.getItem<
+              { from: string } | undefined
+            >(LOCALSTORAGE_POST_SIGN_IN_KEY);
 
-          if (hasCancelled) return;
-          const to = data?.from ?? '/';
-          history.replace(to);
-          await localforage.removeItem(LOCALSTORAGE_POST_SIGN_IN_KEY);
-        })();
-    }
-
-    return () => {
-      hasCancelled = true;
-    };
-  }, [state, history]);
+            if (hasCancelled()) return;
+            const to = data?.from ?? '/';
+            localforage
+              .removeItem(LOCALSTORAGE_POST_SIGN_IN_KEY)
+              .catch(() => null);
+            history.replace(to);
+          })();
+      }
+    },
+    [state, history],
+  );
 
   if (showFallback) {
     return <>{fallback}</>;
