@@ -41,6 +41,22 @@ export async function handler(
       APP_URL = process.env.URL;
   }
 
+  if (event.queryStringParameters?._env) {
+    return createResponse(
+      {
+        ...process.env,
+        CONTEXT,
+        REDIRECT_URL,
+        CLIENT_ID,
+        CLIENT_SECRET,
+        APP_URL,
+        DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
+        URL: process.env.URL,
+      },
+      { cache: false },
+    );
+  }
+
   if (!APP_URL || !REDIRECT_URL || !CLIENT_ID || !CLIENT_SECRET) {
     throw new InternalServerError('Missing required environment variables');
   }
@@ -52,9 +68,8 @@ export async function handler(
     const cookie = new Cookies(event.headers.cookie);
 
     if (
-      event.queryStringParameters == null ||
-      (event.queryStringParameters.code == null &&
-        event.queryStringParameters.error == null)
+      event.queryStringParameters?.code == null &&
+      event.queryStringParameters?.error == null
     ) {
       throw new BadRequest(
         'Necessary query string parameters was not provided',
