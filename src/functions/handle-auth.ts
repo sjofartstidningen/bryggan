@@ -41,24 +41,6 @@ export async function handler(
       APP_URL = process.env.URL;
   }
 
-  if (event.queryStringParameters?._env) {
-    return createResponse(
-      {
-        processEnv: process.env,
-        custom: {
-          CONTEXT: process.env.CONTEXT,
-          REDIRECT_URL: process.env.REACT_APP_REDIRECT_URL,
-          CLIENT_ID: process.env.REACT_APP_DROPBOX_CLIENT_ID,
-          CLIENT_SECRET: process.env.DROPBOX_CLIENT_SECRET,
-          DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
-          DEPLOY_URL: process.env.DEPLOY_URL,
-          URL: process.env.URL,
-        },
-      },
-      { cache: false },
-    );
-  }
-
   if (!APP_URL || !REDIRECT_URL || !CLIENT_ID || !CLIENT_SECRET) {
     throw new InternalServerError('Missing required environment variables');
   }
@@ -87,7 +69,7 @@ export async function handler(
     }
 
     /**
-     * For some reasoun the authorization migth have failes – the user might
+     * For some reason the authorization migth have failed – the user might
      * have declined access or anything like that. In that case we will recieve
      * an error query parameter.
      *
