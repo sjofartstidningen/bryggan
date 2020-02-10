@@ -218,3 +218,10 @@ export interface SpaceUsage {
     allocated: number;
   };
 }
+
+export interface Oauth2TokenResponse {
+  access_token: string;
+  token_type: 'bearer';
+  account_id?: string;
+  team_id?: string;
+}

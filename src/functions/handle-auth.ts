@@ -8,7 +8,7 @@ import qs from 'qs';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import Cookies from 'universal-cookie';
 import { createResponse } from '../utils/create-response';
-import { Oauth2TokenResponse } from '../types/dropbox';
+import { Oauth2TokenResponse } from './ts/dropbox';
 import { OAUTH_STATE_COOKIE, PATH_AUTH_HANDLER } from '../constants';
 import { trailingSlash, unleadingSlash } from '../utils';
 

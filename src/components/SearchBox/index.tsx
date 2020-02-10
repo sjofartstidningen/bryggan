@@ -1,6 +1,6 @@
 import '@reach/combobox/styles.css';
 import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { Link, useHistory } from 'react-router-dom';
 import { useEventListener } from '@fransvilhelm/hooks';
@@ -33,7 +33,7 @@ export const SearchBox: React.FC = () => {
    * in `useSearch`.
    */
   const [query, setQuery] = useState('');
-  const listRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [data, { loading, error, searchMore }] = useSearch(query);
   const history = useHistory();
@@ -192,7 +192,7 @@ const SyledComboboxPopover = styled(ComboboxPopover)`
   }
 `;
 
-const StyledComboboxList = styled(ComboboxList)`
+const listStyle = () => css`
   min-height: ${spacing('32')};
   max-height: calc(${spacing('64')} * 1.5);
   border: 1px solid ${color('shade')};
@@ -207,7 +207,13 @@ const StyledComboboxList = styled(ComboboxList)`
   }
 `;
 
-const MessageWrapper = styled(StyledComboboxList).attrs({ as: 'div' })`
+const StyledComboboxList = styled(ComboboxList)`
+  ${listStyle}
+`;
+
+const MessageWrapper = styled.div`
+  ${listStyle}
+
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
