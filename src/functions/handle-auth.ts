@@ -51,6 +51,7 @@ export async function handler(
           CLIENT_ID: process.env.REACT_APP_DROPBOX_CLIENT_ID,
           CLIENT_SECRET: process.env.DROPBOX_CLIENT_SECRET,
           DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
+          DEPLOY_URL: process.env.DEPLOY_URL,
           URL: process.env.URL,
         },
       },
@@ -202,18 +203,6 @@ function errorBody(message: string, errorData: any = {}) {
 
     <h2>Error Data</h2>
     <pre>${JSON.stringify(errorData, null, 2)}</pre>
-
-    <h2>Variables</h2>
-    <pre>${JSON.stringify(
-      {
-        CONTEXT: process.env.CONTEXT,
-        URL: process.env.URL,
-        DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
-        REDIRECT_URL: process.env.REACT_APP_REDIRECT_URL,
-      },
-      null,
-      2,
-    )}</pre>
   </body>
 </html>
 `;

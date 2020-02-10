@@ -20,7 +20,7 @@
     "start:lambda": "NODE_ENV=development netlify-lambda serve --config webpack.functions.js src/functions",
     "build": "yarn build:app && yarn build:lambda",
     "build:app": "react-scripts build",
-    "build:lambda": "NODE_ENV=production netlify-lambda build src/functions",
+    "build:lambda": "NODE_ENV=production netlify-lambda build --config webpack.functions.js src/functions",
     "test": "react-scripts test",
     "lint": "eslint --ext .ts --ext .tsx --ext .js --ext .jsx src cypress",
     "type-check": "tsc --noEmit",
