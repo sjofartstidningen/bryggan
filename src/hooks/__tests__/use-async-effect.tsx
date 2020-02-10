@@ -24,7 +24,7 @@ it('should fire of an async effect', async () => {
 });
 
 it('should provide a hasCancelled callback to effect', async () => {
-  const Component = ({ callback }) => {
+  const Component: React.FC<{ callback: () => void }> = ({ callback }) => {
     const [count, setCount] = useState(0);
 
     useAsyncEffect(

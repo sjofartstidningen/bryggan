@@ -44,14 +44,15 @@ export async function handler(
   if (event.queryStringParameters?._env) {
     return createResponse(
       {
-        ...process.env,
-        CONTEXT,
-        REDIRECT_URL,
-        CLIENT_ID,
-        CLIENT_SECRET,
-        APP_URL,
-        DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
-        URL: process.env.URL,
+        processEnv: process.env,
+        custom: {
+          CONTEXT: process.env.CONTEXT,
+          REDIRECT_URL: process.env.REACT_APP_REDIRECT_URL,
+          CLIENT_ID: process.env.REACT_APP_DROPBOX_CLIENT_ID,
+          CLIENT_SECRET: process.env.DROPBOX_CLIENT_SECRET,
+          DEPLOY_PRIME_URL: process.env.DEPLOY_PRIME_URL,
+          URL: process.env.URL,
+        },
       },
       { cache: false },
     );
