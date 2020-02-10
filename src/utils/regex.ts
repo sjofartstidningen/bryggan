@@ -1,13 +1,13 @@
-const yearStr = '\\d{4}';
-const issueStr = '\\d{2}(?:(?: |-)(?:\\w| |-)*)*';
-const pageStr = '\\d{3}';
+const yearBase = '\\d{4}';
+const issueBase = '\\d{2}(?:(?: |-)(?:\\w| |-)*)*';
+const pageBase = '\\d{3}';
 
-const year = () => new RegExp(`^${yearStr}$`);
-const issue = () => new RegExp(`^${issueStr}$`);
+const year = () => new RegExp(`^${yearBase}$`);
+const issue = () => new RegExp(`^${issueBase}$`);
 const page = () =>
-  new RegExp(`^(${yearStr})-(${issueStr})-(${pageStr})\\.pdf$`);
+  new RegExp(`^(${yearBase})-(${issueBase})-(${pageBase})\\.pdf$`);
 
 const path = () =>
   /\/(\d{4})(?:\/)?(\d{2}(?:(?: |-)(?:\w| |-)*)*)?(?:\/)?(\d{4}-\d{2}(?:(?: |-)(?:\w| |-)*)*-\d{3})?/;
 
-export { path, year, issue, page };
+export { path, year, issue, page, yearBase, issueBase, pageBase };

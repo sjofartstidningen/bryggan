@@ -86,6 +86,98 @@ export interface SearchVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: Folders
+// ====================================================
+
+export interface Folders_folders_pageInfo {
+  __typename: 'PageInfo';
+  hasNextPage: boolean;
+  cursor: string | null;
+}
+
+export interface Folders_folders_edges_node_thumbnail {
+  __typename: 'Thumbnail';
+  url: string;
+}
+
+export interface Folders_folders_edges_node {
+  __typename: 'FolderMetadata';
+  id: string;
+  name: string;
+  pathDisplay: string | null;
+  thumbnail: Folders_folders_edges_node_thumbnail | null;
+}
+
+export interface Folders_folders_edges {
+  __typename: 'FolderMetadataEdge';
+  node: Folders_folders_edges_node;
+}
+
+export interface Folders_folders {
+  __typename: 'FolderMetadataConnection';
+  pageInfo: Folders_folders_pageInfo;
+  edges: Folders_folders_edges[];
+}
+
+export interface Folders {
+  folders: Folders_folders;
+}
+
+export interface FoldersVariables {
+  path: GraphQL_PathLike;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FoldersQuery
+// ====================================================
+
+export interface FoldersQuery_folders_pageInfo {
+  __typename: 'PageInfo';
+  hasNextPage: boolean;
+  cursor: string | null;
+}
+
+export interface FoldersQuery_folders_edges_node_thumbnail {
+  __typename: 'Thumbnail';
+  url: string;
+}
+
+export interface FoldersQuery_folders_edges_node {
+  __typename: 'FolderMetadata';
+  id: string;
+  name: string;
+  pathDisplay: string | null;
+  thumbnail: FoldersQuery_folders_edges_node_thumbnail | null;
+}
+
+export interface FoldersQuery_folders_edges {
+  __typename: 'FolderMetadataEdge';
+  node: FoldersQuery_folders_edges_node;
+}
+
+export interface FoldersQuery_folders {
+  __typename: 'FolderMetadataConnection';
+  pageInfo: FoldersQuery_folders_pageInfo;
+  edges: FoldersQuery_folders_edges[];
+}
+
+export interface FoldersQuery {
+  folders: FoldersQuery_folders;
+}
+
+export interface FoldersQueryVariables {
+  path: GraphQL_PathLike;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: FileData
 // ====================================================
 
