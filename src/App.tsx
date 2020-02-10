@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, StrictMode } from 'react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ApolloProvider, useApolloClient } from '@apollo/react-hooks';
@@ -16,9 +16,11 @@ import {
 import { PATH_AUTH_HANDLER, PATH_SIGN_IN } from './constants';
 import { AuthProvider, useAuthEffect } from './hooks/use-auth';
 
-const Landing = lazy(() => import('./pages/Landing'));
-const SignIn = lazy(() => import('./pages/SignIn'));
-const DropboxAuthHandler = lazy(() => import('./pages/DropboxAuthHandler'));
+const Landing = React.lazy(() => import('./pages/Landing'));
+const SignIn = React.lazy(() => import('./pages/SignIn'));
+const DropboxAuthHandler = React.lazy(() => {
+  return import('./pages/DropboxAuthHandler');
+});
 
 const App: React.FC = () => {
   const apolloClient = useApolloClient();
@@ -39,7 +41,7 @@ const App: React.FC = () => {
 
       <AppWrapper>
         <ErrorBoundary fallback={({ error }) => <p>{error.message}</p>}>
-          <Suspense fallback={loader}>
+          <React.Suspense fallback={loader}>
             <Switch>
               <Route path={PATH_SIGN_IN}>
                 <SignIn />
@@ -53,7 +55,7 @@ const App: React.FC = () => {
                 <Landing />
               </AuthenticatedRoute>
             </Switch>
-          </Suspense>
+          </React.Suspense>
         </ErrorBoundary>
       </AppWrapper>
     </React.Fragment>
@@ -64,17 +66,15 @@ export const withProviders = <P extends object>(
   App: React.ComponentType<P>,
 ): React.FC<P> => props => {
   return (
-    <StrictMode>
-      <BrowserRouter>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={theme}>
-            <AuthProvider>
-              <App {...props} />
-            </AuthProvider>
-          </ThemeProvider>
-        </ApolloProvider>
-      </BrowserRouter>
-    </StrictMode>
+    <BrowserRouter>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <AuthProvider>
+            <App {...props} />
+          </AuthProvider>
+        </ThemeProvider>
+      </ApolloProvider>
+    </BrowserRouter>
   );
 };
 
