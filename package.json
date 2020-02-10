@@ -4,6 +4,9 @@
   "private": true,
   "homepage": "https://bryggan.sjofartstidningen.se",
   "author": "Adam Bergman <adam@fransvilhelm.com>",
+  "engines": {
+    "node": ">=12"
+  },
   "keywords": [
     "react",
     "cypress",
