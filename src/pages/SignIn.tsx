@@ -203,7 +203,7 @@ const SignIn: React.FC = () => {
           {state.value === 'unauthenticated' && state.context.error && (
             <AuthError>
               Could not sign in, access token probably invalid{' '}
-              <small>(Reason: {state.context.error})</small>
+              <small>(Reason: {state.context.error.message})</small>
             </AuthError>
           )}
         </>

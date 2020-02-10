@@ -60,10 +60,7 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
             target: 'authenticated',
             actions: assign({ token: (_, event) => event.data.token }),
           },
-          onError: {
-            target: 'unauthenticated',
-            actions: assign({ error: (_, event) => event.data }),
-          },
+          onError: { target: 'unauthenticated' },
         },
       },
       authenticating: {
