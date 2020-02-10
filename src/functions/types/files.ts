@@ -16,6 +16,24 @@ export const Files = gql`
 
   union Metadata = FileMetadata | FolderMetadata
 
+  type FileMetadataConnection {
+    edges: [FileMetadataEdge!]!
+    pageInfo: PageInfo!
+  }
+
+  type FileMetadataEdge {
+    node: FileMetadata!
+  }
+
+  type FolderMetadataConnection {
+    edges: [FolderMetadataEdge!]!
+    pageInfo: PageInfo!
+  }
+
+  type FolderMetadataEdge {
+    node: FolderMetadata!
+  }
+
   type FileMetadata {
     id: ID!
     name: String!
@@ -42,6 +60,7 @@ export const Files = gql`
     pathLower: String
     pathDisplay: String
     content(options: ListFolderOptions): MetadataConnection!
+    thumbnail(options: ThumbnailOptions): Thumbnail
     # sharingInfo: FolderSharingInfo
     # propertyGroups: [PropertyGroup]
   }
@@ -117,6 +136,11 @@ export const Files = gql`
 
   extend type Query {
     listFolder(path: PathLike!, options: ListFolderOptions): MetadataConnection!
+    folders(
+      path: PathLike!
+      options: ListFolderOptions
+    ): FolderMetadataConnection!
+    files(path: PathLike!, options: ListFolderOptions): FileMetadataConnection!
     fileThumbnail(path: PathLike!, options: ThumbnailOptions): Thumbnail!
     search(query: String!, options: SearchOptions): MetadataConnection!
   }
