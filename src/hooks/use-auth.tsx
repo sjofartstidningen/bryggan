@@ -89,7 +89,7 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
           'revokeToken',
           assign({
             token: () => null as any,
-            error: () => null as any,
+            error: (ctx: AuthContext) => ctx.error,
           }),
         ],
       },
@@ -103,21 +103,26 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
         const { location } = event;
         let token: string | void;
 
-        const params: { access_token?: string } = qs.parse(location.search, {
+        const params = qs.parse(location.search, {
           ignoreQueryPrefix: true,
         });
 
         if (params.access_token) {
-          token = params && params.access_token;
+          token = params.access_token;
         } else {
           const data = await localforage.getItem<PersistedAuthGet>(
             LOCALSTORAGE_AUTH_KEY,
           );
-          token = data ? data.accessToken : undefined;
+          token = data?.accessToken;
         }
 
         if (!token) throw new Error('No token available');
-        await validateToken(token);
+        await Promise.all([
+          validateToken(token),
+          localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
+            accessToken: token,
+          }),
+        ]);
 
         return { token };
       },
@@ -126,13 +131,12 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
 
         if (event.type !== 'SIGN_IN') return {};
         const { token } = event;
-        await validateToken(token);
-
-        localforage
-          .setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
+        await Promise.all([
+          validateToken(token),
+          localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
             accessToken: token,
-          })
-          .catch(() => {});
+          }),
+        ]);
 
         return { token };
       },
