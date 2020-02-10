@@ -3,7 +3,6 @@ import { render, RenderOptions } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { Router, MemoryRouter } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import nock from 'nock';
 import localforage from 'localforage';
 import {
   MockedProvider as ApolloProvider,
@@ -80,35 +79,20 @@ const renderWithHistory = (
   return { ...res, history: memoryHistory };
 };
 
-const mockDropboxApi = (): nock.Scope => {
-  return nock('https://api.dropboxapi.com', {
-    reqheaders: { authorization: /^bearer .+/i },
-  });
-};
-
 interface EnsureAuthArgs {
   token?: string;
-  scope?: nock.Scope;
 }
 
 const ensureAuthenticated = async ({
   token = 'abc123',
-  scope = mockDropboxApi(),
 }: EnsureAuthArgs = {}) => {
   await localforage.setItem<PersistedAuthSet>(LOCALSTORAGE_AUTH_KEY, {
     accessToken: token,
   });
-
-  return scope;
 };
 
 // re-export everything
 export * from '@testing-library/react';
 
 // override render method
-export {
-  customRender as render,
-  renderWithHistory,
-  mockDropboxApi,
-  ensureAuthenticated,
-};
+export { customRender as render, renderWithHistory, ensureAuthenticated };
