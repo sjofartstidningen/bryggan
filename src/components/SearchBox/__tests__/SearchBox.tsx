@@ -1,7 +1,7 @@
 import React from 'react';
 import { MockedResponse } from '@apollo/react-testing';
 import nanoid from 'nanoid';
-import { render, waitForElement, fireEvent } from '../../../utils/test-utils';
+import { render, fireEvent } from '../../../utils/test-utils';
 import { SEARCH_QUERY } from '../use-search';
 import { SearchBox } from '../';
 import { Search_search_edges, ThumbnailSize } from '../../../types/graphql';
@@ -55,10 +55,8 @@ it('should search for pdf file content', async () => {
     },
   ];
 
-  const { getByLabelText, findByText } = render(<SearchBox />, { mocks });
-  const input = await waitForElement(() =>
-    getByLabelText(/search pdf content/i),
-  );
+  const { findByText, findByLabelText } = render(<SearchBox />, { mocks });
+  const input = await findByLabelText(/search pdf content/i);
 
   fireEvent.change(input, { target: { value: 'stena line' } });
 

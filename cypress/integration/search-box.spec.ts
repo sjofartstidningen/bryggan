@@ -22,7 +22,7 @@ describe('Search Box', () => {
   it('should be hidden on smaller screens', () => {
     cy.visit('/');
     cy.viewport('iphone-6');
-    cy.queryByLabelText(/search/).should('not.exist');
+    cy.findByLabelText(/search/).should('not.exist');
   });
 
   it('should search for content with the search box', () => {
@@ -114,6 +114,6 @@ describe('Search Box', () => {
     cy.visit('/');
     cy.search('stena line').should('be.visible');
     cy.findByLabelText(/search/i).blur();
-    cy.queryByTestId(/^search-result$/i).then(el => Cypress.dom.isHidden(el));
+    cy.findByTestId(/^search-result$/i).then((el) => Cypress.dom.isHidden(el));
   });
 });

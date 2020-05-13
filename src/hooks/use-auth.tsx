@@ -104,7 +104,7 @@ const authMachine = Machine<AuthContext, AuthSchema, AuthEvent>(
           ignoreQueryPrefix: true,
         });
 
-        if (params.access_token) {
+        if (typeof params.access_token === 'string') {
           token = params.access_token;
         } else {
           const data = await localforage.getItem<PersistedAuthGet>(

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useAsyncEffect } from '../use-async-effect';
-import { render, fireEvent, wait } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 
-const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 it('should fire of an async effect', async () => {
   const Component = () => {
@@ -28,7 +28,7 @@ it('should provide a hasCancelled callback to effect', async () => {
     const [count, setCount] = useState(0);
 
     useAsyncEffect(
-      async hasCancelled => {
+      async (hasCancelled) => {
         if (count > 0) return;
         await delay(0);
         if (hasCancelled()) callback();
@@ -45,7 +45,7 @@ it('should provide a hasCancelled callback to effect', async () => {
   const button = getByText('Click me');
   fireEvent.click(button);
 
-  await wait(() => expect(cb).toHaveBeenCalledTimes(1));
+  await waitFor(() => expect(cb).toHaveBeenCalledTimes(1));
 });
 
 it('it can also handle functions that come with a `cancel` method attached', () => {
