@@ -22,16 +22,17 @@ function generatePreview({
   year,
   issue = '01',
   page = '001',
+  id,
   accessToken,
   rootFolder,
 }) {
-  const url = new URL('files/get_thumbnail', contentRoot);
+  const url = new URL('files/get_thumbnail_v2', contentRoot);
   const authorization = `Bearer ${accessToken}`;
   const generateUrl = (path, size) =>
     `${url.toString()}?${qs.stringify({
       authorization,
       arg: JSON.stringify({
-        path,
+        resource: { '.tag': 'path', id },
         size,
         format: 'jpeg',
         mode: 'fitone_bestfit',

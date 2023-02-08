@@ -24,6 +24,7 @@ const responseReducer = ({ accessToken, rootFolder }) => res =>
       year,
       issue,
       page: pageName,
+      id: entry.id,
       accessToken,
       rootFolder,
     });
