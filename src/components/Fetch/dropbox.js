@@ -63,7 +63,7 @@ function FilesListFolder({ path, children, ...rest }) {
           }}
           data={{ path: join(data.dropbox_root, path) }}
           responseReducer={responseReducer({
-            accessToken: data.dropbox_token,
+            accessToken: data.dropbox_token_v2,
             rootFolder: data.dropbox_root,
           })}
         >

@@ -28,6 +28,9 @@ export interface AuthError extends Error {
 export type AppData = {
   dropbox_root: string,
   dropbox_token: string,
+  dropbox_token_v2: string,
+  dropbox_member_id: string,
+  dropbox_root_namespace_id: string,
 };
 
 export type SignInCredentials = {
