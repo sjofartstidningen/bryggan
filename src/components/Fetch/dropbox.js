@@ -53,7 +53,14 @@ function FilesListFolder({ path, children, ...rest }) {
           cache={cache}
           url="/files/list_folder"
           method="post"
-          headers={{ Authorization: `Bearer ${data.dropbox_token_v2}`, 'Dropbox-API-Select-User': data.dropbox_member_id }}
+          headers={{
+            Authorization: `Bearer ${data.dropbox_token_v2}`,
+            'Dropbox-API-Select-User': data.dropbox_member_id,
+            'Dropbox-API-Path-Root': JSON.stringify({
+              '.tag': 'root',
+              root: data.dropbox_root_namespace_id,
+            }),
+          }}
           data={{ path: join(data.dropbox_root, path) }}
           responseReducer={responseReducer({
             accessToken: data.dropbox_token,
