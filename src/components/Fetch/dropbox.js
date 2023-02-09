@@ -15,18 +15,21 @@ const client = axios.create({
 
 const cache = new MinimalCache({ serializer: conf => conf.data.path });
 
-const responseReducer = ({ accessToken, rootFolder }) => res =>
+const responseReducer = ({
+  accessToken,
+  rootFolder,
+  pathRoot,
+  selectedUser,
+}) => res =>
   res.entries.map(entry => {
     const [, year, issue, page] = pathRe().exec(entry.path_display);
     const pageName = page && pageRe().exec(`${page}.pdf`)[3];
 
     const previews = generatePreview({
-      year,
-      issue,
-      page: pageName,
       id: entry.id,
       accessToken,
-      rootFolder,
+      pathRoot,
+      selectedUser,
     });
 
     return {
@@ -40,6 +43,8 @@ const responseReducer = ({ accessToken, rootFolder }) => res =>
         path: entry.path_display,
         accessToken,
         rootFolder,
+        pathRoot,
+        selectedUser,
       }),
     };
   });
@@ -66,6 +71,8 @@ function FilesListFolder({ path, children, ...rest }) {
           responseReducer={responseReducer({
             accessToken: data.dropbox_token_v2,
             rootFolder: data.dropbox_root,
+            pathRoot: data.dropbox_root_namespace_id,
+            selectedUser: data.dropbox_member_id,
           })}
         >
           {children}
