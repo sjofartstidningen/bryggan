@@ -2,13 +2,12 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
-import { getEnv } from '.';
 
 const config = {
-  apiKey: getEnv('FIREBASE_API_KEY'),
-  authDomain: getEnv('FIREBASE_AUTH_DOMAIN'),
-  databaseURL: getEnv('FIREBASE_DATABASE_URL'),
-  projectId: getEnv('FIREBASE_PROJECT_ID'),
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
 };
 
 const bryggan = firebase.initializeApp(config);
